@@ -31,8 +31,10 @@ npm install --save lodash
 
 ```
 npm install webpack-dev-server --save-dev
-```
 
+
+```
+--> npm start
 
 https://github.com/scenaristeur/compagent-tuto/tree/6530d16fdbd77e34bf6c20000ac443cdbc7304dc
 

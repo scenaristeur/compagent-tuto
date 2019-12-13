@@ -88,7 +88,7 @@ class LoginElement extends LitElement {
 
   sendMessage(){
     this.count++
-    this.agent.send("Messages", {action:"info", info:"Now counter is "+this.count}  )
+    this.agent.send("Messages", {action:"info", info:"This webid is "+this.webId}  )
   }
 
 }
