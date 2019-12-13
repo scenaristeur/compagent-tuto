@@ -53,7 +53,7 @@ change my-element to app-element
 ![First elements](doc/images/compagent_first_elements.png)
 
 Make an index.html & copy code of your /dist/index.html
-then use filemanager to upload /dist/main-element.js
+then use [filemanager](https://otto-aa.github.io/solid-filemanager) to upload /dist/main-element.js
 ![Upload to POD](doc/images/upload_file_manager.png)
 
 see it live on https://smag0.solid.community/public/compagent/tuto/00basic/
