@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "evejs": "github:scenaristeur/evejs",
-    "lit-element": "^2.2.1"
+    "lit-element": "^2.2.1",
+    "solid-auth-client": "^2.4.1"
   }
 }

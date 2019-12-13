@@ -94,7 +94,7 @@ https://github.com/scenaristeur/compagent-tuto/tree/c1bade1b2992dd8dc80b428921e7
 ```
 
 This file calls the main-element.js build by "npm run build" command. This command build /dist/main-element.js from /src/main-element.js.
-This allow us to use a CustomElement "<main-element></main-element>"
+This allow us to use a CustomElement "main-element"
 
 
 /src/main-element.js
@@ -230,6 +230,101 @@ class MessagesElement extends LitElement {
 }
 
 customElements.define('messages-element', MessagesElement);
+
+
+```
+
+# Solid component
+
+now let's build our first solid component named "login-element" by duplicating /src/modele-component and adding it to /src/main-element.js
+
+/src/main-element.js
+```
+import { LitElement, html } from 'lit-element';
+import './component/app-element.js';
+import './component/messages-element.js';
+import './component/login-element.js';
+
+class MainElement extends LitElement{
+  render(){
+    return html`
+    <app-element name="App"></app-element>
+    <login-element name="Login"></login-element>
+    <messages-element name="Messages"></messages-element>
+    `;
+  }
+}
+customElements.define('main-element', MainElement);
+```
+
+ Initial /src/component/login-element.js
+```
+import { LitElement, html } from 'lit-element';
+import { HelloAgent } from '../agents/hello-agent.js';
+
+class LoginElement extends LitElement {
+
+  static get properties() {
+    return {
+      name: {type: String},
+      count: {type: Number}
+    };
+  }
+
+  constructor() {
+    super();
+    this.count = 0
+  }
+
+  render(){
+    return html`
+    <p>${this.name}</p>
+    <button @click="${this.sendMessage}">Send message</button>
+    `;
+  }
+
+  firstUpdated(){
+    var app = this;
+    this.agent = new HelloAgent(this.name);
+    this.agent.receive = function(from, message) {
+      if (message.hasOwnProperty("action")){
+        switch(message.action) {
+          case "doSomething":
+          app.doSomething(message);
+          break;
+          default:
+          console.log("Unknown action ",message)
+        }
+      }
+    };
+  }
+
+  doSomething(message){
+    console.log(message)
+  }
+
+  sendMessage(){
+    this.count++
+    this.agent.send("Messages", {action:"info", info:"Now counter is "+this.count}  )
+  }
+
+}
+
+customElements.define('login-element', LoginElement);
+```
+
+
+And update it like this
+
+first install [solid-auth-client](https://github.com/solid/solid-auth-client)
+
+```
+npm install solid-auth-client
+```
+
+Updated : /src/component/login-element.js
+
+```
 
 
 ```
