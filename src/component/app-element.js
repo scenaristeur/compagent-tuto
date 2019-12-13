@@ -32,7 +32,6 @@ class AppElement extends LitElement {
           app.doSomething(message);
           break;
           default:
-          // code block
           console.log("Unknown action ",message)
         }
       }
@@ -48,7 +47,6 @@ class AppElement extends LitElement {
     this.agent.send("Messages", {action:"info", info:"Now counter is "+this.count}  )
   }
 
-
 }
-// Register the new element with the browser.
+
 customElements.define('app-element', AppElement);

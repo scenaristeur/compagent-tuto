@@ -2,8 +2,6 @@ import { LitElement, html } from 'lit-element';
 import './component/app-element.js';
 import './component/messages-element.js';
 
-
-
 class MainElement extends LitElement{
   render(){
     return html`
