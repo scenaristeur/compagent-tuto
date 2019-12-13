@@ -23,3 +23,5 @@ https://github.com/scenaristeur/compagent-tuto/tree/6530d16fdbd77e34bf6c20000ac4
 ```
 npm install --save lit-element scenaristeur/evejs
 ```
+
+https://github.com/scenaristeur/compagent-tuto/tree/5634f6b4b188cb3e477b478d1ecafa60bac55322

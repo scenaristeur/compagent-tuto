@@ -4,8 +4,20 @@ import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 
 // Extend the LitElement base class
-class MyElement extends LitElement {
+class MessagesElement extends LitElement {
 
+  static get properties() {
+    return {
+      name: {type: String},
+      messages: {type: Array}
+    };
+  }
+
+  constructor() {
+      super();
+    this.name = "unknown"
+    this.messages =  []
+  }
   /**
   * Implement `render` to define a template for your element.
   *
@@ -21,39 +33,38 @@ class MyElement extends LitElement {
     */
     return html`
     <!-- template content -->
-    <p>My Element</p>
+    <p>${this.name}</p>
 
-    <button @click="${this.sendMessage}">Send message</button>
+    <pre class="pre-scrollable">
+    <ul id="messageslist">
+    ${this.messages.map((m) => html`<li><b>Agent ${m.from}</b> say "${m.message}"</li>`)}
+    </ul>
+    </pre>
     `;
   }
 
-
   firstUpdated(){
+    var app = this;
     this.agent = new HelloAgent(this.name);
-    console.log(this.agent)
     this.agent.receive = function(from, message) {
+      console.log(message)
+      app.messages.reverse()
+      app.messages = [... app.messages, {message: JSON.stringify(message), from: from}]
+      app.messages.reverse()
       if (message.hasOwnProperty("action")){
         switch(message.action) {
-          case "langChanged":
-          app.lang = message.lang;
-          app.requestUpdate();
-          break;
+
           default:
           // code block
           console.log("Unknown action ",message)
         }
       }
     };
-
-
   }
 
-  sendMessage(){
-    console.log("send")
-      this.agent.send("Messages", {action:"info", info:"message from my element"}  )
-  }
+
 
 
 }
 // Register the new element with the browser.
-customElements.define('my-element', MyElement);
+customElements.define('messages-element', MessagesElement);
