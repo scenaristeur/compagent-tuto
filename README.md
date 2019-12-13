@@ -18,10 +18,32 @@ npm install --save lodash
 
 https://github.com/scenaristeur/compagent-tuto/tree/6530d16fdbd77e34bf6c20000ac443cdbc7304dc
 
+#Building
+```
+npm run build
+```
+--> evrything is bundled in /dist
+
+
 
 # Building a compagent
 ```
 npm install --save lit-element scenaristeur/evejs
 ```
 
+# Add Lit-element
 https://github.com/scenaristeur/compagent-tuto/tree/5634f6b4b188cb3e477b478d1ecafa60bac55322
+
+# Add evejs communication
+https://github.com/scenaristeur/compagent-tuto/tree/768e86946c82d04c109fe4dbc3a4754eb476f8b5
+
+
+Now we can build our components
+
+change my-element to app-element
+
+![First elements](doc/images/compagent_first_elements.png)
+
+Make an index.html & copy code of your /dist/index.html
+then use filemanager to upload /dist/main-element.js
+![Upload to POD](doc/images/upload_file_manager.png)

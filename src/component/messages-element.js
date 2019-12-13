@@ -14,7 +14,7 @@ class MessagesElement extends LitElement {
   }
 
   constructor() {
-      super();
+    super();
     this.name = "unknown"
     this.messages =  []
   }
@@ -47,13 +47,12 @@ class MessagesElement extends LitElement {
     var app = this;
     this.agent = new HelloAgent(this.name);
     this.agent.receive = function(from, message) {
-      console.log(message)
-      app.messages.reverse()
-      app.messages = [... app.messages, {message: JSON.stringify(message), from: from}]
-      app.messages.reverse()
+
       if (message.hasOwnProperty("action")){
         switch(message.action) {
-
+          case "info":
+          app.addInfo(from, message)
+          break;
           default:
           // code block
           console.log("Unknown action ",message)
@@ -62,6 +61,11 @@ class MessagesElement extends LitElement {
     };
   }
 
+  addInfo(from, message){
+    this.messages.reverse()
+    this.messages = [... this.messages, {message: JSON.stringify(message), from: from}]
+    this.messages.reverse()
+  }
 
 
 
