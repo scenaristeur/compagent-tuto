@@ -15,5 +15,6 @@ module.exports = {
     open: true,
     hot: true
   },
-  devtool: "eval-source-map"
+  devtool: "eval-source-map",
+  performance: { hints: false }
 };
