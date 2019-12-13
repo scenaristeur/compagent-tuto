@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server -d --hot --config webpack.config.js --watch",
     "build": "webpack"
   },
   "keywords": [],
@@ -12,7 +13,8 @@
   "license": "ISC",
   "devDependencies": {
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
     "evejs": "github:scenaristeur/evejs",

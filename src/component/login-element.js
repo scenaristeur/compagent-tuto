@@ -22,15 +22,16 @@ class LoginElement extends LitElement {
   render(){
     return html`
     <p>${this.name}</p>
-    <p>WebId: ${this.webId}</p>
+
 
     ${this.webId == null ?
-        html`
-        <button @click=${this.login}>Login</button>
-        `
-        : html`
-        <button @click=${this.logout}>Logout</button>`
-      }
+      html`
+      <button @click=${this.login}>Login</button>
+      `
+      : html`
+      <p>WebId: ${this.webId}</p>
+      <button @click=${this.logout}>Logout</button>`
+    }
 
 
     <button @click="${this.sendMessage}">Send message</button>
@@ -52,17 +53,33 @@ class LoginElement extends LitElement {
       }
     };
 
-
-
     auth.trackSession(session => {
       if (!session){
         console.log("notlogged")
-        app.wedId=null
+        this.webId=null
+        this.agent.send('Messages',  {action:"info", info:"Not logged"});
       }
       else{
         app.webId = session.webId
+        this.agent.send('Messages',  {action:"info", info:"Login "+app.webId});
       }
     })
+  }
+
+  login(event) {
+    this.popupLogin();
+  }
+
+  logout(event) {
+    auth.logout().then(() => alert('Goodbye!'));
+    this.agent.send('Messages',  {action:"info", info:"Logout"});
+  }
+
+  async popupLogin() {
+    let session = await auth.currentSession();
+    let popupUri = './dist-popup/popup.html';
+    if (!session)
+    session = await auth.popupLogin({ popupUri });
   }
 
   doSomething(message){
