@@ -439,3 +439,6 @@ customElements.define('login-element', LoginElement);
 
 
 ![with solid-auth-client](add_solid_auth.png)
+
+
+git tag -a v0.0 -m "lit-element evejs solid-auth-client"
