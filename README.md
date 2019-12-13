@@ -76,7 +76,7 @@ https://stackoverflow.com/questions/36782467/set-subdirectory-as-website-root-on
 
 git add dist && git commit -m "Initial dist subtree commit"
 
-git subtree push --prefix dist origin gh-pages
+npm run build && git subtree push --prefix dist origin gh-pages
 
 
 https://github.com/scenaristeur/compagent-tuto/tree/c1bade1b2992dd8dc80b428921e74e7e7f678804
