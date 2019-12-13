@@ -56,8 +56,10 @@ then use filemanager to upload /dist/main-element.js
 
 see it live on https://smag0.solid.community/public/compagent/tuto/00basic/
 
+or https://scenaristeur.github.io/compagent-tuto/
 
-# make a ghpages branches
+
+# make a gh-pages branches
 https://stackoverflow.com/questions/36782467/set-subdirectory-as-website-root-on-github-pages
 
 git add dist && git commit -m "Initial dist subtree commit"
