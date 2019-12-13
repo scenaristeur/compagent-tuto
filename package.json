@@ -19,6 +19,8 @@
   "dependencies": {
     "evejs": "github:scenaristeur/evejs",
     "lit-element": "^2.2.1",
-    "solid-auth-client": "^2.4.1"
+    "rdf-namespaces": "^1.6.0",
+    "solid-auth-client": "^2.4.1",
+    "tripledoc": "^3.0.1"
   }
 }
