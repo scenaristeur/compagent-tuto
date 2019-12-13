@@ -1,4 +1,10 @@
 
+Lit-element Webcomponent that communicate with evejs  https://scenaristeur.github.io/compagent-tuto/
+
+
+
+
+
 # Based on Webpack Getting started
 
 https://webpack.js.org/guides/getting-started/
@@ -47,3 +53,13 @@ change my-element to app-element
 Make an index.html & copy code of your /dist/index.html
 then use filemanager to upload /dist/main-element.js
 ![Upload to POD](doc/images/upload_file_manager.png)
+
+see it live on https://smag0.solid.community/public/compagent/tuto/00basic/
+
+
+# make a ghpages branches
+https://stackoverflow.com/questions/36782467/set-subdirectory-as-website-root-on-github-pages
+
+git add dist && git commit -m "Initial dist subtree commit"
+
+git subtree push --prefix dist origin gh-pages
