@@ -438,10 +438,12 @@ customElements.define('login-element', LoginElement);
 ```
 
 
-![with solid-auth-client](add_solid_auth.png)
+![with solid-auth-client](doc/images/add_solid_auth.png)
 
 
 git tag -a v0.0 -m "lit-element evejs solid-auth-client"
+
+[first release : lit-element + evejs + solid-auth-client](https://github.com/scenaristeur/compagent-tuto/releases/tag/v0.0)
 
 
 Now when can create independant CustomElements that commincate with each other and use Solid as a backend
