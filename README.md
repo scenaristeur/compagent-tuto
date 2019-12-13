@@ -442,3 +442,6 @@ customElements.define('login-element', LoginElement);
 
 
 git tag -a v0.0 -m "lit-element evejs solid-auth-client"
+
+
+Now when can create independant CustomElements that commincate with each other and use Solid as a backend
