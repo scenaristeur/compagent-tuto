@@ -1,13 +1,13 @@
-import _ from 'lodash';
+import { LitElement, html } from 'lit-element';
+import './component/my-element.js';
 
 
-function component() {
-  const element = document.createElement('div');
 
-  // Lodash, currently included via a script, is required for this line to work
-  element.innerHTML = _.join(['Hello', 'Tuto'], ' ');
-
-  return element;
+class AppElement extends LitElement{
+  render(){
+    return html`
+      <my-element></my-element>
+    `;
+  }
 }
-
-document.body.appendChild(component());
+customElements.define('app-element', AppElement);

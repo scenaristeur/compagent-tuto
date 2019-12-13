@@ -2,7 +2,7 @@
   "name": "compagent-tuto",
   "version": "1.0.0",
   "description": "",
-   "private": true,
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
@@ -13,5 +13,9 @@
   "devDependencies": {
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "evejs": "github:scenaristeur/evejs",
+    "lit-element": "^2.2.1"
   }
 }
