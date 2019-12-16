@@ -4,7 +4,7 @@ import { HelloAgent } from '../agents/hello-agent.js';
 import { fetchDocument } from 'tripledoc';
 import { solid, schema, rdf } from 'rdf-namespaces';
 
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 
 
 class UserNotesElement extends LitElement {
@@ -29,9 +29,11 @@ class UserNotesElement extends LitElement {
 
 
     const noteList = (notes) => html`
-    <h3 class="m-0 font-weight-bold text-primary">My  Note List (${notes.length})</h3>
+    <h3 class="m-0 font-weight-bold text-primary">My Note List (${notes.length})</h3>
 
-    <ul class="list-group list-group-flush" style="width: 400px; height: 300px; overflow: auto">
+    <a href="${this.notesListUrl}" target="_blank">${this.notesListUrl}<a>
+
+    <ul class="list-group list-group-flush" style="height: 300px; overflow: auto">
     ${notes.map((n) => html`
       <li class="list-group-item">
       <div class="row">
@@ -62,19 +64,20 @@ class UserNotesElement extends LitElement {
       return html`
       <link href="css/fontawesome/css/all.css" rel="stylesheet">
       <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-
-
+      <style>
+      i {
+        padding-top: 10px;
+        padding-bottom: 10px
+      }
+      </style>
       ${this.person == null ?
         html `You must login to see your notes`
         :html `
-        Here are your notes
-        ${this.person.storage}
-
         ${noteList(this.notes)}
-
         `}
         `;
       }
+
 
       firstUpdated(){
         var app = this;
@@ -111,12 +114,12 @@ class UserNotesElement extends LitElement {
           publicTypeIndex => {
             app.publicTypeIndex = publicTypeIndex;
             app.notesListEntry = app.publicTypeIndex.findSubject(solid.forClass, schema.TextDigitalDocument);
-            console.log("app.notesListEntry",app.notesListEntry)
+            //  console.log("app.notesListEntry",app.notesListEntry)
             if (app.notesListEntry === null){
               app.notesListUrl = app.initialiseNotesList(app.person, app.publicTypeIndex)
             }else{
               app.notesListUrl = app.notesListEntry.getRef(solid.instance)
-              console.log("notesListUrl",app.notesListUrl)
+              //    console.log("notesListUrl",app.notesListUrl)
             }
             app.getNotes()
           },
@@ -130,9 +133,9 @@ class UserNotesElement extends LitElement {
         fetchDocument(app.notesListUrl).then(
           notesList => {
             app.notesList = notesList;
-            console.log("app.notesList",app.notesList)
+            //  console.log("app.notesList",app.notesList)
             app.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
-            console.log("notesUri",app.notesUri)
+            //    console.log("notesUri",app.notesUri)
             app.notes = []
             app.notesUri.forEach(function (nuri){
               var subject = nuri.asNodeRef()
@@ -149,8 +152,39 @@ class UserNotesElement extends LitElement {
               app.notes = [... app.notes, note]
             })
             app.notes.reverse()
+            if (app.socket == undefined){
+              app.subscribe()
+            }else{
+              console.log("socket exist deja")
+            }
           })
         }
+
+
+        subscribe(){
+          var app = this
+          //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
+          var websocket = this.notesList.getWebSocketRef();
+          //  console.log("WEBSOCK",websocket)
+          app.socket = new WebSocket(websocket);
+          //  console.log ("socket",app.socket)
+          app.socket.onopen = function() {
+            const d = new Date();
+            var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
+            this.send('sub '+app.notesListUrl);
+            app.agent.send('Messages', now+"[souscription] "+app.notesListUrl)
+            //  console.log("OPENED SOCKET",app.socket)
+          };
+          app.socket.onmessage = function(msg) {
+            if (msg.data && msg.data.slice(0, 3) === 'pub') {
+              const d = new Date();
+              var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
+              app.getNotes()
+            }
+            //  else{console.log("message inconnu",msg)}
+          };
+        }
+
 
         initialiseNotesList(profile,typeIndex){
           var app = this;

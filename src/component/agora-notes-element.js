@@ -26,28 +26,48 @@ class AgoraNotesElement extends LitElement {
 
   render(){
     const noteList = (notes) => html`
-    <h3>Notes on Agora (${notes.length})</h3>
-    <button
-    href="${this.agoraNotesListUrl}"
-    target="_blank">
-    ${this.agoraNotesListUrl}
-    </button>
 
-  <ul style="width: 300px; height: 200px; overflow: auto">
-    ${notes.map((n) => html`
-      <li>
-      <div>${n.text}</div>
-      <!--<small>Donec id elit non mi porta.</small>-->
-      <small>${n.date.toLocaleString(this.lang, { timeZone: 'UTC' })}</small><br>
-      <a  href="${n.creator}" ?hidden=${n.creator == null} target="_blank" title="${n.creator}">Creator</a>
+      <h3 class="m-0 font-weight-bold text-primary">Notes on Agora (${notes.length})</h3>
+      <a href="${this.agoraNotesListUrl}" target="_blank">${this.agoraNotesListUrl}<a>
 
-      <a href="${n.also}" ?hidden=${n.also == null} title="${n.also}" target="_blank">See Also</a>
-      </li>
-      `)}
-      </ul>
+      <ul class="list-group list-group-flush" style="height: 300px; overflow: auto">
+      ${notes.map((n) => html`
+        <li class="list-group-item">
+        <div class="row">
+
+        <div class="col">
+        <div class="d-flex w-100 justify-content-between">
+        <!--<h5 class="mb-1">Titre</h5>-->
+        </div>
+        <p class="mb-1">
+        <div style="white-space: pre-wrap">${n.text}</div>
+        </p>
+        <!--<small>Donec id elit non mi porta.</small>-->
+        <small>${n.date.toLocaleString(this.lang, { timeZone: 'UTC' })}</small>
+        </div>
+
+        <div class="col-sm-1">
+        <i title="copy" primary @click="${this.copy}" uri=${n.subject} class="fas fa-copy"></i>
+        <a href="${n.subject}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
+        <a  href="${n.creator}" ?hidden=${n.creator == null} target="_blank" ><i title="${n.creator}" primary small  class="fas fa-user"></i></a>
+        </div>
+        </div>
+        </li>
+        `)}
+        </ul>
+
+
       `;
 
       return html`
+      <link href="css/fontawesome/css/all.css" rel="stylesheet">
+      <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+      <style>
+      i {
+        padding-top: 10px;
+        padding-bottom: 10px
+      }
+      </style>
       ${noteList(this.notes)}
       `;
     }
@@ -104,15 +124,15 @@ class AgoraNotesElement extends LitElement {
         var app = this
         //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
         var websocket = this.notesList.getWebSocketRef();
-        console.log("WEBSOCK",websocket)
+      //  console.log("WEBSOCK",websocket)
         app.socket = new WebSocket(websocket);
-        console.log ("socket",app.socket)
+      //  console.log ("socket",app.socket)
         app.socket.onopen = function() {
           const d = new Date();
           var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
           this.send('sub '+app.agoraNotesListUrl);
           app.agent.send('Messages', now+"[souscription] "+app.agoraNotesListUrl)
-          console.log("OPENED SOCKET",app.socket)
+        //  console.log("OPENED SOCKET",app.socket)
         };
         app.socket.onmessage = function(msg) {
           if (msg.data && msg.data.slice(0, 3) === 'pub') {
@@ -120,7 +140,7 @@ class AgoraNotesElement extends LitElement {
             var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
             app.getAgoraData()
           }
-          else{console.log("message inconnu",msg)}
+          //else{console.log("message inconnu",msg)}
         };
       }
 
