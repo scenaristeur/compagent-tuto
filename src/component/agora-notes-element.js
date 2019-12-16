@@ -33,7 +33,7 @@ class AgoraNotesElement extends LitElement {
     ${this.agoraNotesListUrl}
     </button>
 
-    <ul>
+  <ul style="width: 300px; height: 200px; overflow: auto">
     ${notes.map((n) => html`
       <li>
       <div>${n.text}</div>

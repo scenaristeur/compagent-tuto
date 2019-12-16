@@ -2,10 +2,10 @@ import  eve from 'evejs/dist/eve.custom.js';
 
 function HelloAgent(id){
   // execute super constructor
-eve.Agent.call(this, id);
+  eve.Agent.call(this, id);
 
-// connect to all transports configured by the system
-this.connect(eve.system.transports.getAll());
+  // connect to all transports configured by the system
+  this.connect(eve.system.transports.getAll());
 
 }
 
@@ -26,5 +26,23 @@ HelloAgent.prototype.receive = function(from, message) {
     this.send(from, 'Hi ' + from + ', nice to meet you!');
   }
 };
+
+
+HelloAgent.prototype.broadcast = function(message){
+  var me = this
+  var allAgents = Object.keys(this.connections[0].transport.agents);
+  console.log(allAgents)
+  allAgents.forEach(function (agent){
+    me.send(agent, message);
+  })
+}
+
+HelloAgent.prototype.sendMulti = function(recipients, message){
+  var me = this
+  recipients.forEach(function (agent){
+    me.send(agent, message);
+  })
+}
+
 
 export {HelloAgent};
