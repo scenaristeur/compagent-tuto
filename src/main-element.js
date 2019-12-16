@@ -17,6 +17,7 @@ class MainElement extends LitElement{
     <login-element name="Login"></login-element>
     <webid-element name="Webid"></webid-element>
 
+<div class="container">
     <div class="row">
     <div class="col-sm">
     <notes-post-element name="NotesPost"></notes-post-element>
@@ -28,8 +29,10 @@ class MainElement extends LitElement{
     <agora-notes-element name="AgoraNotes"></agora-notes-element>
     </div>
     </div>
-
+    <div class="row">
     <messages-element name="Messages"></messages-element>
+    </div>
+    </div>
     `;
   }
 }

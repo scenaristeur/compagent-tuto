@@ -100,6 +100,8 @@ class UserNotesElement extends LitElement {
         if (person != null){
           console.log(person)
           this.initNotePod()
+        }else{
+          this.notes = []
         }
       }
 

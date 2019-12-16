@@ -35,8 +35,8 @@ class NoteElement extends LitElement {
     console.log(message)
   //  console.log("Person",person)
     this.person = message.person
-    if (person != null){
-      console.log(person)
+    if (this.person != null){
+      console.log(this.person)
       this.initNotePod()
     }
     //  console.log("jquery",$)
@@ -88,7 +88,9 @@ class NoteElement extends LitElement {
       var textarea = this.shadowRoot.getElementById('notearea')/*.shadowRoot.querySelector(".form-control")*/
       var note = textarea.value.trim()
       textarea.value = ""
+
         console.log(note)
+if (note.length > 0){
       const newNote = app.notesList.addSubject();
       var date = new Date(Date.now())
       // Indicate that the Subject is a schema:TextDigitalDocument:
@@ -112,7 +114,7 @@ class NoteElement extends LitElement {
           alert(err)
         });
 
-
+}
     }
 
     updateAgora(note,date, subject){

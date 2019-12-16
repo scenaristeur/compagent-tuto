@@ -18,11 +18,12 @@ class MessagesElement extends LitElement {
   render(){
     return html`
     <p>${this.name}</p>
-    <pre class="pre-scrollable">
-    <ul id="messageslist">
+  <!--  <pre class="pre-scrollable">-->
+    <ul id="messageslist" style="height: 20vh; overflow: auto">
     ${this.messages.map((m) => html`<li><b>Agent ${m.from}</b> say "${m.message}"</li>`)}
     </ul>
-    </pre>
+
+  <!--  </pre>-->
     `;
   }
 
