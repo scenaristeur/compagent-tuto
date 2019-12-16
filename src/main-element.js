@@ -18,13 +18,13 @@ class MainElement extends LitElement{
     <webid-element name="Webid"></webid-element>
 
     <div class="row">
-    <div class="col">
+    <div class="col-sm">
     <notes-post-element name="NotesPost"></notes-post-element>
     </div>
-    <div class="col">
+    <div class="col-sm">
     <user-notes-element name="UserNotes"></user-notes-element>
     </div>
-    <div class="col">
+      <div class="col-sm">
     <agora-notes-element name="AgoraNotes"></agora-notes-element>
     </div>
     </div>
