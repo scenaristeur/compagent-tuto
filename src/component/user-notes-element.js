@@ -33,7 +33,7 @@ class UserNotesElement extends LitElement {
 
     <a href="${this.notesListUrl}" target="_blank">${this.notesListUrl}<a>
 
-    <ul class="list-group list-group-flush" style="height: 300px; overflow: auto">
+    <ul class="list-group list-group-flush" style="height: 50vh; overflow: auto">
     ${notes.map((n) => html`
       <li class="list-group-item">
       <div class="row">

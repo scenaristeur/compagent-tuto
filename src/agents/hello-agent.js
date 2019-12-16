@@ -40,6 +40,7 @@ HelloAgent.prototype.broadcast = function(message){
 HelloAgent.prototype.sendMulti = function(recipients, message){
   var me = this
   recipients.forEach(function (agent){
+    console.log(agent, message)
     me.send(agent, message);
   })
 }

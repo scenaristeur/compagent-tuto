@@ -30,7 +30,7 @@ class AgoraNotesElement extends LitElement {
       <h3 class="m-0 font-weight-bold text-primary">Notes on Agora (${notes.length})</h3>
       <a href="${this.agoraNotesListUrl}" target="_blank">${this.agoraNotesListUrl}<a>
 
-      <ul class="list-group list-group-flush" style="height: 300px; overflow: auto">
+      <ul class="list-group list-group-flush" style="height: 50vh; overflow: auto">
       ${notes.map((n) => html`
         <li class="list-group-item">
         <div class="row">

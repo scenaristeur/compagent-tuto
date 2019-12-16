@@ -1,8 +1,13 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 
-import { fetchDocument } from 'tripledoc';
-import { solid, schema, rdf, rdfs } from 'rdf-namespaces';
+
+
+
+import './note-element.js'
+import './media-element.js'
+import './graph-element.js'
+import './triple-element.js'
 
 //import $ from "jquery";
 
@@ -12,14 +17,14 @@ class NotesPostElement extends LitElement {
     return {
       name: {type: String},
       person: {type: Object},
-      agoraNotesListUrl: {type: String},
+
     };
   }
 
   constructor() {
     super();
     this.person = null
-    this.agoraNotesListUrl = "https://agora.solid.community/public/notes.ttl"
+
   }
 
   render(){
@@ -72,36 +77,40 @@ class NotesPostElement extends LitElement {
     ${this.person == null ?
       html `You must login to post`
       :html `
+      <div ><!--style="height:50vh"-->
       <div class="tab">
       <button class="tablinks active" tabName='Note' @click="${this.openTab}">Note</button>
       <button class="tablinks" tabName='Media' @click="${this.openTab}">Media</button>
       <button class="tablinks" tabName='Graph' @click="${this.openTab}">Graph</button>
+      <button class="tablinks" tabName='Triple' @click="${this.openTab}">Triple</button>
 
       </div>
 
       <div id="Note" class="tabcontent" style="display:block">
       <!--<h3>London</h3>-->
-      <div class="form-group">
-      <label for="notearea">Write a note on your Pod & share it on Agora</label>
-      <textarea class="form-control" id="notearea" rows="3"></textarea>
-      </div>
 
-
-
-
-
+      <note-element name="Note"></note-element>
       </div>
 
       <div id="Media" class="tabcontent">
       <h3>Media</h3>
       <p>todo.</p>
+      <media-element name="Media"></media-element>
       </div>
 
       <div id="Graph" class="tabcontent">
       <h3>Graph</h3>
       <p>todo.</p>
+      <graph-element name="Graph"></graph-element>
       </div>
 
+      <div id="Triple" class="tabcontent">
+      <h3>Triple</h3>
+      <p>todo.</p>
+      <triple-element name="Triple"></triple-element>
+      </div>
+
+      </div>
       <div class="row">
       <div class="col">
       <button type="button" class="btn btn-primary" primary @click=${this.addNote}>Add note </button>
@@ -123,72 +132,23 @@ class NotesPostElement extends LitElement {
     }
 
 
-    addNote(){
-      var app = this
-      console.log("app.notesList",app.notesList)
-      if (app.notesList == undefined){
-        alert("app.notesList is undefined") //, i18next.t('must_log')
-      }else{
-        var textarea = this.shadowRoot.getElementById('notearea')/*.shadowRoot.querySelector(".form-control")*/
-        var note = textarea.value.trim()
-        textarea.value = ""
-        //  console.log(note)
-        const newNote = app.notesList.addSubject();
-        var date = new Date(Date.now())
-        // Indicate that the Subject is a schema:TextDigitalDocument:
-        newNote.addRef(rdf.type, schema.TextDigitalDocument);
-        // Set the Subject's `schema:text` to the actual note contents:
-        newNote.addLiteral(schema.text, note);
-        // Store the date the note was created (i.e. now):
-        newNote.addLiteral(schema.dateCreated, date)
+    personChanged(message){
+      this.person = message.person
+        this.agent.sendMulti(["Note", "Media", "Graph", "Triple"], message)
+    /*  if (person != null){
+        console.log(person.storage)
+        this.initNotePod()
+      }*/
+      //  console.log("jquery",$)
+    }
 
-        //console.log(newNote.asNodeRef())
+addNote(){
+  var agora_pub = this.shadowRoot.getElementById('agora_pub').checked //this.shadowRoot.getElementById('agora_pub').shadowRoot.firstElementChild.checked
 
-        app.notesList.save([newNote]).then(
-          success=>{
-            var checkAgora = this.shadowRoot.getElementById('agora_pub').checked //this.shadowRoot.getElementById('agora_pub').shadowRoot.firstElementChild.checked
+  var message = {action: "sendToPod", person: this.person, agora_pub: agora_pub }
+  this.agent.sendMulti(["Note","Media","Graph","Triple"], message)
+}
 
-            if(checkAgora == true){
-              app.updateAgora(note, date, newNote.asNodeRef())
-            }
-            app.initNotePod()
-          },
-          err=>{
-            console.log(err)
-            alert(err)
-          });
-        }
-
-      }
-
-      updateAgora(note,date, subject){
-        var app = this;
-        //  console.log("app.agoraNotesListUrl",app.agoraNotesListUrl)
-        fetchDocument(app.agoraNotesListUrl).then(
-          agoraNotesList => {
-            app.agoraNotesList = agoraNotesList;
-            //  console.log("app.agoraNotesList",app.agoraNotesList)
-            const newNote = app.agoraNotesList.addSubject();
-            // Indicate that the Subject is a schema:TextDigitalDocument:
-            newNote.addRef(rdf.type, schema.TextDigitalDocument);
-            // Set the Subject's `schema:text` to the actual note contents:
-            newNote.addLiteral(schema.text, note);
-            // Store the date the note was created (i.e. now):
-            newNote.addLiteral(schema.dateCreated, date)
-            // add ref to user note
-            newNote.addRef(rdfs.seeAlso, subject);
-            newNote.addRef(schema.creator, app.webId);
-
-            app.agoraNotesList.save([newNote]).then(
-              success=>{
-                console.log("success agora", success)
-                //  app.initNotePod()
-              },
-              err=>{
-                console.log(err)
-              });
-            });
-          }
 
 
           firstUpdated(){
@@ -198,7 +158,7 @@ class NotesPostElement extends LitElement {
               if (message.hasOwnProperty("action")){
                 switch(message.action) {
                   case "personChanged":
-                  app.personChanged(message.person);
+                  app.personChanged(message);
                   break;
                   default:
                   console.log("Unknown action ",message)
@@ -223,66 +183,7 @@ class NotesPostElement extends LitElement {
             e.currentTarget.className += " active";
           }
 
-          personChanged(person){
-            this.person = person
-            if (person != null){
-              console.log(person.storage)
-              this.initNotePod()
-            }
-            //  console.log("jquery",$)
-          }
 
-          initNotePod(){
-            var app = this
-            /* !!!! There are 2 publicTypeIndexUrl !!
-            this.publicTypeIndexUrl = this.person.getRef(solid.publicTypeIndex)
-            console.log("publicTypeIndexUrl",this.publicTypeIndexUrl)*/
-            this.publicTypeIndexUrl = this.person.getRef(solid.publicTypeIndex)
-          console.log("INIT publicTypeIndexUrl",this.publicTypeIndexUrl)
-            fetchDocument(this.publicTypeIndexUrl).then(
-              publicTypeIndex => {
-                app.publicTypeIndex = publicTypeIndex;
-                app.notesListEntry = app.publicTypeIndex.findSubject(solid.forClass, schema.TextDigitalDocument);
-              //  console.log("app.notesListEntry",app.notesListEntry)
-                if (app.notesListEntry === null){
-                  app.notesListUrl = app.initialiseNotesList(app.person, app.publicTypeIndex)
-                }else{
-                  app.notesListUrl = app.notesListEntry.getRef(solid.instance)
-                //  console.log("notesListUrl",app.notesListUrl)
-                }
-                app.getNotes()
-              },
-              err => {console.log(err)}
-            );
-          }
-
-          getNotes(){
-            var app = this;
-          //  console.log("getNotes at ",app.notesListUrl)
-            fetchDocument(app.notesListUrl).then(
-              notesList => {
-                app.notesList = notesList;
-            //    console.log("app.notesList",app.notesList)
-                app.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
-              //  console.log("notesUri",app.notesUri)
-                app.notes = []
-                app.notesUri.forEach(function (nuri){
-                  var subject = nuri.asNodeRef()
-                  //  console.log("subject",subject)
-                  //  console.log("doc",nuri.getDocument())
-                  var text = nuri.getString(schema.text)
-                  var date = nuri.getDateTime(schema.dateCreated)
-                  //  console.log(text, date)
-                  var note = {}
-                  note.text = text;
-                  note.date = date;
-                  note.subject = subject;
-                  //text = nuri.getAllStrings()*/
-                  app.notes = [... app.notes, note]
-                })
-                app.notes.reverse()
-              })
-            }
 
           }
 
