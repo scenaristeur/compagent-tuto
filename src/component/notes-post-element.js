@@ -17,13 +17,14 @@ class NotesPostElement extends LitElement {
     return {
       name: {type: String},
       person: {type: Object},
-
+  agoraNotesListUrl: {type: String},
     };
   }
 
   constructor() {
     super();
     this.person = null
+        this.agoraNotesListUrl = "https://agora.solid.community/public/notes.ttl"
 
   }
 
@@ -147,7 +148,11 @@ class NotesPostElement extends LitElement {
   addNote(){
     var agora_pub = this.shadowRoot.getElementById('agora_pub').checked //this.shadowRoot.getElementById('agora_pub').shadowRoot.firstElementChild.checked
 
-    var message = {action: "sendToPod", person: this.person, agora_pub: agora_pub }
+    var message = {
+      action: "sendToPod",
+       person: this.person,
+        agora_pub: agora_pub,
+      agoraNotesListUrl : this.agoraNotesListUrl}
     this.agent.sendMulti(["Note","Media","Graph","Triple"], message)
   }
 

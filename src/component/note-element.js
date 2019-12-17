@@ -11,13 +11,11 @@ class NoteElement extends LitElement {
   static get properties() {
     return {
       name: {type: String},
-          agoraNotesListUrl: {type: String},
     };
   }
 
   constructor() {
     super();
-      this.agoraNotesListUrl = "https://agora.solid.community/public/notes.ttl"
   }
 
   render(){
@@ -26,37 +24,18 @@ class NoteElement extends LitElement {
     <label for="notearea">Write a note on your Pod & share it on Agora</label>
     <textarea class="form-control" id="notearea" rows="5" style="width:100%"></textarea>
     </div>
-    <!--
-    <p>${this.name}</p>
-    <button @click="${this.sendMessage}">Send message</button>-->
     `;
-  }
-
-
-  personChanged(message){
-    console.log(message)
-  //  console.log("Person",person)
-    this.person = message.person
-    if (this.person != null){
-      console.log(this.person)
-      this.initNotePod()
-    }
-    //  console.log("jquery",$)
   }
 
   firstUpdated(){
     var app = this;
     this.agent = new HelloAgent(this.name);
-      console.log(this.agent)
+    console.log(this.agent)
     this.agent.receive = function(from, message) {
       if (message.hasOwnProperty("action")){
-        console.log(message)
-        switch(message.action) {
+              switch(message.action) {
           case "sendToPod":
           app.sendToPod(message);
-          break;
-          case "personChanged":
-          app.personChanged(message);
           break;
           default:
           console.log("Unknown action ",message)
@@ -66,59 +45,20 @@ class NoteElement extends LitElement {
 
     this.ph = new PodHelper("bip",12);
     console.log("PH VALUE",this.ph.count)
-
-    this.webId = this.ph.getWebId()
-    console.log(this.webId)
-    if (this.webId != null){
-          this.init()
-    }
-
   }
-
-
-
-init(){
-  var app = this;
-fetchDocument(app.webId).then(
-  doc => {
-    app.doc = doc;
-    app.person = doc.getSubject(app.webId);
-    app.initNotePod()
-  },
-  err => {
-    console.log(err)
-  }
-);
-}
-
 
   sendToPod(message){
-    this.person = message.person
-    this.agora_pub = message.agora_pub
-
-    console.log("app.notesList",this.notesList)
-    if (this.notesList == undefined){
-  this.initNotePod()
-      //alert("app.notesList is undefined") //, i18next.t('must_log')
-    }else{
-      this.addNote()
-    }
-      console.log("app.notesList",this.notesList)
-
-
-
-
-  }
-
-  addNote(){
+    console.log(message)
+    this.agoraNotesListUrl = message.agoraNotesListUrl
+    this.notesList = this.ph.getPod("notesList")
+    console.log(this.notesList)
     var app = this
+    var textarea = this.shadowRoot.getElementById('notearea')/*.shadowRoot.querySelector(".form-control")*/
+    var note = textarea.value.trim()
+    textarea.value = ""
 
-      var textarea = this.shadowRoot.getElementById('notearea')/*.shadowRoot.querySelector(".form-control")*/
-      var note = textarea.value.trim()
-      textarea.value = ""
-
-        console.log(note)
-if (note.length > 0){
+    console.log(note)
+    if (note.length > 0){
       const newNote = app.notesList.addSubject();
       var date = new Date(Date.now())
       // Indicate that the Subject is a schema:TextDigitalDocument:
@@ -132,17 +72,17 @@ if (note.length > 0){
 
       app.notesList.save([newNote]).then(
         success=>{
-          if(this.agora_pub == true){
+          if(message.agora_pub == true){
             app.updateAgora(note, date, newNote.asNodeRef())
           }
-        //  app.initNotePod()
+          //  app.initNotePod()
         },
         err=>{
           console.log(err)
           alert(err)
         });
 
-}
+      }
     }
 
     updateAgora(note,date, subject){
@@ -173,65 +113,6 @@ if (note.length > 0){
             });
           });
         }
+}
 
-
-
-
-        initNotePod(){
-          var app = this
-          /* !!!! There are 2 publicTypeIndexUrl !!
-          this.publicTypeIndexUrl = this.person.getRef(solid.publicTypeIndex)
-          console.log("publicTypeIndexUrl",this.publicTypeIndexUrl)*/
-          this.publicTypeIndexUrl = this.person.getRef(solid.publicTypeIndex)
-          console.log("INIT publicTypeIndexUrl",this.publicTypeIndexUrl)
-          fetchDocument(this.publicTypeIndexUrl).then(
-            publicTypeIndex => {
-              app.publicTypeIndex = publicTypeIndex;
-              app.notesListEntry = app.publicTypeIndex.findSubject(solid.forClass, schema.TextDigitalDocument);
-              //  console.log("app.notesListEntry",app.notesListEntry)
-              if (app.notesListEntry === null){
-                app.notesListUrl = app.initialiseNotesList(app.person, app.publicTypeIndex)
-              }else{
-                app.notesListUrl = app.notesListEntry.getRef(solid.instance)
-                //  console.log("notesListUrl",app.notesListUrl)
-              }
-              app.getNotes()
-
-            },
-            err => {console.log(err)}
-          );
-        }
-
-        getNotes(){
-          var app = this;
-          //  console.log("getNotes at ",app.notesListUrl)
-          fetchDocument(app.notesListUrl).then(
-            notesList => {
-              app.notesList = notesList;
-               console.log("app.notesList",app.notesList)
-                //  this.addNote()
-
-            /*  app.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
-              //  console.log("notesUri",app.notesUri)
-              app.notes = []
-              app.notesUri.forEach(function (nuri){
-                var subject = nuri.asNodeRef()
-                //  console.log("subject",subject)
-                //  console.log("doc",nuri.getDocument())
-                var text = nuri.getString(schema.text)
-                var date = nuri.getDateTime(schema.dateCreated)
-                //  console.log(text, date)
-                var note = {}
-                note.text = text;
-                note.date = date;
-                note.subject = subject;
-                //text = nuri.getAllStrings()
-                app.notes = [... app.notes, note]
-              })
-              app.notes.reverse()*/
-            })
-          }
-
-        }
-
-        customElements.define('note-element', NoteElement);
+customElements.define('note-element', NoteElement);

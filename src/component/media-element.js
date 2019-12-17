@@ -82,6 +82,56 @@ class MediaElement extends LitElement {
     `;
   }
 
+
+  createTemp(e) {
+    console.log(e)
+  
+
+    console.log(e.target)
+    //  console.log(e.target.getAttribute("capture"))
+
+    this.file = e.target.files[0];
+    console.log("storage",this.storage)
+    this.path = this.storage+"public/Picpost/"
+    console.log(this.file)
+
+
+    this.filename = this.file.name.substring(0,this.file.name.lastIndexOf("."));
+    this.shadowRoot.getElementById('filename').value = this.filename
+    this.extension = this.file.name.substring(this.file.name.lastIndexOf("."));
+    this.uri = this.path+this.filename+this.extension
+
+    var canvas =   this.shadowRoot.getElementById('canvas')
+    var ctx = canvas.getContext('2d');
+    var cw = canvas.width;
+    var ch = canvas.height;
+    var maxW=cw;
+    var maxH=ch;
+
+    var image = new Image;
+    image.onload = function() {
+      var iw=image.width;
+      var ih=image.height;
+      var scale=Math.min((maxW/iw),(maxH/ih));
+      var iwScaled=iw*scale;
+      var ihScaled=ih*scale;
+      canvas.width=iwScaled;
+      canvas.height=ihScaled;
+      ctx.drawImage(image,0,0,iwScaled,ihScaled);
+      //  ctx.drawImage(image, 0,0);
+      //  alert('the image is drawn');
+    }
+    image.src = URL.createObjectURL(this.file);
+
+    /*
+    canvas.width = this.file.width;
+    canvas.height = this.file.height;
+    canvas.getContext('2d').drawImage(image, 0, 0);
+    // Other browsers will fall back to image/png
+    img.src = canvas.toDataURL('image/webp');*/
+
+  }
+
   firstUpdated(){
     var app = this;
     this.agent = new HelloAgent(this.name);
