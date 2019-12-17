@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 //const auth = require('solid-auth-client')
 import * as auth from 'solid-auth-client'
+import { PodHelper } from '../tools/pod-helper.js';
 
 class LoginElement extends LitElement {
 
@@ -43,15 +44,21 @@ class LoginElement extends LitElement {
       }
     };
 
+
+    this.ph = new PodHelper("bip",12);
+    console.log("PH VALUE",this.ph.count)
+
     auth.trackSession(session => {
       if (!session){
         console.log("notlogged")
         this.webId=null
+        this.ph.setWebId(this.webId)
         this.agent.send('Messages',  {action:"info", info:"Not logged"});
         this.agent.send('Webid', {action: "sessionChanged", webId: null});
       }
       else{
         app.webId = session.webId
+        this.ph.setWebId(this.webId)
         this.agent.send('Messages',  {action:"info", info:"Login "+app.webId});
         this.agent.send('Webid', {action: "sessionChanged", webId: app.webId});
       }

@@ -1,6 +1,8 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 
+import { PodHelper } from '../tools/pod-helper.js';
+
 import { fetchDocument } from 'tripledoc';
 import { solid, schema, rdf, rdfs } from 'rdf-namespaces';
 
@@ -61,7 +63,33 @@ class NoteElement extends LitElement {
         }
       }
     };
+
+    this.ph = new PodHelper("bip",12);
+    console.log("PH VALUE",this.ph.count)
+
+    this.webId = this.ph.getWebId()
+    console.log(this.webId)
+    if (this.webId != null){
+          this.init()
+    }
+
   }
+
+
+
+init(){
+  var app = this;
+fetchDocument(app.webId).then(
+  doc => {
+    app.doc = doc;
+    app.person = doc.getSubject(app.webId);
+    app.initNotePod()
+  },
+  err => {
+    console.log(err)
+  }
+);
+}
 
 
   sendToPod(message){
@@ -181,7 +209,7 @@ if (note.length > 0){
             notesList => {
               app.notesList = notesList;
                console.log("app.notesList",app.notesList)
-                  this.addNote()
+                //  this.addNote()
 
             /*  app.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
               //  console.log("notesUri",app.notesUri)

@@ -59,6 +59,7 @@ class WebidElement extends LitElement {
           person: app.person
         }
         app.agent.sendMulti(["NotesPost", "UserNotes"], message)
+      //  localStorage.setItem('person', JSON.stringify(app.person));
       },
       err => {
         console.log(err)
@@ -78,6 +79,7 @@ class WebidElement extends LitElement {
         person: this.person
       }
       this.agent.sendMulti(["NotesPost", "UserNotes"], message)
+    //  localStorage.setItem('person', JSON.stringify(this.person));
     }
   }
 

@@ -2,6 +2,8 @@ import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 import { solid, schema, rdf, rdfs } from 'rdf-namespaces';
 
+import { PodHelper } from '../tools/pod-helper.js';
+
 
 class GraphElement extends LitElement {
 
@@ -38,6 +40,8 @@ class GraphElement extends LitElement {
         }
       }
     };
+    this.ph = new PodHelper("bop",1);
+    console.log("PH VALUE",this.ph.count)
   }
 
   doSomething(message){

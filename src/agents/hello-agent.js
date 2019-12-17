@@ -31,7 +31,7 @@ HelloAgent.prototype.receive = function(from, message) {
 HelloAgent.prototype.broadcast = function(message){
   var me = this
   var allAgents = Object.keys(this.connections[0].transport.agents);
-  console.log(allAgents)
+//  console.log(allAgents)
   allAgents.forEach(function (agent){
     me.send(agent, message);
   })
@@ -40,7 +40,7 @@ HelloAgent.prototype.broadcast = function(message){
 HelloAgent.prototype.sendMulti = function(recipients, message){
   var me = this
   recipients.forEach(function (agent){
-    console.log(agent, message)
+  //  console.log(agent, message)
     me.send(agent, message);
   })
 }

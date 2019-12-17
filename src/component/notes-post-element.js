@@ -134,57 +134,59 @@ class NotesPostElement extends LitElement {
 
     personChanged(message){
       this.person = message.person
-        this.agent.sendMulti(["Note", "Media", "Graph", "Triple"], message)
-    /*  if (person != null){
-        console.log(person.storage)
-        this.initNotePod()
-      }*/
-      //  console.log("jquery",$)
+      console.log(this.person)
+      var m = {action: "personChanged", person: this.person }
+      this.agent.sendMulti(["Note", "Media", "Graph", "Triple"], m)
+      /*  if (person != null){
+      console.log(person.storage)
+      this.initNotePod()
+    }*/
+    //  console.log("jquery",$)
+  }
+
+  addNote(){
+    var agora_pub = this.shadowRoot.getElementById('agora_pub').checked //this.shadowRoot.getElementById('agora_pub').shadowRoot.firstElementChild.checked
+
+    var message = {action: "sendToPod", person: this.person, agora_pub: agora_pub }
+    this.agent.sendMulti(["Note","Media","Graph","Triple"], message)
+  }
+
+
+
+  firstUpdated(){
+    var app = this;
+    this.agent = new HelloAgent(this.name);
+    this.agent.receive = function(from, message) {
+      if (message.hasOwnProperty("action")){
+        switch(message.action) {
+          case "personChanged":
+          app.personChanged(message);
+          break;
+          default:
+          console.log("Unknown action ",message)
+        }
+      }
+    };
+
+  }
+
+  openTab(e) {
+    var tabName = e.target.getAttribute('tabName')
+    var i, tabcontent, tablinks;
+    tabcontent = this.shadowRoot.querySelectorAll(".tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
     }
+    tablinks = this.shadowRoot.querySelectorAll(".tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    this.shadowRoot.getElementById(tabName).style.display = "block";
+    e.currentTarget.className += " active";
+  }
 
-addNote(){
-  var agora_pub = this.shadowRoot.getElementById('agora_pub').checked //this.shadowRoot.getElementById('agora_pub').shadowRoot.firstElementChild.checked
 
-  var message = {action: "sendToPod", person: this.person, agora_pub: agora_pub }
-  this.agent.sendMulti(["Note","Media","Graph","Triple"], message)
+
 }
 
-
-
-          firstUpdated(){
-            var app = this;
-            this.agent = new HelloAgent(this.name);
-            this.agent.receive = function(from, message) {
-              if (message.hasOwnProperty("action")){
-                switch(message.action) {
-                  case "personChanged":
-                  app.personChanged(message);
-                  break;
-                  default:
-                  console.log("Unknown action ",message)
-                }
-              }
-            };
-
-          }
-
-          openTab(e) {
-            var tabName = e.target.getAttribute('tabName')
-            var i, tabcontent, tablinks;
-            tabcontent = this.shadowRoot.querySelectorAll(".tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-              tabcontent[i].style.display = "none";
-            }
-            tablinks = this.shadowRoot.querySelectorAll(".tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-              tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            this.shadowRoot.getElementById(tabName).style.display = "block";
-            e.currentTarget.className += " active";
-          }
-
-
-
-          }
-
-          customElements.define('notes-post-element', NotesPostElement);
+customElements.define('notes-post-element', NotesPostElement);
