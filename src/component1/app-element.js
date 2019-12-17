@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 
-class MediaElement extends LitElement {
+class AppElement extends LitElement {
 
   static get properties() {
     return {
@@ -17,8 +17,8 @@ class MediaElement extends LitElement {
 
   render(){
     return html`
-    <p>${this.name}</p>
-    <button @click="${this.sendMessage}">Send message</button>
+<!--    <p>${this.name}</p>
+    <button @click="${this.sendMessage}">Send message</button>-->
     `;
   }
 
@@ -49,4 +49,4 @@ class MediaElement extends LitElement {
 
 }
 
-customElements.define('media-element', MediaElement);
+customElements.define('app-element', AppElement);
