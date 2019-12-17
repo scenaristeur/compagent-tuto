@@ -28,6 +28,8 @@ PodHelper.prototype.setWebId = function (_webId){
           publicTypeIndex => {
             pod.publicTypeIndex = publicTypeIndex;
             pod.notesListEntry = pod.publicTypeIndex.findSubject(solid.forClass, schema.TextDigitalDocument);
+            pod.picsListEntry = pod.publicTypeIndex.findSubject(solid.forClass, schema.MediaObject);
+
             //  console.log("app.notesListEntry",app.notesListEntry)
             if (pod.notesListEntry === null){
               pod.notesListUrl = pod.initialiseNotesList(pod.person, pod.publicTypeIndex)
@@ -42,27 +44,44 @@ PodHelper.prototype.setWebId = function (_webId){
                 pod.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
                 console.log("notesUri",pod.notesUri)
               })
-            },
-            err => {console.log(err)}
-          );
-        },
-        err => {
-          console.log(err)
-        }
-      );
+
+              console.log("pod.picsListEntry",pod.picsListEntry)
+              if (pod.picsListEntry === null){
+                pod.picsListUrl = app.initialisePicsList(pod.person, pod.publicTypeIndex)
+              }else{
+                pod.picsListUrl = pod.picsListEntry.getRef(solid.instance)
+                console.log("picsListUrl",pod.picsListUrl)
+              }
+              fetchDocument(pod.picsListUrl).then(
+                picsList => {
+                  pod.picsList = picsList;
+                  console.log("pod.picsList",pod.picsList)
+                  pod.picsUri = picsList.findSubjects(rdf.type, schema.TextDigitalDocument)
+                  console.log("picsUri",pod.picsUri)
+                })
+
+
+              },
+              err => {console.log(err)}
+            );
+          },
+          err => {
+            console.log(err)
+          }
+        );
+      }
     }
-  }
 
-  PodHelper.prototype.getWebId= function(){
-    return pod.webId
-  }
+    PodHelper.prototype.getWebId= function(){
+      return pod.webId
+    }
 
-  PodHelper.prototype.getPod= function(key){
-    return pod[key]
-  }
-
+    PodHelper.prototype.getPod= function(key){
+      return pod[key]
+    }
 
 
 
 
-  export {PodHelper}
+
+    export {PodHelper}
