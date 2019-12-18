@@ -617,5 +617,9 @@ class AgoraNotesElement extends LitElement {
 
     customElements.define('agora-notes-element', AgoraNotesElement);
 ```
+(
+NB the subscribe function connects a Web socket to the agoraNotesListUrl that allow live refresh . If you want to post, try https://scenaristeur.github.io/compagent/shexy-component/)
 
-NB the subscribe function connects a Web socket to the agoraNotesListUrl that allow live refresh . If you want to post, try https://scenaristeur.github.io/compagent/shexy-component/
+# release v0.1 post notes / video / audio / images and see personnal notes & agora's notes
+
+![Release0.1](doc/images/release0.1.png)
