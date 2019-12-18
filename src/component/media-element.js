@@ -155,7 +155,7 @@ class MediaElement extends LitElement {
       action: "reponseContent",
       content: this.file,
       id: message.id,
-      newFilename : this.filename,
+      newFilename : this.filename+this.extension,
       type: "MediaObject"})
 
       this.file = {}
@@ -179,7 +179,7 @@ class MediaElement extends LitElement {
         alert("Filename must not be blank")
         this.shadowRoot.getElementById("filename").value = this.filename
       }else{
-        this.filename = filename+this.extension
+        this.filename = filename
       }
     }
 

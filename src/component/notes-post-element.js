@@ -177,7 +177,7 @@ class NotesPostElement extends LitElement {
 
     firstUpdated(){
       var app = this;
-      this.ph = new PodHelper("bip",12);
+      this.ph = new PodHelper();
       this.agent = new HelloAgent(this.name);
       this.fileClient = SolidFileClient;
       this.agent.receive = function(from, message) {
@@ -307,7 +307,7 @@ class NotesPostElement extends LitElement {
             var date = new Date(Date.now())
             if(data.title.length > 0){
               newNote.addLiteral(rdfs.label, data.title)
-            }else{
+            }else if (data.pic != undefined){
               newNote.addLiteral(rdfs.label, data.pic.filename)
             }
             if(data.tags.length > 0){
@@ -352,7 +352,7 @@ class NotesPostElement extends LitElement {
               // Indicate that the Subject is a schema:TextDigitalDocument:
               if(data.title.length > 0){
                 newNote.addLiteral(rdfs.label, data.title)
-              }else{
+              }else if (data.pic != undefined){
                 newNote.addLiteral(rdfs.label, data.pic.filename)
               }
               if(data.tags.length > 0){

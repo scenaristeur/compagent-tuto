@@ -1,4 +1,4 @@
-import { fetchDocument } from 'tripledoc';
+import { fetchDocument, createDocument } from 'tripledoc';
 import { solid, schema, rdf, rdfs, space } from 'rdf-namespaces';
 
 let pod = {}
@@ -9,9 +9,11 @@ function PodHelper(name,age){
   this.age = age
   count = count+age
   this.count = count
+  this.fileClient = SolidFileClient;
 }
 
 PodHelper.prototype.setWebId = function (_webId){
+  var module = this
   console.log("UPDATE WEBID", _webId)
   if (_webId == null){
     pod = {}
@@ -32,7 +34,7 @@ PodHelper.prototype.setWebId = function (_webId){
 
             //  console.log("app.notesListEntry",app.notesListEntry)
             if (pod.notesListEntry === null){
-              pod.notesListUrl = pod.initialiseNotesList(pod.person, pod.publicTypeIndex)
+              pod.notesListUrl = module.initialiseNotesList(pod.person, pod.publicTypeIndex)
             }else{
               pod.notesListUrl = pod.notesListEntry.getRef(solid.instance)
               //  console.log("notesListUrl",app.notesListUrl)
@@ -44,44 +46,84 @@ PodHelper.prototype.setWebId = function (_webId){
                 pod.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
                 console.log("notesUri",pod.notesUri)
               })
-
+              /*
               console.log("pod.picsListEntry",pod.picsListEntry)
               if (pod.picsListEntry === null){
-                pod.picsListUrl = app.initialisePicsList(pod.person, pod.publicTypeIndex)
-              }else{
-                pod.picsListUrl = pod.picsListEntry.getRef(solid.instance)
-                console.log("picsListUrl",pod.picsListUrl)
-              }
-              fetchDocument(pod.picsListUrl).then(
-                picsList => {
-                  pod.picsList = picsList;
-                  console.log("pod.picsList",pod.picsList)
-                  pod.picsUri = picsList.findSubjects(rdf.type, schema.TextDigitalDocument)
-                  console.log("picsUri",pod.picsUri)
-                })
-
-
-              },
-              err => {console.log(err)}
-            );
-          },
-          err => {
-            console.log(err)
+              pod.picsListUrl = this.initialisePicsList(pod.person, pod.publicTypeIndex)
+            }else{
+            pod.picsListUrl = pod.picsListEntry.getRef(solid.instance)
+            console.log("picsListUrl",pod.picsListUrl)
           }
-        );
+          fetchDocument(pod.picsListUrl).then(
+          picsList => {
+          pod.picsList = picsList;
+          console.log("pod.picsList",pod.picsList)
+          pod.picsUri = picsList.findSubjects(rdf.type, schema.TextDigitalDocument)
+          console.log("picsUri",pod.picsUri)
+        })
+        */
+
+      },
+      err => {console.log(err)}
+    );
+  },
+  err => {
+    console.log(err)
+  }
+);
+}
+}
+
+
+
+
+
+
+PodHelper.prototype.getWebId= function(){
+  return pod.webId
+}
+
+PodHelper.prototype.getPod= function(key){
+  return pod[key]
+}
+
+
+
+PodHelper.prototype.initialiseNotesList = function(person,typeIndex){
+  var module = this;
+  if(pod.notesList == null){
+    pod.notesListUrl = pod.storage + 'public/notes.ttl';
+    module.fileClient.readFolder(pod.storage+"public/Picpost/").then(
+      success => {
+        console.log("SUCCES read",success)
+
+
+      },
+      err => {
+
+        console.log("error read",err)
+        if (err.startsWith("404")){
+          console.log("CREATE")
+          module.fileClient.createFolder(pod.storage+"public/Picpost/").then(
+            success => {console.log("SUCCESs create",success)},
+            err => {console.log("ERROR create",err)})
+          }
+
+
+        })
+
+        pod.notesList = createDocument(pod.notesListUrl);
+        pod.notesList.save();
+
+        // Store a reference to that Document in the public Type Index for `schema:TextDigitalDocument`:
+        const typeRegistration = typeIndex.addSubject();
+        typeRegistration.addRef(rdf.type, solid.TypeRegistration)
+        typeRegistration.addRef(solid.instance, pod.notesList.asRef())
+        typeRegistration.addRef(solid.forClass, schema.TextDigitalDocument)
+        typeIndex.save([ typeRegistration ]);
       }
+
+      return pod.notesListUrl
     }
-
-    PodHelper.prototype.getWebId= function(){
-      return pod.webId
-    }
-
-    PodHelper.prototype.getPod= function(key){
-      return pod[key]
-    }
-
-
-
-
 
     export {PodHelper}

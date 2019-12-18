@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
-
+import { PodHelper } from '../tools/pod-helper.js';
 import { fetchDocument } from 'tripledoc';
 import { solid, schema, rdf, rdfs } from 'rdf-namespaces';
 
@@ -92,6 +92,7 @@ class UserNotesElement extends LitElement {
       firstUpdated(){
         var app = this;
         this.agent = new HelloAgent(this.name);
+          this.ph = new PodHelper();
         this.agent.receive = function(from, message) {
           if (message.hasOwnProperty("action")){
             switch(message.action) {
@@ -128,11 +129,12 @@ class UserNotesElement extends LitElement {
             app.notesListEntry = app.publicTypeIndex.findSubject(solid.forClass, schema.TextDigitalDocument);
             //  console.log("app.notesListEntry",app.notesListEntry)
             if (app.notesListEntry === null){
-              app.notesListUrl = app.initialiseNotesList(app.person, app.publicTypeIndex)
+              app.notesListUrl = app.ph.initialiseNotesList(app.person, app.publicTypeIndex)
             }else{
               app.notesListUrl = app.notesListEntry.getRef(solid.instance)
-              //    console.log("notesListUrl",app.notesListUrl)
+
             }
+               console.log("notesListUrl",app.notesListUrl)
             app.getNotes()
           },
           err => {console.log(err)}
@@ -203,27 +205,7 @@ class UserNotesElement extends LitElement {
         }
 
 
-        initialiseNotesList(profile,typeIndex){
-          var app = this;
-          console.log("creation a revoir")
-          const storage = profile.getRef(space.storage)
-          //    console.log("storage",storage)
-          app.agent.send('Storage',{action: "storageChanged", storage: storage})
 
-          const notesListUrl = storage + 'public/notes.ttl';
-
-          const notesList = Tripledoc.createDocument(notesListUrl);
-          notesList.save();
-
-          // Store a reference to that Document in the public Type Index for `schema:TextDigitalDocument`:
-          const typeRegistration = typeIndex.addSubject();
-          typeRegistration.addRef(rdf.type, solid.TypeRegistration)
-          typeRegistration.addRef(solid.instance, notesList.asRef())
-          typeRegistration.addRef(solid.forClass, schema.TextDigitalDocument)
-          typeIndex.save([ typeRegistration ]);
-
-          return notesListUrl
-        }
 
         copy(e){
           var dummy = document.createElement("textarea");
