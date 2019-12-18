@@ -28,7 +28,7 @@ class AgoraNotesElement extends LitElement {
     const noteList = (notes) => html`
 
     <h3 class="m-0 font-weight-bold text-primary">Notes on Agora (${notes.length})</h3>
-    <a href="${this.agoraNotesListUrl}" target="_blank">${this.agoraNotesListUrl}<a>
+    <small>  <a href="${this.agoraNotesListUrl}" target="_blank">${this.agoraNotesListUrl}<a></small>
 
     <ul class="list-group list-group-flush" style="height: 50vh; overflow: auto">
     ${notes.map((n) => html`
@@ -37,17 +37,25 @@ class AgoraNotesElement extends LitElement {
 
       <div class="col">
       <div class="d-flex w-100 justify-content-between">
-      <!--<h5 class="mb-1">Titre</h5>-->
+      <h5 class="mb-1">${n.title}</h5>
       </div>
       <p class="mb-1">
       <div style="white-space: pre-wrap">${n.text}</div>
       </p>
-      <!--<small>Donec id elit non mi porta.</small>-->
-      <small>${n.date.toLocaleString(this.lang, { timeZone: 'UTC' })}</small>
+
+
+
+
+      <small>${n.keywords}</small>
+      <br>
+      <small>${n.date.toLocaleString(this.lang)}</small> <!-- toLocaleTimeString(this.lang)-->
+
+
+
       </div>
 
       <div class="col-sm-1">
-      <i title="copy" primary @click="${this.copy}" uri=${n.subject} class="fas fa-copy"></i>
+      <i title="copy" primary @click="${this.copy}" uri=${n.also} class="fas fa-copy"></i>
       <a href="${n.also}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
       <a  href="${n.creator}" ?hidden=${n.creator == null} target="_blank" ><i title="${n.creator}" primary small  class="fas fa-user"></i></a>
       </div>
@@ -101,13 +109,18 @@ class AgoraNotesElement extends LitElement {
             var date = nuri.getDateTime(schema.dateCreated)
             var creator = nuri.getRef(schema.creator)
             var also = nuri.getRef(rdfs.seeAlso)
+            var title = nuri.getString(rdfs.label)
+            var keywords = nuri.getString(schema.keywords)
             //  console.log(text, date)
             var note = {}
             note.text = text;
             note.date = date;
             note.creator = creator;
             note.also = also;
+            note.title = title
+            note.keywords = keywords
             //text = nuri.getAllStrings()*/
+            //  console.log(note)
             app.notes = [... app.notes, note]
           })
           app.notes.reverse()
@@ -142,6 +155,15 @@ class AgoraNotesElement extends LitElement {
           }
           //else{console.log("message inconnu",msg)}
         };
+      }
+
+      copy(e){
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = e.target.getAttribute("uri");
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
       }
 
     }

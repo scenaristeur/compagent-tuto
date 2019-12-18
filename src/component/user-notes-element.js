@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 
 import { fetchDocument } from 'tripledoc';
-import { solid, schema, rdf } from 'rdf-namespaces';
+import { solid, schema, rdf, rdfs } from 'rdf-namespaces';
 
 
 
@@ -31,7 +31,7 @@ class UserNotesElement extends LitElement {
     const noteList = (notes) => html`
     <h3 class="m-0 font-weight-bold text-primary">My Note List (${notes.length})</h3>
 
-    <a href="${this.notesListUrl}" target="_blank">${this.notesListUrl}<a>
+    <small><a href="${this.notesListUrl}" target="_blank">${this.notesListUrl}<a></small>
 
     <ul class="list-group list-group-flush" style="height: 50vh; overflow: auto">
     ${notes.map((n) => html`
@@ -40,14 +40,24 @@ class UserNotesElement extends LitElement {
 
       <div class="col">
       <div class="d-flex w-100 justify-content-between">
-      <!--<h5 class="mb-1">Titre</h5>-->
+      <h5 class="mb-1">${n.title}</h5>
       </div>
       <p class="mb-1">
       <div style="white-space: pre-wrap">${n.text}</div>
       </p>
-      <!--<small>Donec id elit non mi porta.</small>-->
-      <small>${n.date.toLocaleString(this.lang, { timeZone: 'UTC' })}</small>
+
+      <div class="row">
+      <div class="col">
+      <small>${n.keywords}</small>
       </div>
+      <div class="col-2">
+      <small>${n.date.toLocaleTimeString(this.lang)}</small> <!-- toLocaleString(this.lang)-->
+      </div>
+      </div>
+
+
+      </div>
+
 
       <div class="col-sm-1">
       <i title="copy" primary @click="${this.copy}" uri=${n.subject} class="fas fa-copy"></i>
@@ -145,11 +155,16 @@ class UserNotesElement extends LitElement {
               //  console.log("doc",nuri.getDocument())
               var text = nuri.getString(schema.text)
               var date = nuri.getDateTime(schema.dateCreated)
+              var title = nuri.getString(rdfs.label)
+              var keywords = nuri.getString(schema.keywords)
               //  console.log(text, date)
               var note = {}
+              note.title = title
               note.text = text;
               note.date = date;
               note.subject = subject;
+              note.keywords = keywords
+              //  console.log(note)
               //text = nuri.getAllStrings()*/
               app.notes = [... app.notes, note]
             })

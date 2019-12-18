@@ -21,7 +21,8 @@ class NotesPostElement extends LitElement {
       requetes: {type: Object},
       responses: {type: Array},
       agoraNotesListUrl: { type: String},
-      agoraPicsListUrl: {type: String},
+      //  agoraPicsListUrl: {type: String},
+
     };
   }
 
@@ -31,7 +32,7 @@ class NotesPostElement extends LitElement {
     this.person = null
     this.subelements = ["Note", "Media"]
     this.agoraNotesListUrl = "https://agora.solid.community/public/notes.ttl"
-    this.agoraPicsListUrl = "https://agora.solid.community/public/Picpost/pics.ttl"
+    //  this.agoraPicsListUrl = "https://agora.solid.community/public/Picpost/pics.ttl"
     this.requetes = {}
     this.responses = []
   }
@@ -121,6 +122,30 @@ class NotesPostElement extends LitElement {
       </div>
 
       <br>
+
+
+      <div class="row">
+      <label class="sr-only" for="title">Title</label>
+      <div class="input-group mb-2">
+      <div class="input-group-append">
+      <div class="input-group-text">Title</div>
+      </div>
+      <input id="title" class="form-control" type="text" value="${this.title}" placeholder="Title">
+      </div>
+      </div>
+
+
+      <div class="row">
+      <label class="sr-only" for="title">Tags</label>
+      <div class="input-group mb-2">
+      <div class="input-group-append">
+      <div class="input-group-text">Tags</div>
+      </div>
+      <input id="tags" class="form-control" type="text" placeholder="tags, comma separated">
+      </div>
+      </div>
+
+
       <div class="row">
       <div class="col">
       <button type="button" class="btn btn-primary" primary @click=${this.addNote}>Add note </button>
@@ -155,7 +180,7 @@ class NotesPostElement extends LitElement {
       this.ph = new PodHelper("bip",12);
       this.agent = new HelloAgent(this.name);
       this.fileClient = SolidFileClient;
-        this.agent.receive = function(from, message) {
+      this.agent.receive = function(from, message) {
         if (message.hasOwnProperty("action")){
           switch(message.action) {
             case "personChanged":
@@ -210,6 +235,7 @@ class NotesPostElement extends LitElement {
             var pic = {}
             pic.uri = path+newFilename
             pic.type = r.message.type
+            pic.filename = newFilename
             app.sendPicture(pic.uri, file, contentType)
             data.pic = pic
           }
@@ -226,15 +252,29 @@ class NotesPostElement extends LitElement {
 
     updatePod(data){
       var app = this
+
+      data.title = this.shadowRoot.getElementById('title').value
+      data.tags = this.shadowRoot.getElementById('tags').value
+      this.shadowRoot.getElementById('title').value = ""
+      this.shadowRoot.getElementById('tags').value =""
       console.log(data)
+
 
       if ('pic' in data){
         console.log("creation d'une image")
-        var picsList = this.ph.getPod("picsList")
-        const newPic = picsList.addSubject();
+        var notesList = this.ph.getPod("notesList")
+        const newPic = notesList.addSubject();
         var date = new Date(Date.now())
         // Indicate that the Subject is a schema:MediaObject:
-        newPic.addRef(rdf.type, schema.MediaObject);
+        if(data.title.length > 0){
+          newPic.addLiteral(rdfs.label, data.title)
+        }else{
+          newPic.addLiteral(rdfs.label, data.pic.filename)
+        }
+        if(data.tags.length > 0){
+          newPic.addLiteral(schema.keywords, data.tags)
+        }
+        newPic.addRef(rdf.type, schema.TextDigitalDocument);
         // Set the Subject's `schema:text` to the actual pic contents:
 
         // Store the date the pic was created (i.e. now):
@@ -245,11 +285,11 @@ class NotesPostElement extends LitElement {
         }
         console.log(newPic.asNodeRef())
 
-        picsList.save([newPic]).then(
+        notesList.save([newPic]).then(
           success=>{
             var agora_pub = this.shadowRoot.getElementById('agora_pub').checked
             if(agora_pub == true){
-              app.updateAgoraNote(data.note.content, date, newPic.asNodeRef())
+              app.updateAgoraNote(data, date, newPic.asNodeRef())
             }
             //  app.initPicPod()
           },
@@ -258,49 +298,69 @@ class NotesPostElement extends LitElement {
             alert(err)
           });
         }else{
-          var notesList = this.ph.getPod("notesList")
-          const newNote = notesList.addSubject();
-          var date = new Date(Date.now())
-          // Indicate that the Subject is a schema:TextDigitalDocument:
-          newNote.addRef(rdf.type, schema.TextDigitalDocument);
-          // Set the Subject's `schema:text` to the actual note contents:
-          newNote.addLiteral(schema.text, data.note.content);
-          // Store the date the note was created (i.e. now):
-          newNote.addLiteral(schema.dateCreated, date)
+          if (data.note.content.length == 0){
+            alert ("you must fill a note or a media")
+          }else
+          {
+            var notesList = this.ph.getPod("notesList")
+            const newNote = notesList.addSubject();
+            var date = new Date(Date.now())
+            if(data.title.length > 0){
+              newNote.addLiteral(rdfs.label, data.title)
+            }else{
+              newNote.addLiteral(rdfs.label, data.pic.filename)
+            }
+            if(data.tags.length > 0){
+              newNote.addLiteral(schema.keywords, data.tags)
+            }
+            // Indicate that the Subject is a schema:TextDigitalDocument:
+            newNote.addRef(rdf.type, schema.TextDigitalDocument);
+            // Set the Subject's `schema:text` to the actual note contents:
+            newNote.addLiteral(schema.text, data.note.content);
+            // Store the date the note was created (i.e. now):
+            newNote.addLiteral(schema.dateCreated, date)
 
-          //console.log(newNote.asNodeRef())
+            //console.log(newNote.asNodeRef())
 
-          notesList.save([newNote]).then(
-            success=>{
-              var agora_pub = this.shadowRoot.getElementById('agora_pub').checked //this.shadowRoot.getElementById('agora_pub').shadowRoot.firstElementChild.checked
+            notesList.save([newNote]).then(
+              success=>{
+                var agora_pub = this.shadowRoot.getElementById('agora_pub').checked //this.shadowRoot.getElementById('agora_pub').shadowRoot.firstElementChild.checked
 
-              if(agora_pub == true){
-                app.updateAgoraNote(data.note.content, date, newNote.asNodeRef())
-              }
-              //  app.initNotePod()
-            },
-            err=>{
-              console.log(err)
-              alert(err)
-            });
-
+                if(agora_pub == true){
+                  app.updateAgoraNote(data, date, newNote.asNodeRef())
+                }
+                //  app.initNotePod()
+              },
+              err=>{
+                console.log(err)
+                alert(err)
+              });
+            }
           }
         }
 
 
 
-        updateAgoraNote(content,date, subject){
+        updateAgoraNote(data,date, subject){
           var app = this;
-          console.log("app.agoraNotesListUrl",app.agoraNotesListUrl)
+          console.log(data)
           fetchDocument(this.agoraNotesListUrl).then(
             agoraNotesList => {
               app.agoraNotesList = agoraNotesList;
               //  console.log("app.agoraNotesList",app.agoraNotesList)
               const newNote = app.agoraNotesList.addSubject();
               // Indicate that the Subject is a schema:TextDigitalDocument:
+              if(data.title.length > 0){
+                newNote.addLiteral(rdfs.label, data.title)
+              }else{
+                newNote.addLiteral(rdfs.label, data.pic.filename)
+              }
+              if(data.tags.length > 0){
+                newNote.addLiteral(schema.keywords, data.tags)
+              }
               newNote.addRef(rdf.type, schema.TextDigitalDocument);
               // Set the Subject's `schema:text` to the actual note contents:
-              newNote.addLiteral(schema.text, content);
+              newNote.addLiteral(schema.text, data.note.content);
               // Store the date the note was created (i.e. now):
               newNote.addLiteral(schema.dateCreated, date)
               // add ref to user note
@@ -318,133 +378,136 @@ class NotesPostElement extends LitElement {
               });
             }
 
-            updateAgoraPic1(notecontent,date, subject){
+            sendPicture(uri, file, contentType){
+              this.fileClient.updateFile(uri, file, contentType)
+              .then(
+                success =>{
+                  console.log(success)
+                  this.agent.send("Messages", {action: "info", status: "Save file OK", file: success})
+                },
+                err => {console.log(err)});
+              }
+
+              /*
+              updateAgoraPic1(notecontent,date, subject){
               var app = this;
               // send pic ref to notes instead of picpost
 
               console.log("app.agoraPicsListUrl",app.agoraPicsListUrl)
               fetchDocument(app.agoraPicsListUrl).then(
-                agoraPicsList => {
-                  app.agoraPicsList = agoraPicsList;
-                  console.log("app.agoraPicsList",app.agoraPicsList)
-                  const newPic = app.agoraPicsList.addSubject();
-                  // Indicate that the Subject is a schema:MediaObject:
-                  newPic.addRef(rdf.type, schema.MediaObject);
-                  // Set the Subject's `schema:text` to the actual pic contents:
-                  newPic.addLiteral(schema.text, notecontent);
-                  // Store the date the pic was created (i.e. now):
-                  newPic.addLiteral(schema.dateCreated, date)
-                  // add ref to user pic
-                  newPic.addRef(rdfs.seeAlso, subject);
-                  newPic.addRef(schema.creator, this.ph.getPod("webId"));
-                  console.log(newPic.asNodeRef())
+              agoraPicsList => {
+              app.agoraPicsList = agoraPicsList;
+              console.log("app.agoraPicsList",app.agoraPicsList)
+              const newPic = app.agoraPicsList.addSubject();
+              // Indicate that the Subject is a schema:MediaObject:
+              newPic.addRef(rdf.type, schema.MediaObject);
+              // Set the Subject's `schema:text` to the actual pic contents:
+              newPic.addLiteral(schema.text, notecontent);
+              // Store the date the pic was created (i.e. now):
+              newPic.addLiteral(schema.dateCreated, date)
+              // add ref to user pic
+              newPic.addRef(rdfs.seeAlso, subject);
+              newPic.addRef(schema.creator, this.ph.getPod("webId"));
+              console.log(newPic.asNodeRef())
 
-                  app.agoraPicsList.save([newPic]).then(
-                    success=>{
-                      console.log("success agora", success)
-                      //  app.initpicPod()
-                    },
-                    err=>{
-                      console.log(err)
-                    });
-                  });
-                }
+              app.agoraPicsList.save([newPic]).then(
+              success=>{
+              console.log("success agora", success)
+              //  app.initpicPod()
+            },
+            err=>{
+            console.log(err)
+          });
+        });
+      }
+      */
 
-                sendPicture(uri, file, contentType){
-                  this.fileClient.updateFile(uri, file, contentType)
-                  .then(
-                    success =>{
-                      console.log(success)
-                      this.agent.send("Messages", {action: "info", status: "Save file OK", file: success})
-                    },
-                    err => {console.log(err)});
-                  }
 
-                  /*
-                  mediaCreate(message){
-                  this.picsList = this.ph.getPod("picsList")
-                  const newPic = this.picsList.addSubject();
-                  var date = new Date(Date.now())
-                  // Indicate that the Subject is a schema:MediaObject:
-                  newPic.addRef(rdf.type, schema.MediaObject);
-                  // Set the Subject's `schema:text` to the actual pic responses:
-                  //  newPic.addLiteral(schema.text, pic);
-                  // Store the date the pic was created (i.e. now):
-                  newPic.addLiteral(schema.dateCreated, date)
-                  //  newPic.addRef(schema.about, app.uri);
+      /*
+      mediaCreate(message){
+      this.picsList = this.ph.getPod("picsList")
+      const newPic = this.picsList.addSubject();
+      var date = new Date(Date.now())
+      // Indicate that the Subject is a schema:MediaObject:
+      newPic.addRef(rdf.type, schema.MediaObject);
+      // Set the Subject's `schema:text` to the actual pic responses:
+      //  newPic.addLiteral(schema.text, pic);
+      // Store the date the pic was created (i.e. now):
+      newPic.addLiteral(schema.dateCreated, date)
+      //  newPic.addRef(schema.about, app.uri);
 
-                  console.log(newPic.asNodeRef())
+      console.log(newPic.asNodeRef())
 
 
 
-                  this.picsList.save([newPic]).then(
-                  success=>{
-                  var agora_pub = this.shadowRoot.getElementById('agora_pub').checked
-                  if(agora_pub == true){
-                  this.updateAgoraPic(date, newPic.asNodeRef())
-                }
-                //  this.initPicPod()
-              },
-              err=>{
-              console.log(err)
-              alert(err)
-            });
-          }
+      this.picsList.save([newPic]).then(
+      success=>{
+      var agora_pub = this.shadowRoot.getElementById('agora_pub').checked
+      if(agora_pub == true){
+      this.updateAgoraPic(date, newPic.asNodeRef())
+    }
+    //  this.initPicPod()
+  },
+  err=>{
+  console.log(err)
+  alert(err)
+});
+}
 
 
-          updateAgoraPic(date, subject){
-          var app = this;
-          console.log("app.agoraPicsListUrl",app.agoraPicsListUrl)
-          fetchDocument(app.agoraPicsListUrl).then(
-          agoraPicsList => {
-          app.agoraPicsList = agoraPicsList;
-          console.log("app.agoraPicsList",app.agoraPicsList)
-          const newPic = app.agoraPicsList.addSubject();
-          // Indicate that the Subject is a schema:MediaObject:
-          newPic.addRef(rdf.type, schema.MediaObject);
-          // Set the Subject's `schema:text` to the actual pic responses:
-          //  newPic.addLiteral(schema.text, pic);
-          // Store the date the pic was created (i.e. now):
-          newPic.addLiteral(schema.dateCreated, date)
-          // add ref to user pic
-          newPic.addRef(rdfs.seeAlso, subject);
-          newPic.addRef(schema.creator, app.webId);
-          console.log(newPic.asNodeRef())
+updateAgoraPic(date, subject){
+var app = this;
+console.log("app.agoraPicsListUrl",app.agoraPicsListUrl)
+fetchDocument(app.agoraPicsListUrl).then(
+agoraPicsList => {
+app.agoraPicsList = agoraPicsList;
+console.log("app.agoraPicsList",app.agoraPicsList)
+const newPic = app.agoraPicsList.addSubject();
+// Indicate that the Subject is a schema:MediaObject:
+newPic.addRef(rdf.type, schema.MediaObject);
+// Set the Subject's `schema:text` to the actual pic responses:
+//  newPic.addLiteral(schema.text, pic);
+// Store the date the pic was created (i.e. now):
+newPic.addLiteral(schema.dateCreated, date)
+// add ref to user pic
+newPic.addRef(rdfs.seeAlso, subject);
+newPic.addRef(schema.creator, app.webId);
+console.log(newPic.asNodeRef())
 
-          app.agoraPicsList.save([newPic]).then(
-          success=>{
-          console.log("success agora", success)
-          //  app.initpicPod()
-        },
-        err=>{
-        console.log(err)
-      });
-    });
-  }
+app.agoraPicsList.save([newPic]).then(
+success=>{
+console.log("success agora", success)
+//  app.initpicPod()
+},
+err=>{
+console.log(err)
+});
+});
+}
 
-  noteCreate(message){
-  var note = message.content
-  this.notesList = this.ph.getPod("notesList")
-  console.log(this.notesList)
-  const newNote = this.notesList.addSubject();
-  var date = new Date(Date.now())
-  // Indicate that the Subject is a schema:TextDigitalDocument:
-  newNote.addRef(rdf.type, schema.TextDigitalDocument);
-  // Set the Subject's `schema:text` to the actual note responses:
-  newNote.addLiteral(schema.text, message.content);
-  // Store the date the note was created (i.e. now):
-  newNote.addLiteral(schema.dateCreated, date)
+noteCreate(message){
+var note = message.content
+this.notesList = this.ph.getPod("notesList")
+console.log(this.notesList)
+const newNote = this.notesList.addSubject();
+var date = new Date(Date.now())
+// Indicate that the Subject is a schema:TextDigitalDocument:
+newNote.addRef(rdf.type, schema.TextDigitalDocument);
+// Set the Subject's `schema:text` to the actual note responses:
+newNote.addLiteral(schema.text, message.content);
+// Store the date the note was created (i.e. now):
+newNote.addLiteral(schema.dateCreated, date)
 
-  console.log(newNote.asNodeRef())
+console.log(newNote.asNodeRef())
 
 
 
-  this.notesList.save([newNote]).then(
-  success=>{
-  var agora_pub = this.shadowRoot.getElementById('agora_pub').checked
-  console.log(agora_pub)
-  if(agora_pub == true){
-  this.updateAgora(note, date, newNote.asNodeRef())
+this.notesList.save([newNote]).then(
+success=>{
+var agora_pub = this.shadowRoot.getElementById('agora_pub').checked
+console.log(agora_pub)
+if(agora_pub == true){
+this.updateAgora(note, date, newNote.asNodeRef())
 }
 //  this.initNotePod()
 },
