@@ -16,8 +16,13 @@ module.exports = {
     hot: true
   },
   devtool: "eval-source-map",
-  performance: { hints: false },
-  node: {
-  fs: 'empty'
-}
+  performance: { hints: false }
 };
+
+
+/*
+,
+node: {
+fs: 'empty'
+}
+*/

@@ -51,11 +51,14 @@ class MediaElement extends LitElement {
       <div class="input-group-text">${this.extension}</div>
       </div>
       </div>
-      </div>`
+      </div>
+
+
+      `
       :html `Choose a file
       `}
 
-
+      <div class="col-auto"><canvas style="max-width: 100%; height: auto;" id="canvas"/></div>
       <!--
       <input id="filename" class="form-control" type="text" value="${this.filename}" @change="${this.filenameChange}" placeholder="Filename"> ${this.extension}
       -->
@@ -76,7 +79,7 @@ class MediaElement extends LitElement {
 
 
 
-      <div class="col-auto"><canvas style="max-width: 100%; height: auto;" id="canvas"/></div>
+
 
       `;
     }
@@ -146,13 +149,28 @@ class MediaElement extends LitElement {
   }
 
   askContent(from, message){
+    var app = this
     console.log(from,message)
     this.agent.send(from, {
       action: "reponseContent",
       content: this.file,
       id: message.id,
-      newFilename : this.shadowRoot.getElementById("filename").value+this.extension,
+      newFilename : this.filename,
       type: "MediaObject"})
+
+      this.file = {}
+      this.filename = ""
+
+
+      var canvas = this.shadowRoot.getElementById("canvas")
+      const context = canvas.getContext('2d');
+
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+
+      //      this.shadowRoot.getElementById("filename").value = ""
+      //      this.shadowRoot.getElementById("mediaFile").value = ""
+
     }
 
     filenameChange(){
