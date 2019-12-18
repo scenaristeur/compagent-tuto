@@ -151,12 +151,18 @@ class MediaElement extends LitElement {
   askContent(from, message){
     var app = this
     console.log(from,message)
-    this.agent.send(from, {
+    var rep = {
       action: "reponseContent",
       content: this.file,
       id: message.id,
-      newFilename : this.filename+this.extension,
-      type: "MediaObject"})
+
+      type: "MediaObject"}
+      if (this.filename.length > 0){
+        rep.newFilename = this.filename+this.extension
+      }
+
+
+      this.agent.send(from, rep)
 
       this.file = {}
       this.filename = ""

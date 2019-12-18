@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
-
+import { PodHelper } from '../tools/pod-helper.js';
 import { fetchDocument } from 'tripledoc';
 import { foaf, space } from 'rdf-namespaces';
 
@@ -26,6 +26,7 @@ class WebidElement extends LitElement {
   firstUpdated(){
     var app = this;
     this.agent = new HelloAgent(this.name);
+    this.ph = new PodHelper();
     this.agent.receive = function(from, message) {
       if (message.hasOwnProperty("action")){
         switch(message.action) {
@@ -59,7 +60,7 @@ class WebidElement extends LitElement {
           person: app.person
         }
         app.agent.sendMulti(["NotesPost", "UserNotes"], message)
-      //  localStorage.setItem('person', JSON.stringify(app.person));
+        //  localStorage.setItem('person', JSON.stringify(app.person));
       },
       err => {
         console.log(err)
@@ -78,8 +79,9 @@ class WebidElement extends LitElement {
         action: "personChanged",
         person: this.person
       }
+      this.ph.setWebId(this.webId)
       this.agent.sendMulti(["NotesPost", "UserNotes"], message)
-    //  localStorage.setItem('person', JSON.stringify(this.person));
+      //  localStorage.setItem('person', JSON.stringify(this.person));
     }
   }
 

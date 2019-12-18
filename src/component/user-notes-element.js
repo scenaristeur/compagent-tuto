@@ -127,10 +127,12 @@ class UserNotesElement extends LitElement {
           publicTypeIndex => {
             app.publicTypeIndex = publicTypeIndex;
             app.notesListEntry = app.publicTypeIndex.findSubject(solid.forClass, schema.TextDigitalDocument);
-            //  console.log("app.notesListEntry",app.notesListEntry)
+              console.log("app.notesListEntry",app.notesListEntry)
             if (app.notesListEntry === null){
+              console.log("null")
               app.notesListUrl = app.ph.initialiseNotesList(app.person, app.publicTypeIndex)
             }else{
+                console.log(" pas null")
               app.notesListUrl = app.notesListEntry.getRef(solid.instance)
 
             }

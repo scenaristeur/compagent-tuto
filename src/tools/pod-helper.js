@@ -91,7 +91,7 @@ PodHelper.prototype.getPod= function(key){
 
 PodHelper.prototype.initialiseNotesList = function(person,typeIndex){
   var module = this;
-  if(pod.notesList == null){
+  if(pod.notesListUrl == null){
     pod.notesListUrl = pod.storage + 'public/notes.ttl';
     module.fileClient.readFolder(pod.storage+"public/Picpost/").then(
       success => {
