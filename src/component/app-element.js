@@ -1,6 +1,8 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 
+import './fab-element.js';
+
 class AppElement extends LitElement {
 
   static get properties() {
@@ -19,6 +21,7 @@ class AppElement extends LitElement {
     return html`
 <!--    <p>${this.name}</p>
     <button @click="${this.sendMessage}">Send message</button>-->
+    <fab-element name="FAB">Chargement FAB<fab-element>
     `;
   }
 

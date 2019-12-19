@@ -5,7 +5,9 @@ import { fetchDocument } from 'tripledoc';
 import { solid, schema, rdf, rdfs } from 'rdf-namespaces';
 
 import './note-element.js'
-import './media-element.js'/*
+import './media-element.js'
+import './triple-element.js'
+/*
 import './graph-element.js'
 import './triple-element.js'*/
 
@@ -85,6 +87,21 @@ class NotesPostElement extends LitElement {
 
     <h3 class="m-0 font-weight-bold text-primary">${this.name}</h3>
 
+
+    <div class="row">
+    <label class="sr-only" for="title">Title</label>
+    <div class="input-group mb-2">
+    <div class="input-group-append">
+    <div class="input-group-text">Title</div>
+    </div>
+    <input id="title" class="form-control" type="text" value="${this.title}" placeholder="Title">
+    </div>
+    </div>
+
+
+
+
+
     ${this.person == null ?
       html `You must login to post`
       :html `
@@ -92,12 +109,13 @@ class NotesPostElement extends LitElement {
       <div class="tab row">
       <button class="tablinks active" tabName='Note' @click="${this.openTab}">Note</button>
       <button class="tablinks" tabName='Media' @click="${this.openTab}">Media</button>
+      <button class="tablinks " tabName='Triple' @click="${this.openTab}">Triple</button>
       <button class="tablinks" tabName='Graph' @click="${this.openTab}">Graph</button>
-      <button class="tablinks" tabName='Triple' @click="${this.openTab}">Triple</button>
+
 
       </div>
 
-      <div id="Note" class="tabcontent row" style="display:block">
+      <div id="Note" class="tabcontent row" style="display:block" >
       <!--<h3>London</h3>-->
 
       <note-element name="Note"></note-element>
@@ -109,30 +127,21 @@ class NotesPostElement extends LitElement {
       </div>
       </div>
 
+      <div id="Triple" class="tabcontent row">
+      <div class="col">
+      <triple-element name="Triple"></triple-element>
+      </div>
+      </div>
+
       <div id="Graph" class="tabcontent row">
       <h3>Graph</h3>
       <p>todo.</p>
       <graph-element name="Graph"></graph-element>
       </div>
 
-      <div id="Triple" class="tabcontent row">
-      <h3>Triple</h3>
-      <p>todo.</p>
-      <triple-element name="Triple"></triple-element>
-      </div>
+
 
       <br>
-
-
-      <div class="row">
-      <label class="sr-only" for="title">Title</label>
-      <div class="input-group mb-2">
-      <div class="input-group-append">
-      <div class="input-group-text">Title</div>
-      </div>
-      <input id="title" class="form-control" type="text" value="${this.title}" placeholder="Title">
-      </div>
-      </div>
 
 
       <div class="row">
@@ -160,6 +169,7 @@ class NotesPostElement extends LitElement {
       </div>
       </div>
       </div>
+
       `}
       `;
     }
