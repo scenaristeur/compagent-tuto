@@ -44,8 +44,6 @@ class AgoraNotesElement extends LitElement {
       </p>
 
 
-
-
       <small>${n.keywords}</small>
       <br>
       <small>${n.date.toLocaleString(this.lang)}</small> <!-- toLocaleTimeString(this.lang)-->
@@ -111,6 +109,8 @@ class AgoraNotesElement extends LitElement {
             var also = nuri.getRef(rdfs.seeAlso)
             var title = nuri.getString(rdfs.label)
             var keywords = nuri.getString(schema.keywords)
+            var about = null
+            //console.log("o",also)
             //  console.log(text, date)
             var note = {}
             note.text = text;
@@ -119,6 +119,10 @@ class AgoraNotesElement extends LitElement {
             note.also = also;
             note.title = title
             note.keywords = keywords
+
+
+
+            //  note.about = about
             //text = nuri.getAllStrings()*/
             //  console.log(note)
             app.notes = [... app.notes, note]
@@ -132,6 +136,31 @@ class AgoraNotesElement extends LitElement {
 
         })
       }
+
+
+ /*getAbout(also){
+        return fetchDocument(also).then(
+          post => {
+            //console.log("post",post)
+          //  var stats = post.getStatements() //String(schema.about)
+            //console.log("stats",stats)
+            var subj = post.getSubject(also)
+            console.log("SUBJECT",subj)
+            about = subj.getRef(schema.about)
+            console.log("ABOUT",about)
+            if (about != undefined){
+                return about
+            }else{
+              return null
+            }
+          },
+          err => {
+            console.log(err)
+            return null
+          }
+        )
+
+      }*/
 
       subscribe(){
         var app = this

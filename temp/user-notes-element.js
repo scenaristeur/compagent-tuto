@@ -45,7 +45,12 @@ class UserNotesElement extends LitElement {
       <p class="mb-1">
       <div style="white-space: pre-wrap">${n.text}</div>
       </p>
-
+<p>${n.about}</p>
+<!--type="video/webm" -->
+<img
+       src="${n.about}"
+       width="250"
+       height="200">
       <div class="row">
       <div class="col">
       <small>${n.keywords}</small>
@@ -161,6 +166,7 @@ class UserNotesElement extends LitElement {
               var date = nuri.getDateTime(schema.dateCreated)
               var title = nuri.getString(rdfs.label)
               var keywords = nuri.getString(schema.keywords)
+              var about = nuri.getRef(schema.about)
               //  console.log(text, date)
               var note = {}
               note.title = title
@@ -168,6 +174,7 @@ class UserNotesElement extends LitElement {
               note.date = date;
               note.subject = subject;
               note.keywords = keywords
+              note.about = about
               //  console.log(note)
               //text = nuri.getAllStrings()*/
               app.notes = [... app.notes, note]

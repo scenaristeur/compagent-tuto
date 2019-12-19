@@ -379,7 +379,8 @@ class NotesPostElement extends LitElement {
             }
 
             sendPicture(uri, file, contentType){
-              this.fileClient.updateFile(uri, file, contentType)
+              console.log(uri, file, contentType)
+              this.fileClient.createFile(uri, file, contentType)
               .then(
                 success =>{
                   console.log(success)
