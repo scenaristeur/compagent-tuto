@@ -50,6 +50,17 @@ class FabElement extends LitElement {
       -webkit-transition: all 2s;
       transition: all 0.5s;
     }
+    .btn-write {
+      position: fixed;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      right: 100px; bottom: 20px;
+      /*
+      width: 50px; height: 50px;
+      right: 100%; margin-right: 0px;*/
+      z-index: 9;
+    }
     .btn-group-fab.active .btn-sub:nth-child(2) {
       bottom: 60px;
     }
@@ -63,14 +74,19 @@ class FabElement extends LitElement {
       bottom: 210px;
     }
     </style>
+
+    <button type="button" class="btn btn-write btn-primary has-tooltip" data-placement="left" @click="${this.toggleWrite}" title="Write"> <i class="fa fa-pen"></i> </button>
+
     <div class="btn-group-fab" role="group" @click="${this.toggleFab}" aria-label="FAB Menu">
     <div>
+
     <button type="button" class="btn btn-main btn-primary has-tooltip" data-placement="left" title="Menu"> <i class="fa fa-bars"></i> </button>
     <button type="button" class="btn btn-sub btn-info has-tooltip" data-placement="left" title="Fullscreen"> <i class="fa fa-arrows-alt"></i> </button>
     <button type="button" class="btn btn-sub btn-danger has-tooltip" data-placement="left" title="Save"> <i class="far fa-save"></i> </button>
     <button type="button" class="btn btn-sub btn-warning has-tooltip" data-placement="left" title="Download"> <i class="fa fa-download"></i> </button>
     </div>
     </div>
+
     `;
   }
 
@@ -92,6 +108,10 @@ class FabElement extends LitElement {
 
   toggleFab(){
     this.shadowRoot.querySelector(".btn-group-fab").classList.toggle('active')
+  }
+
+  toggleWrite(){
+    console.log("toggleWrite")
   }
 
 }
