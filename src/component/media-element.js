@@ -163,7 +163,7 @@ class MediaElement extends LitElement {
 
 
       this.agent.send(from, rep)
-
+/*
       this.file = {}
       this.filename = ""
 
@@ -171,11 +171,7 @@ class MediaElement extends LitElement {
       var canvas = this.shadowRoot.getElementById("canvas")
       const context = canvas.getContext('2d');
 
-      context.clearRect(0, 0, canvas.width, canvas.height);
-
-
-      //      this.shadowRoot.getElementById("filename").value = ""
-      //      this.shadowRoot.getElementById("mediaFile").value = ""
+      context.clearRect(0, 0, canvas.width, canvas.height);*/
 
     }
 

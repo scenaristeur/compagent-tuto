@@ -14,7 +14,7 @@ class TripleElement extends LitElement {
   constructor() {
     super();
     this.count = 0
-    this.triples = ["one","two","three"]
+    this.triples = []
   }
 
   render(){
@@ -24,7 +24,18 @@ class TripleElement extends LitElement {
     <ul class="list-group list-group-flush" style="height: 50vh; overflow: auto">
     ${triples.map((t) => html`
       <li class="list-group-item">
-      ${t}
+
+
+
+      <div class="input-group mb-3">
+      <div class="input-group-prepend">
+      <button class="btn btn-outline-secondary" type="button">${t.subject}  </button>
+      <button class="btn btn-outline-secondary" type="button">${t.predicate}</button>
+      <button class="btn btn-outline-secondary" type="button">${t.object}</button>
+      </div>
+      <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
+      </div>
+
       </li>
       `)}
       </ul>
@@ -64,14 +75,26 @@ class TripleElement extends LitElement {
       this.agent.receive = function(from, message) {
         if (message.hasOwnProperty("action")){
           switch(message.action) {
-            case "doSomething":
-            app.doSomething(message);
+            case "askContent":
+            app.askContent(from, message);
             break;
             default:
             console.log("Unknown action ",message)
           }
         }
       };
+    }
+
+
+
+    askContent(from, message){
+      console.log(from,message)
+      this.agent.send(from, {
+        action: "reponseContent",
+        content: this.triples,
+        id: message.id,
+        type: "Triple"
+      })
     }
 
     add_triple(){
@@ -81,15 +104,114 @@ class TripleElement extends LitElement {
         return
       }
       console.log(new_triple)
-      this.triples.reverse()
-      this.triples = [... this.triples, new_triple]
-      this.triples.reverse()
+      var res = this.updateInput(new_triple)
+      console.log(res)
+      this.shadowRoot.getElementById('tripleInput').value = res.inputNew
+      if (res.type == "triplet"){
+        var triple = res.value
+        this.triples.reverse()
+        this.triples = [... this.triples, triple]
+        this.triples.reverse()
+      }else{
+        alert ("Triple must end with ',', or ';' or '.'")
+      }
+
+
 
       // voir traiteTriplet dans js/spoggy.js de spoggy-simple
     }
 
+
+    updateInput(message){
+      var result = {}
+      var inputNew = "";
+      let lastChar = message.slice(-1);
+      let messageCut = message.slice(0,-1).split(" ");
+      let isTriplet = true;
+      console.log(messageCut);
+
+      let detectLiteral = "";
+      let messageCutTemp = [];
+      messageCut.forEach(function(part){
+        part = part.trim();
+        //  console.log(part);
+        if (part.startsWith('"')){
+          detectLiteral ="debut";
+          //  console.log(detectLiteral);
+          messageCutTemp.push(part.substr(1));
+        }else if (part.endsWith('"')){
+          detectLiteral = "fin";
+          //console.log(detectLiteral);
+          messageCutTemp.push(messageCutTemp.pop()+" "+part.slice(0,-1));
+        }else if (detectLiteral == "debut"){
+          //  console.log("recupere le dernier et lui ajoute part" )
+          messageCutTemp.push(messageCutTemp.pop()+" "+part)
+        }else {
+          messageCutTemp.push(part);
+        }
+      });
+      if (messageCutTemp.length > 0){
+        messageCut = messageCutTemp;
+      }
+      switch(lastChar){
+        case '.':
+        inputNew = "";
+        break;
+        case ';':
+        if (messageCut[0].indexOf(" ") > -1){
+          inputNew = '"'+messageCut[0]+'"'+' ';
+        }else{
+          inputNew = messageCut[0]+' ';
+        }
+        break;
+        case ',':
+        if (messageCut[0].indexOf(" ") > -1){
+          inputNew = '"'+messageCut[0]+'" ';
+        }else{
+          inputNew = messageCut[0]+' ';
+        }
+        if (messageCut[1].indexOf(" ") > -1){
+          inputNew += '"'+messageCut[1]+'" ';
+        }else{
+          inputNew += messageCut[1]+' ';
+        }
+        break;
+        case '-':
+        if (messageCut[2].indexOf(" ") > -1){
+          inputNew = '"'+messageCut[2]+'"'+' ';
+        }else{
+          inputNew = messageCut[2]+' ';
+        }
+        break;
+        default:
+        console.log("message to chat "+message)
+        //this.sendMessage(message);
+        //  this.agentInput.send('agentSocket', {type: "sendMessage", message:message});
+        //  this.catchTriplet(message.slice(0,-1), this.network); // A REMPLACER PAR CATCHTRIPLETS V2
+        inputNew = "";
+        isTriplet = false;
+      }
+      if (isTriplet){
+        //  console.log("est Triplet",messageCut)
+        result.type = "triplet";
+        var tripletvalue = {};
+        tripletvalue.subject = messageCut[0];
+        tripletvalue.predicate = messageCut[1];
+        tripletvalue.object = messageCut[2];
+        result.value = tripletvalue;
+        result.inputNew = inputNew;
+      }else {
+        //  console.log("n'est pas triplet")
+        result.type = "message";
+        result.value = message;
+        result.inputNew = inputNew;
+      }
+
+      return result;
+    }
+
+
     keydown(e){
-      console.log(e.which)
       if ( e.which === 13 ) {
         this.add_triple()
         e.preventDefault();

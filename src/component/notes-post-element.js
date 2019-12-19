@@ -32,7 +32,7 @@ class NotesPostElement extends LitElement {
     super();
     this.count = 0
     this.person = null
-    this.subelements = ["Note", "Media"]
+    this.subelements = ["Note", "Media", "Triple"]
     this.agoraNotesListUrl = "https://agora.solid.community/public/notes.ttl"
     //  this.agoraPicsListUrl = "https://agora.solid.community/public/Picpost/pics.ttl"
     this.requetes = {}
@@ -233,7 +233,6 @@ class NotesPostElement extends LitElement {
           note.type = r.message.type
           data.note = note
           break;
-          break;
           case "local:Media":
           if(r.message.content != undefined){
             var path = app.ph.getPod("storage")+"public/Picpost/"
@@ -249,6 +248,11 @@ class NotesPostElement extends LitElement {
             app.sendPicture(pic.uri, file, contentType)
             data.pic = pic
           }
+          break;
+
+          case "local:Triple":
+          console.log(r.message)
+          data.triples = r.message.content
           break;
           default:
           console.log(r.message.type , "non traite")
@@ -347,6 +351,15 @@ class NotesPostElement extends LitElement {
               });
             }
           }
+
+
+          if ('triples' in data){
+            console.log(data.triples)
+          }
+
+
+
+
         }
 
 
