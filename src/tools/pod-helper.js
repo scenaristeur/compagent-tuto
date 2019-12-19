@@ -89,41 +89,90 @@ PodHelper.prototype.getPod= function(key){
 
 
 
-PodHelper.prototype.initialiseNotesList = function(person,typeIndex){
+
+PodHelper.prototype.checkFootprints = function(webId, footprints){
+  console.log(webId, footprints)
   var module = this;
-  if(pod.notesListUrl == null){
-    pod.notesListUrl = pod.storage + 'public/notes.ttl';
-    module.fileClient.readFolder(pod.storage+"public/Picpost/").then(
+  pod.webId = webId
+  if(pod.webId != null){
+
+    fetchDocument(pod.webId).then(
+      doc => {
+        //  pod.doc = doc;
+        pod.person = doc.getSubject(pod.webId);
+        pod.storage = pod.person.getRef(space.storage)
+        footprints.forEach(function(fp){
+          module.checkFolder(pod.storage,fp)
+        })
+
+      })
+    }
+  }
+
+  PodHelper.prototype.checkFolder = function(storage, fp){
+    var module = this;
+    var folder = storage+fp.path
+      pod[fp.name] = {}
+    module.fileClient.readFolder(folder).then(
       success => {
         console.log("SUCCES read",success)
-
-
+        pod[fp.name].folder = folder
+        console.log(pod)
       },
       err => {
-
         console.log("error read",err)
         if (err.startsWith("404")){
           console.log("CREATE")
-          module.fileClient.createFolder(pod.storage+"public/Picpost/").then(
-            success => {console.log("SUCCESs create",success)},
+          module.fileClient.createFolder(folder).then(
+            success => {
+              console.log("SUCCESs create",success)
+              pod[fp.name].folder = folder
+                  console.log(pod)
+            },
             err => {console.log("ERROR create",err)})
           }
-
-
         })
-
-        pod.notesList = createDocument(pod.notesListUrl);
-        pod.notesList.save();
-
-        // Store a reference to that Document in the public Type Index for `schema:TextDigitalDocument`:
-        const typeRegistration = typeIndex.addSubject();
-        typeRegistration.addRef(rdf.type, solid.TypeRegistration)
-        typeRegistration.addRef(solid.instance, pod.notesList.asRef())
-        typeRegistration.addRef(solid.forClass, schema.TextDigitalDocument)
-        typeIndex.save([ typeRegistration ]);
       }
 
-      return pod.notesListUrl
-    }
 
-    export {PodHelper}
+
+
+
+      PodHelper.prototype.initialiseNotesList = function(person,typeIndex){
+        var module = this;
+        if(pod.notesListUrl == null){
+          pod.notesListUrl = pod.storage + 'public/notes.ttl';
+          module.fileClient.readFolder(pod.storage+"public/Picpost/").then(
+            success => {
+              console.log("SUCCES read",success)
+
+
+            },
+            err => {
+
+              console.log("error read",err)
+              if (err.startsWith("404")){
+                console.log("CREATE")
+                module.fileClient.createFolder(pod.storage+"public/Picpost/").then(
+                  success => {console.log("SUCCESs create",success)},
+                  err => {console.log("ERROR create",err)})
+                }
+
+
+              })
+
+              pod.notesList = createDocument(pod.notesListUrl);
+              pod.notesList.save();
+
+              // Store a reference to that Document in the public Type Index for `schema:TextDigitalDocument`:
+              const typeRegistration = typeIndex.addSubject();
+              typeRegistration.addRef(rdf.type, solid.TypeRegistration)
+              typeRegistration.addRef(solid.instance, pod.notesList.asRef())
+              typeRegistration.addRef(solid.forClass, schema.TextDigitalDocument)
+              typeIndex.save([ typeRegistration ]);
+            }
+
+            return pod.notesListUrl
+          }
+
+          export {PodHelper}
