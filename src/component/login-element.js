@@ -20,13 +20,15 @@ class LoginElement extends LitElement {
 
   render(){
     return html`
+    <link href="css/fontawesome/css/all.css" rel="stylesheet">
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
     ${this.webId == null ?
       html`
-      <button @click=${this.login}>Login</button>
+      <button type="button" class="btn btn-success" @click=${this.login}><i class="fas fa-sign-in-alt"></i> Login</button>
       `
       : html`
-      <button @click=${this.logout}>Logout</button>
-      <small>WebId: ${this.webId}</small>
+      <button type="button" class="btn btn-danger" @click=${this.logout}><i class="fas fa-sign-out-alt"></i><br><small> ${this.webId}</small></button>
+
       `
     }
     `;

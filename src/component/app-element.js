@@ -41,10 +41,10 @@ class AppElement extends LitElement {
     <div class="col-md">
     <post-element name="Post"></post-element>
     </div>
-    <div class="col-lg-4">
+    <div class="col-lg-5">
     <flow-element name="Flow" flow="${this.flow}"></flow-element>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-5">
     <user-notes-element name="UserNotes"></user-notes-element>
     </div>
     </div>
