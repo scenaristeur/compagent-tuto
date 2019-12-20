@@ -28,7 +28,7 @@ class LoginElement extends LitElement {
       `
       : html`
       <button type="button" class="btn btn-danger" @click=${this.logout}><i class="fas fa-sign-out-alt"></i> Logout</button>
-<!--<small> ${this.webId}</small>-->
+      <!--<small> ${this.webId}</small>-->
       `
     }
     `;
@@ -57,12 +57,20 @@ class LoginElement extends LitElement {
         this.ph.setWebId(this.webId)
         this.agent.send('Messages',  {action:"info", info:"Not logged"});
         this.agent.sendMulti(['Webid','App', 'Post', 'Fab'], {action: "sessionChanged", webId: null});
+        var n = new Notification('Goodbye', {
+          body: 'See you soon.',
+          icon: 'dvp.gif'
+        });
       }
       else{
         app.webId = session.webId
         this.ph.setWebId(this.webId)
         this.agent.send('Messages',  {action:"info", info:"Login "+app.webId});
         this.agent.sendMulti(['Webid','App', 'Post', 'Fab'], {action: "sessionChanged", webId: app.webId});
+        var n = new Notification('Bienvenue', {
+          body: 'Logged with webId '+app.webId,
+          icon: 'dvp.gif'
+        });
       }
     })
   }

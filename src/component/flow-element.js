@@ -27,7 +27,7 @@ class FlowElement extends LitElement {
     <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">Notes on Agora (${notes.length})</h6>
     <!--<h3 class="m-0 font-weight-bold text-primary">Notes on Agora (${notes.length})</h3>-->
 
-    <ul class="list-group list-group-flush" style="height: 30vh; overflow: auto">
+    <ul class="list-group list-group-flush" style="height: 45vh; overflow: auto">
     ${notes.map((n) => html`
 
 
@@ -68,10 +68,13 @@ class FlowElement extends LitElement {
       <link href="css/fontawesome/css/all.css" rel="stylesheet">
       <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
       <style>
-      i {
-        padding-top :10px;
-        padding-bottom :10px;
-      }
+  @media (min-width: 768px) {
+     i {
+      padding-top :10px;
+      padding-bottom :10px;
+    }
+   }
+
       </style>
       ${noteList(this.notes)}
       <small class="d-block text-right mt-3">

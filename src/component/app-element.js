@@ -53,7 +53,8 @@ class AppElement extends LitElement {
 
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand mr-auto mr-lg-0" href="#">Post2Pod & Agora</a>
+    <a class="navbar-brand mr-auto mr-lg-0" href="#">Agora</a>
+    <login-element class="nav-link" name="Login"></login-element>
     <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas" @click="${this.toggleOffCanvas.bind(this)}">
     <span class="navbar-toggler-icon"></span>
     </button>
@@ -116,7 +117,6 @@ class AppElement extends LitElement {
     <h6 class="mb-0 text-white lh-100">
     <div class="row">
     <post-element name="Post"></post-element>
-    <login-element class="nav-link" name="Login"></login-element>
     </div>
     </h6>
 
@@ -248,6 +248,18 @@ class AppElement extends LitElement {
         }
       }
     };
+
+
+    if('Notification' in window){
+      Notification.requestPermission(function (status) {
+        // Cela permet d'utiliser Notification.permission avec Chrome/Safari
+        if (Notification.permission !== status) {
+          Notification.permission = status;
+        }
+        console.log("NOTIF",status)
+      })
+    }
+
   }
 
   toggleOffCanvas(e){

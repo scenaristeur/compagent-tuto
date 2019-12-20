@@ -24,7 +24,6 @@ PodHelper.prototype.setWebId = function (_webId){
         //  pod.doc = doc;
         pod.person = doc.getSubject(pod.webId);
         pod.name = pod.person.getString(foaf.name)
-        console.log(pod.name)
         pod.storage = pod.person.getRef(space.storage)
         pod.publicTypeIndexUrl = pod.person.getRef(solid.publicTypeIndex)
         console.log("INIT publicTypeIndexUrl",pod.publicTypeIndexUrl)
