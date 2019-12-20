@@ -26,41 +26,39 @@ class UserNotesElement extends LitElement {
 
 
     const noteList = (notes) => html`
-    <h3 class="m-0 font-weight-bold text-primary">My Note List (${notes.length})</h3>
-
-    <small><a href="${this.notesListUrl}" target="_blank">${this.notesListUrl}<a></small>
+    <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">My Notes(${notes.length})</h6>
 
     <ul class="list-group list-group-flush" style="height: 50vh; overflow: auto">
     ${notes.map((n) => html`
       <li class="list-group-item">
-      <div class="row">
+
+      <div class="row media text-muted pt-3"> <!--   border-bottom border-gray-->
 
       <div class="col">
-      <div class="d-flex w-100 justify-content-between">
-      <h5 class="mb-1">${n.title}</h5>
+      <div class="row">
+      <div class="col-md-1">
+      <i title="edit" disabled primary @click="${this.edit}" class="fas fa-pen"></i>
       </div>
-      <p class="mb-1">
+      <div class="col media-body pb-3 mb-0 small lh-125">
+      <strong class="d-block text-gray-dark white-space: pre-wrap">
+      ${n.title}
+      <small>${n.date.toLocaleString(this.lang)}</small> <!-- toLocaleTimeString(this.lang)-->
+      </strong>
       <div style="white-space: pre-wrap">${n.text}</div>
       </p>
-
-      <div class="row">
-      <div class="col">
+  
+      </div>
+      </div>
       <small>${n.keywords}</small>
-      </div>
-      <div class="col-2">
-      <small>${n.date.toLocaleTimeString(this.lang)}</small> <!-- toLocaleString(this.lang)-->
-      </div>
-      </div>
-
 
       </div>
-
-
-      <div class="col-sm-1">
-      <i title="copy" primary @click="${this.copy}" uri=${n.subject} class="fas fa-copy"></i>
-      <a href="${n.subject}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
+      <div class="col-md-1">
+      <i title="copy" primary @click="${this.copy}" uri=${n.also} class="fas fa-copy"></i>
+      <a href="${n.also}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
       </div>
+
       </div>
+
       </li>
       `)}
       </ul>
@@ -81,6 +79,10 @@ class UserNotesElement extends LitElement {
         html `You must login <br>to see your notes`
         :html `
         ${noteList(this.notes)}
+        <small class="d-block text-right mt-3">
+        <a href="${this.notesListUrl}" title="${this.notesListUrl}" target="_blank">All my notes<a></small>
+
+
         `}
         `;
       }

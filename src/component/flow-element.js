@@ -44,7 +44,7 @@ class FlowElement extends LitElement {
       ${n.title}
       <small>${n.date.toLocaleString(this.lang)}</small> <!-- toLocaleTimeString(this.lang)-->
       </strong>
-      ${n.text}
+        <div style="white-space: pre-wrap">${n.text}</div>
       </div>
       </div>
       <small>${n.keywords}</small>

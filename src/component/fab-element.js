@@ -86,7 +86,7 @@ class FabElement extends LitElement {
 
     }
 
-
+<!--
     <div class="btn-group-fab" role="group" @click="${this.toggleFab}" aria-label="FAB Menu">
     <div>
 
@@ -95,7 +95,7 @@ class FabElement extends LitElement {
     <button type="button" class="btn btn-sub btn-danger has-tooltip" data-placement="left" title="Save"> <i class="far fa-save"></i> </button>
     <button type="button" class="btn btn-sub btn-warning has-tooltip" data-placement="left" title="Download"> <i class="fa fa-download"></i> </button>
     </div>
-    </div>
+    </div>-->
 
     `;
   }

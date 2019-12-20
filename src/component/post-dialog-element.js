@@ -27,10 +27,10 @@ class PostDialogElement extends LitElement {
     .modal {
       display: none; /* Hidden by default */
       position: fixed; /* Stay in place */
-      z-index: 1; /* Sit on top */
+      z-index: 1050; /* Sit on top */
       padding-top: 100px; /* Location of the box */
-      left: -20px;
-      top: 0;
+      left: -16px;
+      top: -16px;
       width: 100%; /* Full width */
       height: 100%; /* Full height */
       overflow: auto; /* Enable scroll if needed */

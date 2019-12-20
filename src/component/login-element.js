@@ -27,8 +27,8 @@ class LoginElement extends LitElement {
       <button type="button" class="btn btn-success" @click=${this.login}><i class="fas fa-sign-in-alt"></i> Login</button>
       `
       : html`
-      <button type="button" class="btn btn-danger" @click=${this.logout}><i class="fas fa-sign-out-alt"></i><br><small> ${this.webId}</small></button>
-
+      <button type="button" class="btn btn-danger" @click=${this.logout}><i class="fas fa-sign-out-alt"></i> Logout</button>
+<!--<small> ${this.webId}</small>-->
       `
     }
     `;

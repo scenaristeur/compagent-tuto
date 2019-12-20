@@ -53,7 +53,7 @@ class AppElement extends LitElement {
 
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand mr-auto mr-lg-0" href="#">Offcanvas navbar</a>
+    <a class="navbar-brand mr-auto mr-lg-0" href="#">Post2Pod & Agora</a>
     <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas" @click="${this.toggleOffCanvas.bind(this)}">
     <span class="navbar-toggler-icon"></span>
     </button>
@@ -70,9 +70,9 @@ class AppElement extends LitElement {
     <a class="nav-link" href="#">Profile</a>
     </li>
     <li class="nav-item">
-    <!--<a class="nav-link" href="#">Switch account</a>-->
+    <a class="nav-link" href="#">Switch account</a>
 
-    <login-element class="nav-link" name="Login"></login-element>
+
     </li>
     <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Settings</a>
@@ -113,7 +113,13 @@ class AppElement extends LitElement {
     <!--<img class="mr-3" src="Offcanvas%20template%20%C2%B7%20Bootstrap_fichiers/bootstrap-outline.svg" alt="" width="48" height="48">-->
     <div class="lh-100">
 
-    <h6 class="mb-0 text-white lh-100"><post-element name="Post"></post-element></h6>
+    <h6 class="mb-0 text-white lh-100">
+    <div class="row">
+    <post-element name="Post"></post-element>
+    <login-element class="nav-link" name="Login"></login-element>
+    </div>
+    </h6>
+
     <!--    <small>Since 2011</small>-->
     </div>
     </div>
@@ -149,6 +155,10 @@ class AppElement extends LitElement {
     </p>
     </div>-->
 
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+    <user-notes-element name="UserNotes"></user-notes-element>
     </div>
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">
@@ -188,6 +198,10 @@ class AppElement extends LitElement {
     </small>
     </div>
     </main>
+
+
+    <fab-element name="Fab"></fab-element>
+
     <script src="js/jquery-3.4.1.slim.min.js" ></script>
     <!--<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"></script>')</script>-->
     <script src="js/bootstrap.bundle.min.js" ></script>
@@ -213,7 +227,7 @@ class AppElement extends LitElement {
     </div>
     </div>
     <div class="row">
-    <fab-element name="Fab"></fab-element>
+
 
     </div>
 
