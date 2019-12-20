@@ -15,7 +15,7 @@ class MediaElement extends LitElement {
   constructor() {
     super();
     this.count = 0
-        this.filename = ""
+    this.filename = ""
   }
 
   render(){
@@ -31,8 +31,18 @@ class MediaElement extends LitElement {
     <div class="row">
     <form>
     <div class="custom-file">
-    <input type="file" class="custom-file-input" @change="${this.createTemp}" id="mediaFile" accept="image/*;video/*;audio/*" lang="${this.lang}">
-    <label class="custom-file-label" for="mediaFile"><i class="fas fa-camera-retro"></i><i class="fas fa-video"></i><i class="fas fa-microphone"></i></label>
+    <input type="file"
+    class="custom-file-input"
+    @change="${this.createTemp}"
+    id="mediaFile"
+    accept="image/*;video/*;audio/*"
+    lang="${this.lang}">
+    <label class="custom-file-label"
+    for="mediaFile">
+    <i class="fas fa-camera-retro"></i>
+    <i class="fas fa-video"></i>
+    <i class="fas fa-microphone"></i>
+    </label>
     </div>
     </form>
     </div>
@@ -78,101 +88,102 @@ class MediaElement extends LitElement {
 
 
       `;
-  }
-
-  createTemp(e) {
-    this.file = e.target.files[0];
-    this.filename = this.file.name.substring(0,this.file.name.lastIndexOf("."));
-    this.extension = this.file.name.substring(this.file.name.lastIndexOf("."));
-
-    var canvas =   this.shadowRoot.getElementById('canvas')
-    var ctx = canvas.getContext('2d');
-    var cw = canvas.width;
-    var ch = canvas.height;
-    var maxW=cw;
-    var maxH=ch;
-
-    var image = new Image;
-    image.onload = function() {
-      var iw=image.width;
-      var ih=image.height;
-      var scale=Math.min((maxW/iw),(maxH/ih));
-      var iwScaled=iw*scale;
-      var ihScaled=ih*scale;
-      canvas.width=iwScaled;
-      canvas.height=ihScaled;
-      ctx.drawImage(image,0,0,iwScaled,ihScaled);
-      //  ctx.drawImage(image, 0,0);
-      //  alert('the image is drawn');
     }
-    image.src = URL.createObjectURL(this.file);
 
-    /*
-    canvas.width = this.file.width;
-    canvas.height = this.file.height;
-    canvas.getContext('2d').drawImage(image, 0, 0);
-    // Other browsers will fall back to image/png
-    img.src = canvas.toDataURL('image/webp');*/
+    createTemp(e) {
+      this.file = e.target.files[0];
+      this.filename = this.file.name.substring(0,this.file.name.lastIndexOf("."));
+      this.extension = this.file.name.substring(this.file.name.lastIndexOf("."));
 
-  }
+      var canvas =   this.shadowRoot.getElementById('canvas')
+      var ctx = canvas.getContext('2d');
+      var cw = canvas.width;
+      var ch = canvas.height;
+      var maxW=cw;
+      var maxH=ch;
+
+      var image = new Image;
+      image.onload = function() {
+        var iw=image.width;
+        var ih=image.height;
+        var scale=Math.min((maxW/iw),(maxH/ih));
+        var iwScaled=iw*scale;
+        var ihScaled=ih*scale;
+        canvas.width=iwScaled;
+        canvas.height=ihScaled;
+        ctx.drawImage(image,0,0,iwScaled,ihScaled);
+        //  ctx.drawImage(image, 0,0);
+        //  alert('the image is drawn');
+      }
+      image.src = URL.createObjectURL(this.file);
+
+      /*
+      canvas.width = this.file.width;
+      canvas.height = this.file.height;
+      canvas.getContext('2d').drawImage(image, 0, 0);
+      // Other browsers will fall back to image/png
+      img.src = canvas.toDataURL('image/webp');*/
+
+    }
 
 
 
 
-  firstUpdated(){
-    var app = this;
-    this.agent = new HelloAgent(this.name);
-    this.agent.receive = function(from, message) {
-      if (message.hasOwnProperty("action")){
-        switch(message.action) {
-          case "askContent":
-          app.askContent(from, message);
-          break;
-          default:
-          console.log("Unknown action ",message)
+    firstUpdated(){
+      var app = this;
+      this.agent = new HelloAgent(this.name);
+      this.agent.receive = function(from, message) {
+        if (message.hasOwnProperty("action")){
+          switch(message.action) {
+            case "askContent":
+            app.askContent(from, message);
+            break;
+            default:
+            console.log("Unknown action ",message)
+          }
+        }
+      };
+    }
+
+    askContent(from, message){
+      var app = this
+      console.log(from,message)
+      var rep = {
+        action: "reponseContent",
+        content: this.file,
+        id: message.id,
+
+        type: "MediaObject"}
+        if (this.filename.length > 0){
+          rep.newFilename = this.filename+this.extension
+        }
+
+
+        this.agent.send(from, rep)
+        this.filename = ""
+        /*
+        this.file = {}
+        this.filename = ""
+
+
+        var canvas = this.shadowRoot.getElementById("canvas")
+        const context = canvas.getContext('2d');
+
+        context.clearRect(0, 0, canvas.width, canvas.height);*/
+
+      }
+
+      filenameChange(){
+        var filename = this.shadowRoot.getElementById("filename").value
+        if (filename.length == 0){
+          alert("Filename must not be blank")
+          this.shadowRoot.getElementById("filename").value = this.filename
+        }else{
+          this.filename = filename
         }
       }
-    };
-  }
 
-  askContent(from, message){
-    var app = this
-    console.log(from,message)
-    var rep = {
-      action: "reponseContent",
-      content: this.file,
-      id: message.id,
-
-      type: "MediaObject"}
-      if (this.filename.length > 0){
-        rep.newFilename = this.filename+this.extension
-      }
-
-
-      this.agent.send(from, rep)
-/*
-      this.file = {}
-      this.filename = ""
-
-
-      var canvas = this.shadowRoot.getElementById("canvas")
-      const context = canvas.getContext('2d');
-
-      context.clearRect(0, 0, canvas.width, canvas.height);*/
 
     }
 
-    filenameChange(){
-      var filename = this.shadowRoot.getElementById("filename").value
-      if (filename.length == 0){
-        alert("Filename must not be blank")
-        this.shadowRoot.getElementById("filename").value = this.filename
-      }else{
-        this.filename = filename
-      }
-    }
-
-
-}
-
-customElements.define('media-element', MediaElement);
+    customElements.define('media-element', MediaElement);

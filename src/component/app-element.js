@@ -110,17 +110,8 @@ class AppElement extends LitElement {
     </div>
 
     <main role="main" class="container">
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
-    <!--<img class="mr-3" src="Offcanvas%20template%20%C2%B7%20Bootstrap_fichiers/bootstrap-outline.svg" alt="" width="48" height="48">-->
-    <div class="lh-100">
-
 
     <post-element name="Post"></post-element>
-
-
-    <!--    <small>Since 2011</small>-->
-    </div>
-    </div>
 
     <div class="my-3 p-3 bg-back rounded shadow-sm">
 
