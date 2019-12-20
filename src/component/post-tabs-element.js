@@ -88,25 +88,24 @@ class PostTabsElement extends LitElement {
 
     <div ><!--style="height:50vh"-->
     <div id="Note" class="tabcontent" style="display:block">
-    Note
     <note-element name="Note"></note-element>
     </div>
 
     <div id="Media" class="tabcontent">
-    <h3>Media</h3>
-    <p>todo.</p>
+    <h3 class="text-primary">Media</h3>
+    <p class="text-primary">todo.</p>
     <media-element name="Media"></media-element>
     </div>
 
     <div id="Triple" class="tabcontent">
-    <h3>Triple</h3>
-    <p>todo.</p>
+    <h3 class="text-primary">Triple</h3>
+    <p class="text-primary">todo.</p>
     <triple-element name="Triple"></triple-element>
     </div>
 
     <div id="Graph" class="tabcontent">
-    <h3>Graph</h3>
-    <p>todo.</p>
+    <h3 class="text-primary">Graph</h3>
+    <p class="text-primary">todo.</p>
     <graph-element name="Graph"></graph-element>
     </div>
 
@@ -143,7 +142,7 @@ class PostTabsElement extends LitElement {
     <div class="col">
     <div class="form-check">
     <input class="form-check-input" type="checkbox" value="" id="agora_pub" name="agora_pub" checked>
-    <label class="form-check-label" for="agora_pub">
+    <label class="text-primary" for="agora_pub">
     Publish on Agora
     </label>
     </div>

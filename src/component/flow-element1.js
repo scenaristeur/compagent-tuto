@@ -24,41 +24,30 @@ class FlowElement extends LitElement {
 
   render(){
     const noteList = (notes) => html`
-    <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">Notes on Agora (${notes.length})</h6>
-    <!--<h3 class="m-0 font-weight-bold text-primary">Notes on Agora (${notes.length})</h3>-->
-
-    <ul class="list-group list-group-flush" style="height: 30vh; overflow: auto">
+    <h3 class="m-0 font-weight-bold text-primary">Notes on Agora (${notes.length})</h3>
+    <small>  <a href="${this.flow}" target="_blank">${this.flow}<a></small>
+    <ul class="list-group list-group-flush" style="height: 50vh; overflow: auto">
     ${notes.map((n) => html`
-
-
       <li class="list-group-item">
-      <div class="row media text-muted pt-3"> <!--   border-bottom border-gray-->
+      <div class="row">
 
       <div class="col">
-      <div class="row">
-      <div class="col-md-1">
-      <a  href="${n.creator}" ?hidden=${n.creator == null} target="_blank" ><i title="${n.creator}" primary small  class="bd-placeholder-img mr-2 rounded fas fa-user"></i></a>
+      <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">${n.title}</h5>
       </div>
-      <div class="col media-body pb-3 mb-0 small lh-125">
-      <strong class="d-block text-gray-dark white-space: pre-wrap">
-      ${n.title}
-      <small>${n.date.toLocaleString(this.lang)}</small> <!-- toLocaleTimeString(this.lang)-->
-      </strong>
-      ${n.text}
-      </div>
-      </div>
+      <p class="mb-1">
+      <div style="white-space: pre-wrap">${n.text}</div>
+      </p>
       <small>${n.keywords}</small>
-
+      <br>
+      <small>${n.date.toLocaleString(this.lang)}</small> <!-- toLocaleTimeString(this.lang)-->
       </div>
-      <div class="col-md-1">
+      <div class="col-sm-1">
       <i title="copy" primary @click="${this.copy}" uri=${n.also} class="fas fa-copy"></i>
       <a href="${n.also}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
+      <a  href="${n.creator}" ?hidden=${n.creator == null} target="_blank" ><i title="${n.creator}" primary small  class="fas fa-user"></i></a>
       </div>
-
       </div>
-
-
-
       </li>
       `)}
       </ul>
@@ -69,14 +58,11 @@ class FlowElement extends LitElement {
       <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
       <style>
       i {
-        padding-top :10px;
-        padding-bottom :10px;
+        padding-top: 10px;
+        padding-bottom: 10px
       }
       </style>
       ${noteList(this.notes)}
-      <small class="d-block text-right mt-3">
-      <a href="${this.flow}"  title="${this.flow}" target="_blank">All Agora's notes<a>
-      </small>
       `;
     }
 

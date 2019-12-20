@@ -1,5 +1,5 @@
 import { fetchDocument, createDocument } from 'tripledoc';
-import { solid, schema, rdf, rdfs, space } from 'rdf-namespaces';
+import { solid, schema, rdf, rdfs, space, foaf } from 'rdf-namespaces';
 
 let pod = {}
 let count = 0
@@ -23,6 +23,8 @@ PodHelper.prototype.setWebId = function (_webId){
       doc => {
         //  pod.doc = doc;
         pod.person = doc.getSubject(pod.webId);
+        pod.name = pod.person.getString(foaf.name)
+        console.log(pod.name)
         pod.storage = pod.person.getRef(space.storage)
         pod.publicTypeIndexUrl = pod.person.getRef(solid.publicTypeIndex)
         console.log("INIT publicTypeIndexUrl",pod.publicTypeIndexUrl)
@@ -112,7 +114,7 @@ PodHelper.prototype.checkFootprints = function(webId, footprints){
   PodHelper.prototype.checkFolder = function(storage, fp){
     var module = this;
     var folder = storage+fp.path
-      pod[fp.name] = {}
+    pod[fp.name] = {}
     module.fileClient.readFolder(folder).then(
       success => {
         console.log("SUCCES read",success)
@@ -127,7 +129,7 @@ PodHelper.prototype.checkFootprints = function(webId, footprints){
             success => {
               console.log("SUCCESs create",success)
               pod[fp.name].folder = folder
-                  console.log(pod)
+              console.log(pod)
             },
             err => {console.log("ERROR create",err)})
           }
