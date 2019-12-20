@@ -59,7 +59,7 @@ class WebidElement extends LitElement {
           action: "personChanged",
           person: app.person
         }
-        app.agent.sendMulti(["NotesPost", "UserNotes"], message)
+        app.agent.sendMulti(["NotesPost", "UserNotes", "Explorer"], message)
         //  localStorage.setItem('person', JSON.stringify(app.person));
       },
       err => {

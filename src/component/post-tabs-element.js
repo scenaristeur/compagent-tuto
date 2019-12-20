@@ -25,7 +25,7 @@ class PostTabsElement extends LitElement {
 
   constructor() {
     super();
-    this.subelements = ["Note", "Media"] //, "Media", "Triple"]
+    this.subelements = ["Note", "Media", "Triple"] //, "Media", "Triple"]
     this.requetes = {}
     this.responses = []
     this.agoraNotesListUrl = "https://agora.solid.community/public/notes.ttl"
@@ -92,9 +92,7 @@ class PostTabsElement extends LitElement {
     </div>
 
     <div id="Media" class="tabcontent">
-    <h3 class="text-primary">Media</h3>
-    <p class="text-primary">todo.</p>
-    <media-element name="Media"></media-element>
+      <media-element name="Media"></media-element>
     </div>
 
     <div id="Triple" class="tabcontent">

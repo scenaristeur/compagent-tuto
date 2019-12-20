@@ -7,6 +7,7 @@ import  './flow-element.js';
 import './login-element.js'
 import './webid-element.js'
 import './user-notes-element.js'
+import './explorer-element.js'
 
 
 class AppElement extends LitElement {
@@ -149,6 +150,11 @@ class AppElement extends LitElement {
     <div class="my-3 p-3 bg-back rounded shadow-sm">
     <user-notes-element name="UserNotes"></user-notes-element>
     </div>
+
+    <div class="my-3 p-3 bg-back rounded shadow-sm">
+    <explorer-element name="Explorer"></explorer-element>
+    </div>
+
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">
     <h6 class="border-bottom border-gray pb-2 mb-0">Suggestions</h6>
