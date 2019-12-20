@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 
-import  './my-dialog.js'; //https://gist.github.com/ErikHellman/9e17f2ea6a78669294ef2af4bc3f5878
+import  './post-dialog-element.js'; //https://gist.github.com/ErikHellman/9e17f2ea6a78669294ef2af4bc3f5878
 
 class PostElement extends LitElement {
 
@@ -27,9 +27,9 @@ class PostElement extends LitElement {
     <div>
 
     <button @click="${this.toggleDialog.bind(this)}">Toggle dialog</button>
-    <my-dialog ?opened="${this.dialogVisible}"
+    <post-dialog-element ?opened="${this.dialogVisible}"
     @dialog.accept="${this.closeDialog.bind(this)}"
-    @dialog.cancel="${this.closeDialog.bind(this)}"></my-dialog>
+    @dialog.cancel="${this.closeDialog.bind(this)}"></post-dialog-element>
     </div>
     <p>${this.name}</p>
     <button @click="${this.sendMessage}">Send message</button>
@@ -38,11 +38,11 @@ class PostElement extends LitElement {
 
   toggleDialog (e) {
     this.dialogVisible = !this.dialogVisible
-    console.log(this.dialogVisible)
+  //  console.log(this.dialogVisible)
   }
 
   closeDialog (e) {
-    console.log(e)
+  //  console.log(e)
     this.dialogVisible = false
   }
 
@@ -54,8 +54,8 @@ class PostElement extends LitElement {
     this.agent.receive = function(from, message) {
       if (message.hasOwnProperty("action")){
         switch(message.action) {
-          case "doSomething":
-          app.doSomething(message);
+          case "toggleWrite":
+          app.toggleWrite(message);
           break;
           default:
           console.log("Unknown action ",message)
@@ -66,8 +66,9 @@ class PostElement extends LitElement {
 
   }
 
-  doSomething(message){
-    console.log(message)
+  toggleWrite(message){
+  //  console.log(message)
+    this.toggleDialog(message)
   }
 
   sendMessage(){

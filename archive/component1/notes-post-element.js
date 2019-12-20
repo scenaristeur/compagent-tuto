@@ -1,9 +1,6 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 
-
-
-
 import './note-element.js'
 import './media-element.js'
 import './graph-element.js'

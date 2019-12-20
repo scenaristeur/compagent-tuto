@@ -1,0 +1,116 @@
+//https://gist.github.com/ErikHellman/9e17f2ea6a78669294ef2af4bc3f5878
+//https://vaadin.com/learn/tutorials/lit-element/lit-element-templating-properties-and-events
+import { LitElement, html } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map'
+
+import  './post-tabs-element.js';
+
+class PostDialogElement extends LitElement {
+
+  constructor () {
+    super()
+    this.opened = false
+  }
+
+  static get properties () {
+    return {
+      opened: {type: Boolean}
+    }
+  }
+
+  render () {
+    return html`
+    <link href="css/fontawesome/css/all.css" rel="stylesheet">
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <style>
+    /* The Modal (background) */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      padding-top: 100px; /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+    /* Modal Content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+    .content{
+      overflow = 'auto';
+      maxHeight = '100px'
+    }
+
+    /* The Close Button */
+    .close {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .opened {
+      display: flex;
+    }
+    .closed {
+      display: none;
+    }
+    .dialog {
+      flex-direction: column;
+      border: 2px outset black;
+      padding: 1em;
+      margin: 1em;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: row;
+    }
+    .accept {
+      justify-content: space-around;
+      align-content: space-around;
+    }
+    .cancel {
+      justify-content: space-around;
+      align-content: space-around;
+    }
+    </style>
+
+
+    <div class="${classMap({dialog: true, opened: this.opened, closed: !this.opened, modal: true})}">
+    <div class="modal-content">
+    <h1 class="m-0 font-weight-bold text-primary title">New Post
+    <span @click="${() => this.dispatchEvent(new CustomEvent('dialog.cancel'))}" class="close">&times;</span>
+    </h1>
+    <div>
+    <post-tabs-element name="PostTabs"></post-tabs-element>
+
+    </div>
+    <p class="content">This is a dialog
+    ["Pork pancetta ham hock hamburger jerky frankfurter.  Filet mignon brisket ham hock tongue, spare ribs cupim picanha shoulder chicken short ribs biltong.  Beef ribs brisket andouille bacon fatback meatloaf kevin sausage boudin landjaeger ball tip pork loin kielbasa short ribs.  Porchetta sirloin sausage spare ribs pork chop, cupim alcatra chuck flank ham burgdoggen short ribs short loin.  Ham brisket biltong, beef ribs turkey filet mignon sirloin.  Tail chuck sirloin biltong pork belly turducken, cow rump strip steak.","Jerky tail turducken, drumstick pork buffalo salami kevin ground round jowl prosciutto beef pork loin.  Salami bacon jerky pork loin pork picanha chicken, flank filet mignon ham hock swine hamburger bresaola shankle ground round.  Landjaeger tail swine ribeye tongue, pork chop rump.  Leberkas sirloin venison, turducken filet mignon chislic salami.  Brisket kevin fatback ribeye flank cupim chuck.  Pork loin frankfurter shoulder strip steak, drumstick
+    </p>
+    <div class="buttons">
+    <button class="accept" @click="${() => this.dispatchEvent(new CustomEvent('dialog.accept'))}">Ok</button>
+    <button class="cancel" @click="${() => this.dispatchEvent(new CustomEvent('dialog.cancel'))}">Cancel</button>
+    </div>
+    </div>
+    </div>`
+  }
+}
+
+customElements.define('post-dialog-element', PostDialogElement)

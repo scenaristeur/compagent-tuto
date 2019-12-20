@@ -55,7 +55,7 @@ class FabElement extends LitElement {
       border-radius: 50%;
       width: 50px;
       height: 50px;
-      right: 100px; bottom: 20px;
+      right: 80px; bottom: 22px;
       /*
       width: 50px; height: 50px;
       right: 100%; margin-right: 0px;*/
@@ -75,7 +75,7 @@ class FabElement extends LitElement {
     }
     </style>
 
-    <button type="button" class="btn btn-write btn-primary has-tooltip" data-placement="left" @click="${this.toggleWrite}" title="Write"> <i class="fa fa-pen"></i> </button>
+    <button type="button" class="btn btn-write btn-info has-tooltip" data-placement="left" @click="${this.toggleWrite}" title="Write"> <i class="fa fa-pen"></i> </button>
 
     <div class="btn-group-fab" role="group" @click="${this.toggleFab}" aria-label="FAB Menu">
     <div>
@@ -112,6 +112,7 @@ class FabElement extends LitElement {
 
   toggleWrite(){
     console.log("toggleWrite")
+    this.agent.send("Post", {action: "toggleWrite"})
   }
 
 }
