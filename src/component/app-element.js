@@ -248,7 +248,7 @@ class AppElement extends LitElement {
     };
 
 
-    if('Notification' in window){
+    /*if('Notification' in window){
       Notification.requestPermission(function (status) {
         // Cela permet d'utiliser Notification.permission avec Chrome/Safari
         if (Notification.permission !== status) {
@@ -256,7 +256,7 @@ class AppElement extends LitElement {
         }
         console.log("NOTIF",status)
       })
-    }
+    }*/
 
   }
 
