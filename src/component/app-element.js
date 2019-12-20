@@ -30,7 +30,7 @@ class AppElement extends LitElement {
     return html`
     <link href="css/fontawesome/css/all.css" rel="stylesheet">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <div class="container fuild">
+    <div class="container-md">
     <div class="row">
     <p>${this.name}</p>
 
@@ -38,19 +38,19 @@ class AppElement extends LitElement {
     <login-element name="Login"></login-element>
     </div>
     <div class="row">
-    <div class="col-2">
+    <div class="col-md">
     <post-element name="Post"></post-element>
     </div>
-    <div class="col">
+    <div class="col-lg-4">
     <flow-element name="Flow" flow="${this.flow}"></flow-element>
     </div>
-    <div class="col">
+    <div class="col-md-4">
     <user-notes-element name="UserNotes"></user-notes-element>
     </div>
     </div>
     <div class="row">
     <fab-element name="Fab"></fab-element>
-    <button @click="${this.sendMessage}">Send message</button>
+
     </div>
 
     </div>

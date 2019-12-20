@@ -75,10 +75,6 @@ class PostTabsElement extends LitElement {
       border-top: none;
     }
     </style>
-
-    <h3 class="m-0 font-weight-bold text-primary">${this.name}</h3>
-
-
     <div class="row">
     <label class="sr-only" for="title">Title</label>
     <div class="input-group mb-2">
@@ -118,10 +114,10 @@ class PostTabsElement extends LitElement {
 
 
     <div class="tab">
-    <button class="tablinks active" tabName='Note' @click="${this.openTab}"><i class="far fa-sticky-note"> Note</i></button>
-    <button class="tablinks" tabName='Media' @click="${this.openTab}"><i class="fas fa-photo-video"> Media</i></button>
-    <button class="tablinks" tabName='Triple' @click="${this.openTab}"><i class="fas fa-receipt"></i> Triple</button>
-    <button class="tablinks" tabName='Graph' @click="${this.openTab}"><i class="fas fa-dice-d20"></i> Graph</button>
+    <button class="tablinks active" tabName='Note' @click="${this.openTab}"><i class="far fa-sticky-note"></i></button>
+    <button class="tablinks" tabName='Media' @click="${this.openTab}"><i class="fas fa-photo-video"></i></button>
+    <button class="tablinks" tabName='Triple' @click="${this.openTab}"><i class="fas fa-receipt"></i></button>
+    <button class="tablinks" tabName='Graph' @click="${this.openTab}"><i class="fas fa-dice-d20"></i></button>
 
 
     </div>
@@ -142,7 +138,7 @@ class PostTabsElement extends LitElement {
 
     <div class="row">
     <div class="col">
-    <button type="button" class="btn btn-primary" primary @click=${this.addNote}>Add note </button>
+    <button type="button" class="btn btn-primary" primary @click=${this.addNote}><i class="far fa-paper-plane"></i></button>
     </div>
     <div class="col">
     <div class="form-check">

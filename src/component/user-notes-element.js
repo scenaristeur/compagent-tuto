@@ -78,7 +78,7 @@ class UserNotesElement extends LitElement {
       }
       </style>
       ${this.person == null ?
-        html `You must login to see your notes`
+        html `You must login <br>to see your notes`
         :html `
         ${noteList(this.notes)}
         `}
@@ -95,7 +95,7 @@ class UserNotesElement extends LitElement {
           this.notes = []
         }
       }
-      
+
       firstUpdated(){
         var app = this;
         this.ph = new PodHelper();
