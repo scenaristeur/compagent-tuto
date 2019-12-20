@@ -101,12 +101,10 @@ class PostDialogElement extends LitElement {
     <post-tabs-element name="PostTabs"></post-tabs-element>
 
     </div>
-    <p class="content">This is a dialog
-    ["Pork pancetta ham hock hamburger jerky frankfurter.  Filet mignon brisket ham hock tongue, spare ribs cupim picanha shoulder chicken short ribs biltong.  Beef ribs brisket andouille bacon fatback meatloaf kevin sausage boudin landjaeger ball tip pork loin kielbasa short ribs.  Porchetta sirloin sausage spare ribs pork chop, cupim alcatra chuck flank ham burgdoggen short ribs short loin.  Ham brisket biltong, beef ribs turkey filet mignon sirloin.  Tail chuck sirloin biltong pork belly turducken, cow rump strip steak.","Jerky tail turducken, drumstick pork buffalo salami kevin ground round jowl prosciutto beef pork loin.  Salami bacon jerky pork loin pork picanha chicken, flank filet mignon ham hock swine hamburger bresaola shankle ground round.  Landjaeger tail swine ribeye tongue, pork chop rump.  Leberkas sirloin venison, turducken filet mignon chislic salami.  Brisket kevin fatback ribeye flank cupim chuck.  Pork loin frankfurter shoulder strip steak, drumstick
-    </p>
+
     <div class="buttons">
-    <button class="accept" @click="${() => this.dispatchEvent(new CustomEvent('dialog.accept'))}">Ok</button>
-    <button class="cancel" @click="${() => this.dispatchEvent(new CustomEvent('dialog.cancel'))}">Cancel</button>
+  <!--  <button type="button" class="accept btn btn-primary" @click="${() => this.dispatchEvent(new CustomEvent('dialog.accept'))}">Ok</button>-->
+    <button type="button" class="cancel btn btn-primary" @click="${() => this.dispatchEvent(new CustomEvent('dialog.cancel'))}">Cancel</button>
     </div>
     </div>
     </div>`

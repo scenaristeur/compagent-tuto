@@ -5,12 +5,14 @@ class FabElement extends LitElement {
 
   static get properties() {
     return {
-      name: {type: String}
+      name: {type: String},
+      webId: {type: String}
     };
   }
 
   constructor() {
     super();
+    this.webId = null
   }
 
   render(){
@@ -75,7 +77,15 @@ class FabElement extends LitElement {
     }
     </style>
 
-    <button type="button" class="btn btn-write btn-info has-tooltip" data-placement="left" @click="${this.toggleWrite}" title="Write"> <i class="fa fa-pen"></i> </button>
+
+    ${this.webId != null ?
+      html`
+      <button type="button" class="btn btn-write btn-info has-tooltip" data-placement="left" @click="${this.toggleWrite}" title="Write"> <i class="fa fa-pen"></i> </button>
+      `
+      :html``
+
+    }
+
 
     <div class="btn-group-fab" role="group" @click="${this.toggleFab}" aria-label="FAB Menu">
     <div>
@@ -96,14 +106,18 @@ class FabElement extends LitElement {
     this.agent.receive = function(from, message) {
       if (message.hasOwnProperty("action")){
         switch(message.action) {
-          case "doSomething":
-          app.doSomething(message);
+          case "sessionChanged":
+          app.sessionChanged(message.webId);
           break;
           default:
           console.log("Unknown action ",message)
         }
       }
     };
+  }
+
+  sessionChanged(webId){
+    this.webId = webId
   }
 
   toggleFab(){

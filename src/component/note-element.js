@@ -19,8 +19,10 @@ class NoteElement extends LitElement {
     return html`
     <link href="css/fontawesome/css/all.css" rel="stylesheet">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <p>${this.name}</p>
-    <button @click="${this.sendMessage}">Send message</button>
+    <div class="form-group">
+    <label for="notearea">Write a note on your Pod & share it on Agora</label>
+    <textarea class="form-control" id="notearea" rows="5" style="width:100%"></textarea>
+    </div>
     `;
   }
 
@@ -30,8 +32,8 @@ class NoteElement extends LitElement {
     this.agent.receive = function(from, message) {
       if (message.hasOwnProperty("action")){
         switch(message.action) {
-          case "doSomething":
-          app.doSomething(message);
+          case "askContent":
+          app.askContent(from, message);
           break;
           default:
           console.log("Unknown action ",message)
@@ -40,13 +42,18 @@ class NoteElement extends LitElement {
     };
   }
 
-  doSomething(message){
-    console.log(message)
-  }
-
-  sendMessage(){
-    this.count++
-    this.agent.send("Messages", {action:"info", info:"Now counter is "+this.count}  )
+  askContent(from, message){
+    console.log(from,message)
+    var textarea = this.shadowRoot.getElementById('notearea')/*.shadowRoot.querySelector(".form-control")*/
+    var note = textarea.value.trim()
+    textarea.value = ""
+    console.log(note)
+    this.agent.send(from, {
+      action: "reponseContent",
+      content: note,
+      id: message.id,
+      type: "TextDigitalDocument"
+    })
   }
 
 }

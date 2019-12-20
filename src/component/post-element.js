@@ -8,7 +8,8 @@ class PostElement extends LitElement {
   static get properties () {
     return {
       name: {type: String},
-      dialogVisible: {type: Boolean}
+      dialogVisible: {type: Boolean},
+      webId: {type: String}
     }
   }
 
@@ -17,6 +18,7 @@ class PostElement extends LitElement {
   constructor () {
     super()
     this.dialogVisible = false
+    this.webId = null
   }
 
 
@@ -24,25 +26,35 @@ class PostElement extends LitElement {
   render () {
     console.log('Dialog visible:', this.dialogVisible)
     return html`
-    <div>
 
-    <button @click="${this.toggleDialog.bind(this)}">Toggle dialog</button>
-    <post-dialog-element ?opened="${this.dialogVisible}"
-    @dialog.accept="${this.closeDialog.bind(this)}"
-    @dialog.cancel="${this.closeDialog.bind(this)}"></post-dialog-element>
-    </div>
-    <p>${this.name}</p>
-    <button @click="${this.sendMessage}">Send message</button>
+    <link href="css/fontawesome/css/all.css" rel="stylesheet">
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+
+
+    ${this.webId != null ?
+      html`
+      <div>
+      <button type="button" class="btn btn-primary" @click="${this.toggleDialog.bind(this)}">New Post</button>
+      <post-dialog-element ?opened="${this.dialogVisible}"
+      @dialog.accept="${this.closeDialog.bind(this)}"
+      @dialog.cancel="${this.closeDialog.bind(this)}"></post-dialog-element>
+      </div>
+      `
+      :html`You must login to post`
+
+    }
+
     `
   }
 
   toggleDialog (e) {
     this.dialogVisible = !this.dialogVisible
-  //  console.log(this.dialogVisible)
+    //  console.log(this.dialogVisible)
   }
 
   closeDialog (e) {
-  //  console.log(e)
+    //  console.log(e)
     this.dialogVisible = false
   }
 
@@ -57,23 +69,24 @@ class PostElement extends LitElement {
           case "toggleWrite":
           app.toggleWrite(message);
           break;
+          case "sessionChanged":
+          app.sessionChanged(message.webId);
+          break;
           default:
           console.log("Unknown action ",message)
         }
       }
     };
 
-
   }
 
   toggleWrite(message){
-  //  console.log(message)
+    //  console.log(message)
     this.toggleDialog(message)
   }
 
-  sendMessage(){
-    this.count++
-    this.agent.send("Messages", {action:"info", info:"Now counter is "+this.count}  )
+  sessionChanged(webId){
+    this.webId = webId
   }
 
 }

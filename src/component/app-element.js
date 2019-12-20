@@ -4,6 +4,10 @@ import { HelloAgent } from '../agents/hello-agent.js';
 import  './fab-element.js';
 import  './post-element.js';
 import  './flow-element.js';
+import './login-element.js'
+import './webid-element.js'
+import './user-notes-element.js'
+
 
 class AppElement extends LitElement {
 
@@ -29,16 +33,19 @@ class AppElement extends LitElement {
     <div class="container fuild">
     <div class="row">
     <p>${this.name}</p>
+
+      <webid-element name="Webid"></webid-element>
+    <login-element name="Login"></login-element>
     </div>
     <div class="row">
-    <div class="col">
+    <div class="col-2">
     <post-element name="Post"></post-element>
     </div>
-    <div class="col-8">
+    <div class="col">
     <flow-element name="Flow" flow="${this.flow}"></flow-element>
     </div>
     <div class="col">
-    right
+    <user-notes-element name="UserNotes"></user-notes-element>
     </div>
     </div>
     <div class="row">
@@ -58,9 +65,6 @@ class AppElement extends LitElement {
     this.agent.receive = function(from, message) {
       if (message.hasOwnProperty("action")){
         switch(message.action) {
-          case "doSomething":
-          app.doSomething(message);
-          break;
           default:
           console.log("Unknown action ",message)
         }
@@ -69,14 +73,7 @@ class AppElement extends LitElement {
   }
 
 
-  doSomething(message){
-    console.log(message)
-  }
 
-  sendMessage(){
-    this.count++
-    this.agent.send("Messages", {action:"info", info:"Now counter is "+this.count}  )
-  }
 
 }
 
