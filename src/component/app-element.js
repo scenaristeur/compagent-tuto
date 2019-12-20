@@ -122,7 +122,7 @@ class AppElement extends LitElement {
     </div>
     </div>
 
-    <div class="my-3 p-3 bg-light rounded shadow-sm">
+    <div class="my-3 p-3 bg-back rounded shadow-sm">
 
     <flow-element name="Flow" flow="${this.flow}"></flow-element>
     <!--  <div class="media text-muted pt-3">
@@ -155,7 +155,7 @@ class AppElement extends LitElement {
 
     </div>
 
-    <div class="my-3 p-3 bg-light rounded shadow-sm">
+    <div class="my-3 p-3 bg-back rounded shadow-sm">
     <user-notes-element name="UserNotes"></user-notes-element>
     </div>
 
