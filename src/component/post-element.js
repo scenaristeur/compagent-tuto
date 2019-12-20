@@ -41,7 +41,13 @@ class PostElement extends LitElement {
       @dialog.cancel="${this.closeDialog.bind(this)}"></post-dialog-element>
       </div>
       `
-      :html`You must login to post`
+      :html`
+      <h6 class="mb-0 text-white lh-100">
+      <div class="row">
+      You must login to post
+      </div>
+      </h6>
+      `
 
     }
 
