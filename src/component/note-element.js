@@ -20,8 +20,8 @@ class NoteElement extends LitElement {
     <link href="css/fontawesome/css/all.css" rel="stylesheet">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <div class="form-group">
-    <label class="text-primary" for="notearea">Write a note on your Pod & share it on Agora</label>
-    <textarea class="form-control" id="notearea" rows="5" style="width:100%" placeholder="What's the mood today ?"></textarea>
+<!--    <label class="text-primary" for="notearea"></label>-->
+    <textarea class="form-control" id="notearea" rows="5" style="width:100%" placeholder="Write a note on your Pod & share it on Agora"></textarea>
     </div>
     `;
   }

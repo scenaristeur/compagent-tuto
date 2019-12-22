@@ -56,7 +56,7 @@ class LoginElement extends LitElement {
         this.webId=null
         this.ph.setWebId(this.webId)
         this.agent.send('Messages',  {action:"info", info:"Not logged"});
-        this.agent.sendMulti(['Webid','App', 'Post', 'Fab'], {action: "sessionChanged", webId: null});
+        this.agent.sendMulti(['Webid','App', 'Post', 'Fab', 'NoteDev'], {action: "sessionChanged", webId: null});
       /*  var n = new Notification('Goodbye', {
           body: 'See you soon.',
         //  icon: 'dvp.gif'
@@ -66,7 +66,7 @@ class LoginElement extends LitElement {
         app.webId = session.webId
         this.ph.setWebId(this.webId)
         this.agent.send('Messages',  {action:"info", info:"Login "+app.webId});
-        this.agent.sendMulti(['Webid','App', 'Post', 'Fab'], {action: "sessionChanged", webId: app.webId});
+        this.agent.sendMulti(['Webid','App', 'Post', 'Fab', "NoteDev"], {action: "sessionChanged", webId: app.webId});
       /*  var n = new Notification('Bienvenue', {
           body: 'Logged with webId '+app.webId,
         //  icon: 'dvp.gif'

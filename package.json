@@ -17,6 +17,8 @@
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
+    "@advanced-rest-client/bottom-sheet": "^3.1.0",
+    "@solid/query-ldflex": "^2.8.1",
     "@vaadin/vaadin-dialog": "^2.2.1",
     "bootstrap": "^4.4.1",
     "evejs": "github:scenaristeur/evejs",
