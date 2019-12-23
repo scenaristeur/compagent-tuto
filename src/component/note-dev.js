@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
-
-import data from "@solid/query-ldflex";
+import { PodHelper } from '../tools/pod-helper.js';
+import { solid, schema, rdf, rdfs } from 'rdf-namespaces';
 
 class NoteDev extends LitElement {
 
@@ -9,28 +9,43 @@ class NoteDev extends LitElement {
     return {
       name: {type: String},
       webId: {type: String},
-      publicTypeIndex: {type: String},
-      storage: {type: String},
+      notesList: {type: String},
+      message: {type: String}
     };
   }
 
   constructor() {
     super();
     this.webId = null
-    this.publicTypeIndex = null
-    this.storage = null
+    this.notesList = null
+    this.message = {}
+    this.ph = new PodHelper();
   }
 
   render(){
     return html`
     <link href="css/fontawesome/css/all.css" rel="stylesheet">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <p>${this.name}</p>
-    <p>${this.publicTypeIndex}</p>
-    <p>${this.storage}</p>
-    <textarea class="form-control" id="notearea" rows="5" style="width:100%" placeholder="Write a note on your Pod & share it on Agora"></textarea>
-
-    <button @click="${this.sendMessage}" ?disabled = ${this.webId == null}>Send note</button>
+    <div class="container">
+    <div class="row">
+    <div class="col">
+    <input id="titleInput" class="form-control" type="text" value="${this.title}" placeholder="Title">
+    </div>
+    <div class="col">
+    <!--  conf-->
+    </div>
+    </div>
+    <div class="row>">
+    <textarea class="form-control" id="noteArea" rows="5" style="width:100%" placeholder="Write a note on your Pod & share it on Agora"></textarea>
+    </div>
+    <div class="row">
+    <button type="button" class="btn btn-primary" @click="${this.sendNote}" ?disabled = ${this.webId == null}>Send note</button>
+    </div>
+    <div class="row">
+    <p>${this.message.status}</p>
+    <p><b>${this.message.content}</b></p>
+    </div>
+    </div>
     `;
   }
 
@@ -48,43 +63,60 @@ class NoteDev extends LitElement {
         }
       }
     };
+    this.updateUser()
   }
 
   sessionChanged(webId){
     console.log(webId)
     this.webId = webId
-    this.updateUser()
   }
 
   async updateUser(){
     if (this.webId != null){
-      this.publicTypeIndex = await data.user.publicTypeIndex
-      this.storage = await data.user.storage
-
-
-      for await (const subject of  data[this.publicTypeIndex].subjects){
-        console.log(`  - ${subject}`);
-        for await (const pred of subject.properties) {
-  var p = await pred;
-  console.log(p)
-}
-
-      }
-
-
+      console.log("update")
+      this.publicTypeIndex = this.ph.getPod("publicTypeIndex")
+      this.storage = this.ph.getPod("storage")
+      this.notesList = this.ph.getPod("notesList")
 
     }else{
       this.publicTypeIndex = null
       this.storage = null
+      this.notesList = null
     }
 
   }
 
-  sendMessage(){
-    var content = this.shadowRoot.getElementById('notearea').value.trim();
+  sendNote(){
+    var app = this
+    this.updateUser()
+    var content = this.shadowRoot.getElementById('noteArea').value.trim();
+    var title = this.shadowRoot.getElementById('titleInput').value.trim();
     console.log(content)
+    //  console.log(this.notesList)
+    var notesList = this.notesList;
+    const newNote = notesList.addSubject();
+    var date = new Date(Date.now())
+    // Indicate that the Subject is a schema:TextDigitalDocument:
+    newNote.addRef(rdf.type, schema.TextDigitalDocument);
+    // Set the Subject's `schema:text` to the actual note contents:
+    newNote.addLiteral(schema.text, content);
+    newNote.addLiteral(rdfs.label, title);
+    // Store the date the note was created (i.e. now):
+    newNote.addLiteral(schema.dateCreated, date)
+
+    notesList.save([newNote]).then(
+      success=>{
+        console.log(success, newNote.asNodeRef())
+        app.message = {status: "success ", content: newNote.asNodeRef()}
+      },
+      err=>{
+        console.log(err)
+        app.message = {status: "erreur "+newNote.asNodeRef(), content: err}
+        alert(err)
+      });
+
+    }
+
   }
 
-}
-
-customElements.define('note-dev', NoteDev);
+  customElements.define('note-dev', NoteDev);

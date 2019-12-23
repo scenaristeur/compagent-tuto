@@ -19,13 +19,11 @@
   "dependencies": {
     "@advanced-rest-client/bottom-sheet": "^3.1.0",
     "@solid/query-ldflex": "^2.8.1",
-    "@vaadin/vaadin-dialog": "^2.2.1",
     "bootstrap": "^4.4.1",
     "evejs": "github:scenaristeur/evejs",
     "fontawesome": "^5.6.3",
     "jquery": "^3.4.1",
     "lit-element": "^2.2.1",
-    "lit-element-bootstrap": "0.0.0",
     "rdf-namespaces": "^1.6.0",
     "solid-auth-client": "^2.4.1",
     "solid-file-client": "^0.5.2",
