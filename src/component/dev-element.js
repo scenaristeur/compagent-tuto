@@ -23,11 +23,17 @@ class DevElement extends LitElement {
     return html`
     <link href="css/fontawesome/css/all.css" rel="stylesheet">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <div class="container">
+    <div class="row">
 
     <login-element name="login"></login-element>
-
+    </div>
+    <div class="row">
     <note-dev name="NoteDev"></note-dev>
-<!--
+    </div>
+    </div>
+    
+    <!--
     <p>${this.name}</p>
     <button @click="${this.sendMessage}">Send message</button>-->
     `;

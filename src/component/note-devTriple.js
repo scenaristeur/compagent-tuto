@@ -2,8 +2,6 @@ import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 import { PodHelper } from '../tools/pod-helper.js';
 import { solid, schema, rdf, rdfs } from 'rdf-namespaces';
-import { namedNode } from '@rdfjs/data-model';
-import  data  from "@solid/query-ldflex";
 
 class NoteDev extends LitElement {
 
@@ -76,46 +74,19 @@ class NoteDev extends LitElement {
   async updateUser(){
     if (this.webId != null){
       console.log("update")
-      //  this.publicTypeIndex = this.ph.getPod("publicTypeIndex")
-      //  this.storage = this.ph.getPod("storage")
-      //  this.notesList = this.ph.getPod("notesList")
+      this.publicTypeIndex = this.ph.getPod("publicTypeIndex")
+      this.storage = this.ph.getPod("storage")
+      this.notesList = this.ph.getPod("notesList")
 
     }else{
-      //  this.publicTypeIndex = null
+      this.publicTypeIndex = null
       this.storage = null
-      //  this.notesList = null
+      this.notesList = null
     }
 
   }
 
-
-  async sendNote(){
-    //https://forum.solidproject.org/t/is-there-a-timeline-for-adding-write-functionality-to-the-ld-flex-library/1965/6
-    var app = this
-
-
-    this.updateUser()
-    var content = this.shadowRoot.getElementById('noteArea').value.trim();
-    var title = this.shadowRoot.getElementById('titleInput').value.trim();
-    console.log(content)
-    this.storage = await data.user.storage
-    console.log(this.storage)
-    //   var storage = this.storage
-    var date = new Date(Date.now())
-    var path = this.storage+"/public/test.ttl"
-    console.log(data)
-  var create = await  data[path].schema$about.add(namedNode('oak'))
-  console.log("CR",create)
-  var keyw = await data[path+'#oak'].schema$keywords.add('acorn');
-  console.log("KEY", keyw)
-
-
-
-
-  }
-
-
-  sendNoteTripledoc(){
+  sendNote(){
     var app = this
     this.updateUser()
     var content = this.shadowRoot.getElementById('noteArea').value.trim();

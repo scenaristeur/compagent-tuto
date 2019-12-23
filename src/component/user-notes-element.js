@@ -46,7 +46,7 @@ class UserNotesElement extends LitElement {
       </strong>
       <div style="white-space: pre-wrap">${n.text}</div>
       </p>
-  
+
       </div>
       </div>
       <small>${n.keywords}</small>
@@ -74,14 +74,19 @@ class UserNotesElement extends LitElement {
         padding-top: 10px;
         padding-bottom: 10px
       }
+      .fa-dice-d20 {
+        padding-left :10px;
+        padding-right :10px;
+      }
       </style>
       ${this.person == null ?
         html `You must login <br>to see your notes`
         :html `
         ${noteList(this.notes)}
         <small class="d-block text-right mt-3">
-        <a href="${this.notesListUrl}" title="${this.notesListUrl}" target="_blank">All my notes<a></small>
-
+        <a href="${this.notesListUrl}" title="${this.notesListUrl}" target="_blank">All my notes<a>
+        <a href="https://scenaristeur.github.io/spoggy-simple/?source=${this.notesListUrl}"  title="${this.notesListUrl}" target="_blank"><i class="fas fa-dice-d20"></i><a>
+        </small>
 
         `}
         `;
@@ -156,10 +161,10 @@ class UserNotesElement extends LitElement {
               var subject = nuri.asNodeRef()
               //  console.log("subject",subject)
               //  console.log("doc",nuri.getDocument())
-              var text = nuri.getString(schema.text)
-              var date = nuri.getDateTime(schema.dateCreated)
-              var title = nuri.getString(rdfs.label)
-              var keywords = nuri.getString(schema.keywords)
+              var text = nuri.getString(schema.text) || ""
+              var date = nuri.getDateTime(schema.dateCreated) || ""
+              var title = nuri.getString(rdfs.label) || ""
+              var keywords = nuri.getString(schema.keywords) || ""
               //  console.log(text, date)
               var note = {}
               note.title = title

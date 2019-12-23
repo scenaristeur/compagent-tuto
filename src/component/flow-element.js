@@ -44,7 +44,7 @@ class FlowElement extends LitElement {
       ${n.title}
       <small>${n.date.toLocaleString(this.lang)}</small> <!-- toLocaleTimeString(this.lang)-->
       </strong>
-        <div style="white-space: pre-wrap">${n.text}</div>
+      <div style="white-space: pre-wrap">${n.text}</div>
       </div>
       </div>
       <small>${n.keywords}</small>
@@ -68,17 +68,24 @@ class FlowElement extends LitElement {
       <link href="css/fontawesome/css/all.css" rel="stylesheet">
       <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
       <style>
-  @media (min-width: 768px) {
-     i {
-      padding-top :10px;
-      padding-bottom :10px;
-    }
-   }
+      @media (min-width: 768px) {
+        i {
+          padding-top :10px;
+          padding-bottom :10px;
+        }
+        .fa-dice-d20 {
+          padding-left :10px;
+          padding-right :10px;
+        }
+      }
 
       </style>
       ${noteList(this.notes)}
       <small class="d-block text-right mt-3">
+
+
       <a href="${this.flow}"  title="${this.flow}" target="_blank">All Agora's notes<a>
+      <a href="https://scenaristeur.github.io/spoggy-simple/?source=${this.flow}"  title="${this.flow}" target="_blank"><i class="fas fa-dice-d20"></i><a>
       </small>
       `;
     }
@@ -108,12 +115,12 @@ class FlowElement extends LitElement {
           app.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
           app.notes = []
           app.notesUri.forEach(function (nuri){
-            var text = nuri.getString(schema.text)
-            var date = nuri.getDateTime(schema.dateCreated)
-            var creator = nuri.getRef(schema.creator)
-            var also = nuri.getRef(rdfs.seeAlso)
-            var title = nuri.getString(rdfs.label)
-            var keywords = nuri.getString(schema.keywords)
+            var text = nuri.getString(schema.text) || ""
+            var date = nuri.getDateTime(schema.dateCreated)|| ""
+            var creator = nuri.getRef(schema.creator) || ""
+            var also = nuri.getRef(rdfs.seeAlso) || nuri.getRef(schema.about) || ""
+            var title = nuri.getString(rdfs.label) || ""
+            var keywords = nuri.getString(schema.keywords) || ""
             //  console.log(text, date)
             var note = {}
             note.text = text;
