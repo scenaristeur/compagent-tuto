@@ -53,8 +53,10 @@ class UserNotesElement extends LitElement {
 
       </div>
       <div class="col-md-1">
-      <i title="copy" primary @click="${this.copy}" uri=${n.also} class="fas fa-copy"></i>
-      <a href="${n.also}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
+      <i title="copy" primary @click="${this.copy}" uri=${n.subject} class="fas fa-copy"></i>
+      <a href="${n.subject}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
+      <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.subject}"  title="${n.subject}" target="_blank"><i class="fas fa-dice-d20"></i><a>
+
       </div>
 
       </div>

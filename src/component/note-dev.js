@@ -12,7 +12,7 @@ class NoteDev extends LitElement {
       name: {type: String},
       webId: {type: String},
       notesList: {type: String},
-      message: {type: Object}
+      info: {type: String}
     };
   }
 
@@ -20,7 +20,7 @@ class NoteDev extends LitElement {
     super();
     this.webId = null
     this.notesList = null
-    this.message = {}
+    this.info = ""
     this.ph = new PodHelper();
   }
 
@@ -56,10 +56,10 @@ class NoteDev extends LitElement {
 
     </div>
     <div class="row">
-    <p>${this.message.status}</p>
-    <p><b>${this.message.content}</b></p>
+    <pre>${this.info}</pre>
     </div>
     </div>
+    <br><br>
     `;
   }
 
@@ -102,70 +102,69 @@ class NoteDev extends LitElement {
 
 
   async sendNote(){
+
     //https://forum.solidproject.org/t/is-there-a-timeline-for-adding-write-functionality-to-the-ld-flex-library/1965/6
 
     // voir https://www.w3.org/TR/activitystreams-vocabulary/#dfn-note
     var app = this
-
-
+    var date = new Date(Date.now())
+    var id = date.getTime()
+    app.info = "Check user infos "
     this.updateUser()
+    app.info += "\nUser infos checked"
     var content = this.shadowRoot.getElementById('noteArea').value.trim();
     var title = this.shadowRoot.getElementById('titleInput').value.trim();
     console.log(content)
     this.storage = await data.user.storage
-    console.log(this.storage)
+    var mynote = this.storage+"public/notes.ttl#"+id
+    app.info += "\nCreation "+mynote
+    //  console.log(this.storage)
     //   var storage = this.storage
     var date = new Date(Date.now())
     var id = date.getTime()
     //  var date = new Date(id)
-    console.log(id)
+    //console.log(id)
 
     var path = this.storage+"public/Notes/"+id+".ttl"
     console.log(data)
     var tit = await  data[path].rdfs$label.add(title)
     var cont = await data[path].schema$text.add(content);
+    //console.log(date)
 
-
-    console.log(date)
-    var mynote = this.storage+"public/notes.ttl#"+id
     // schema
     var index = await data[mynote].rdf$type.add(namedNode(schema.TextDigitalDocument))
     var d = await data[mynote].schema$dateCreated.add(date.toISOString())
     var titindex = await data[mynote].rdfs$label.add(title)
-    var file = await data[mynote].schema$about.add(namedNode(path))
+    var file = await data[mynote].as$attachment.add(namedNode(path))
     // activitystreams
     await data[path].as$content.add(content);
     await data[mynote].as$name.add(title)
     //!!! as$Note ne fonctionne pas
     await data[mynote].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Note'))
 
-
-
-    app.message.content = mynote+ "created\n"
-    app.message.status = "ok"
-
+    app.info += "\n"+mynote+ " -- >created"
     var agora_pub = this.shadowRoot.getElementById('agora_pub').checked
     if (agora_pub == true){
       var agoranote = "https://agora.solid.community/public/notes.ttl#"+id
+      app.info += "\nCreation "+agoranote
       await data[agoranote].rdf$type.add(namedNode(schema.TextDigitalDocument))
       await data[agoranote].schema$dateCreated.add(date.toISOString())
       await data[agoranote].rdfs$label.add(title)
-      await data[agoranote].schema$about.add(namedNode(mynote))
+      await data[agoranote].as$attachment.add(namedNode(mynote))
       await data[agoranote].schema$creator.add(namedNode(app.webId))
       // activitystreams
       //await data[agoranote].rdf$type.add(namedNode(as.Note))
       await data[agoranote].as$name.add(title)
-      await data[agoranote].as$attachement.add(namedNode(mynote))
-
-      app.message.content += agoranote+ "created\n"
-      app.message.status = "ok"
+      // reverse attachment
+      await data[mynote].as$attachment.add(namedNode(agoranote))
+      app.info += "\n"+agoranote+ " -- >created"
     }
 
 
     this.shadowRoot.getElementById('noteArea').value = ""
     this.shadowRoot.getElementById('titleInput').value= ""
 
-    console.log(this.message)
+    console.log(this.info)
     /*  var create = await  data[path].schema$about.add(namedNode('oak'))
     console.log("CR",create)
     var keyw = await data[path+'#oak'].schema$keywords.add('acorn');

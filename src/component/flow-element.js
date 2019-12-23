@@ -51,8 +51,12 @@ class FlowElement extends LitElement {
 
       </div>
       <div class="col-md-1">
-      <i title="copy" primary @click="${this.copy}" uri=${n.also} class="fas fa-copy"></i>
-      <a href="${n.also}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
+      <i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i>
+      <a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
+          <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+      <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.uri}"  title="${n.uri}" target="_blank">
+      <i class="fas fa-dice-d20"></i><a>
+
       </div>
 
       </div>
@@ -118,7 +122,7 @@ class FlowElement extends LitElement {
             var text = nuri.getString(schema.text) || ""
             var date = nuri.getDateTime(schema.dateCreated)|| ""
             var creator = nuri.getRef(schema.creator) || ""
-            var also = nuri.getRef(rdfs.seeAlso) || nuri.getRef(schema.about) || ""
+            var also = nuri.getRef(rdfs.seeAlso) || nuri.getRef(schema.about) || nuri.getRef("https://www.w3.org/ns/activitystreams#attachement") ||""
             var title = nuri.getString(rdfs.label) || ""
             var keywords = nuri.getString(schema.keywords) || ""
             //  console.log(text, date)
@@ -129,6 +133,7 @@ class FlowElement extends LitElement {
             note.also = also;
             note.title = title
             note.keywords = keywords
+            note.uri = nuri.asNodeRef()
             //text = nuri.getAllStrings()*/
             //  console.log(note)
             app.notes = [... app.notes, note]
