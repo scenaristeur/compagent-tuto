@@ -147,6 +147,7 @@ class NoteDev extends LitElement {
       var agoranote = "https://agora.solid.community/public/notes.ttl#"+id
       app.info += "\nCreation "+agoranote
       await data[agoranote].rdf$type.add(namedNode(schema.TextDigitalDocument))
+      await data[agoranote].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Note'))
       await data[agoranote].schema$dateCreated.add(date.toISOString())
       await data[agoranote].rdfs$label.add(title)
       await data[agoranote].as$attachment.add(namedNode(mynote))
@@ -155,7 +156,7 @@ class NoteDev extends LitElement {
       //await data[agoranote].rdf$type.add(namedNode(as.Note))
       await data[agoranote].as$name.add(title)
       // reverse attachment
-      await data[mynote].as$attachment.add(namedNode(agoranote))
+      //  await data[mynote].as$attachment.add(namedNode(agoranote))
       app.info += "\n"+agoranote+ " -- >created"
     }
 

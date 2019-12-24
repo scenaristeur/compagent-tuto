@@ -158,6 +158,8 @@ class UserNotesElement extends LitElement {
             //  console.log("app.notesList",app.notesList)
             app.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
             //    console.log("notesUri",app.notesUri)
+            var notesUri = notesList.findSubjects()
+            app.notesUri = Array.from(new Set(notesUri))
             app.notes = []
             app.notesUri.forEach(function (nuri){
               var subject = nuri.asNodeRef()

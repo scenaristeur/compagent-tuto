@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
-//import { solid, schema, rdf, rdfs } from 'rdf-namespaces';
+import { schema } from 'rdf-namespaces';
 import { namedNode } from '@rdfjs/data-model';
 import  data  from "@solid/query-ldflex";
 
@@ -22,7 +22,7 @@ class MediaDev extends LitElement {
     this.webId = null
     this.filename = ""
     this.info = ""
-    this.folders = ["public/Media/","public/Activity/"]
+    this.folders = ["public/spoggy/","public/spoggy/Activity/","public/spoggy/Image/","public/spoggy/Video/","public/spoggy/Audio/","public/spoggy/Document/"]
   }
 
   render(){
@@ -68,7 +68,28 @@ class MediaDev extends LitElement {
       `}
 
       <div class="col-auto"><canvas style="max-width: 100%; height: auto;" id="canvas"/></div>
+
+
+      <div class="buttons">
+
+      <div class="row">
+      <div class="col-5">
       <button type="button" class="btn btn-primary" @click="${this.prepareMedia}" ?disabled = ${this.webId == null}>Send Media</button>
+      </div>
+      <div class="col">
+      <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" id="agora_pub" name="agora_pub" checked>
+      <label class="text-primary" for="agora_pub">
+      Push to Agora
+      </label>
+      </div>
+      </div>
+      </div>
+
+
+      </div>
+
+
       <div class="row">
       <pre>${this.info}</pre>
       </div>
@@ -114,17 +135,35 @@ class MediaDev extends LitElement {
         app.info += "\nPlease add a file "
       }else{
 
-        app.info = Date.now().toLocaleString()+"\nCheck user infos "
+        app.info = new Date(Date.now()).toLocaleString()+"\nCheck user infos "
         this.updateUser()
         app.info += "\nUser infos checked"
 
         this.storage = await data.user.storage
-        var filename = this.filename+this.extension
+        var filename = this.filename.replace(/ /g,"_")+this.extension
 
-        var path = this.storage+"public/Media/"+filename
+        this.classe = "Document"
+        var type = this.file.type
+        switch (type) {
+          case (type.match(/^image/) || {}).input:
+          this.classe = "Image"
+          break;
+          case (type.match(/^video/) || {}).input:
+          this.classe = "Video"
+          break;
+          case (type.match(/^audio/) || {}).input:
+          this.classe = "Audio"
+          break;
+          default:
+          this.classe = "Document"
+          break;
+        }
+        console.log(this.classe)
+
+        var path = this.storage+"public/spoggy/"+this.classe+"/"+filename
         console.log(path)
+        console.log(this.file)
         app.sendMedia(path,this.file,this.file.contentType)
-
       }
     }
 
@@ -147,12 +186,37 @@ class MediaDev extends LitElement {
         var date = new Date(Date.now())
         var id = date.getTime()
         this.storage = await data.user.storage
-        var mymedia = this.storage+"public/media.ttl#"+id
+        var mymedia = this.storage+"public/notes.ttl#"+id
         this.info += "\nCreation "+mymedia
+        //        console.log(this.file)
+        var filename = this.filename.replace(/ /g,"_")+this.extension
+        //      console.log(filename)
+        await  data[mymedia].rdfs$label.add(filename)
+        await  data[mymedia].rdfs$type.add(namedNode('https://www.w3.org/ns/activitystreams#'+this.classe))
+        await  data[mymedia].rdfs$type.add(namedNode(schema.TextDigitalDocument))
+        await data[mymedia].schema$dateCreated.add(date.toISOString())
+        await data[mymedia].as$attachment.add(namedNode(uri))
 
-        console.log(this.file)
-        var filename = this.filename+this.extension
-        console.log(filename)
+
+        this.info += "\n"+mymedia+ " -- >created"
+        var agora_pub = this.shadowRoot.getElementById('agora_pub').checked
+        if (agora_pub == true){
+          var agoranote = "https://agora.solid.community/public/notes.ttl#"+id
+          this.info += "\nCreation "+agoranote
+          await  data[agoranote].rdfs$type.add(namedNode(schema.TextDigitalDocument))
+        //  await data[agoranote].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#'+this.classe))
+          await data[agoranote].schema$dateCreated.add(date.toISOString())
+          await data[agoranote].rdfs$label.add(filename)
+          await data[agoranote].schema$about.add(namedNode(mymedia))
+          await data[agoranote].schema$creator.add(namedNode(this.webId))
+          // activitystreams
+          //await data[agoranote].rdf$type.add(namedNode(as.Note))
+          //  await data[agoranote].as$name.add(title)
+          // reverse attachment
+          //await data[mynote].as$attachment.add(namedNode(agoranote))
+          this.info += "\n"+agoranote+ " -- >created"
+        }
+
       }
 
 

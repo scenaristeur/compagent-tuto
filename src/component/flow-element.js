@@ -116,9 +116,12 @@ class FlowElement extends LitElement {
       fetchDocument(app.flow).then(
         notesList => {
           app.notesList = notesList;
-          app.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
+          console.log(notesList)
+          var notesUri = notesList.findSubjects()
+          app.notesUri = Array.from(new Set(notesUri))
           app.notes = []
           app.notesUri.forEach(function (nuri){
+
             var text = nuri.getString(schema.text) || ""
             var date = nuri.getDateTime(schema.dateCreated)|| ""
             var creator = nuri.getRef(schema.creator) || ""
@@ -134,6 +137,7 @@ class FlowElement extends LitElement {
             note.title = title
             note.keywords = keywords
             note.uri = nuri.asNodeRef()
+          //  console.log("NURI",note.uri)
             //text = nuri.getAllStrings()*/
             //  console.log(note)
             app.notes = [... app.notes, note]
