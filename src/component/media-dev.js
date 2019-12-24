@@ -12,7 +12,8 @@ class MediaDev extends LitElement {
       webId: {type: String},
       extension: {type: String},
       filename: {type: String},
-      info: {type: String}
+      info: {type: String},
+      folders: {type: Array}
     };
   }
 
@@ -21,6 +22,7 @@ class MediaDev extends LitElement {
     this.webId = null
     this.filename = ""
     this.info = ""
+    this.folders = ["public/Media/","public/Activity/"]
   }
 
   render(){
@@ -94,7 +96,7 @@ class MediaDev extends LitElement {
     sessionChanged(webId){
       console.log(webId)
       this.webId = webId
-      this.checkFolder()
+      this.checkFolders()
     }
 
 
@@ -111,35 +113,20 @@ class MediaDev extends LitElement {
       if (this.file == undefined){
         app.info += "\nPlease add a file "
       }else{
-        var date = new Date(Date.now())
-        var id = date.getTime()
-        app.info = date.toLocaleString()+"\nCheck user infos "
+
+        app.info = Date.now().toLocaleString()+"\nCheck user infos "
         this.updateUser()
         app.info += "\nUser infos checked"
 
-
-
         this.storage = await data.user.storage
-        var mymedia = this.storage+"public/media.ttl#"+id
-        app.info += "\nCreation "+mymedia
-
-        console.log(this.file)
         var filename = this.filename+this.extension
-        console.log(filename)
-        /*contentType
-        filename*/
+
         var path = this.storage+"public/Media/"+filename
         console.log(path)
         app.sendMedia(path,this.file,this.file.contentType)
 
-
       }
-
-
-
     }
-
-
 
     sendMedia(uri, file, contentType){
       var app = this
@@ -148,14 +135,25 @@ class MediaDev extends LitElement {
         success =>{
           console.log(success)
           app.info += "\nSuccess "+uri
+          app.sendActivity(uri,file,contentType)
         },
         err => {
           console.log(err)
-          app.info += "\nError "+uri
+          app.info += "\nError "+uri+" "+err
         });
       }
 
+      async sendActivity(uri,file,contentType){
+        var date = new Date(Date.now())
+        var id = date.getTime()
+        this.storage = await data.user.storage
+        var mymedia = this.storage+"public/media.ttl#"+id
+        this.info += "\nCreation "+mymedia
 
+        console.log(this.file)
+        var filename = this.filename+this.extension
+        console.log(filename)
+      }
 
 
 
@@ -223,10 +221,19 @@ class MediaDev extends LitElement {
       }
 
 
-      async checkFolder(){
+      checkFolders(){
+        var app = this
+        this.folders.forEach(function(f){
+          app.checkFolder(f)
+        })
+      }
+
+
+      async checkFolder(f){
         var app = this
         this.storage = await data.user.storage
-        var folder = this.storage+"public/Media/"
+
+        var folder = this.storage+f
         //    console.log(folder)
         this.fileClient.readFolder(folder).then(
           success => {
