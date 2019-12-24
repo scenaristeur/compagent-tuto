@@ -62,16 +62,16 @@ class AppElement extends LitElement {
 
     <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
-    <li class="nav-item active">
+<!--    <li class="nav-item active">
     <a class="nav-link" href="#">Dashboard <span class="sr-only">(current)</span></a>
     </li>
     <li class="nav-item">
     <a class="nav-link" href="#">Notifications</a>
-    </li>
+    </li>-->
     <li class="nav-item">
-    <a class="nav-link" href="#">Profile</a>
+    <a class="nav-link" href="#">Profile (TODO)</a>
     </li>
-    <li class="nav-item">
+    <!--<li class="nav-item">
     <a class="nav-link" href="#">Switch account</a>
 
 
@@ -83,18 +83,18 @@ class AppElement extends LitElement {
     <a class="dropdown-item" href="#">Another action</a>
     <a class="dropdown-item" href="#">Something else here</a>
     </div>
-    </li>
+    </li>-->
     </ul>
-    <form class="form-inline my-2 my-lg-0">
+    <!--<form class="form-inline my-2 my-lg-0">
     <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
+    </form>-->
     </div>
     </nav>
 
 
     <div class="nav-scroller bg-white shadow-sm">
-    <nav class="nav nav-underline">
+  <!--  <nav class="nav nav-underline">
     <a class="nav-link active" href="#">Dashboard</a>
     <a class="nav-link" href="#">
     Friends
@@ -107,8 +107,9 @@ class AppElement extends LitElement {
     <a class="nav-link" href="#">Link</a>
     <a class="nav-link" href="#">Link</a>
     <a class="nav-link" href="#">Link</a>
-    </nav>
+    </nav>    -->
     </div>
+
 
     <main role="main" class="container">
 

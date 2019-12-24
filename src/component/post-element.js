@@ -39,7 +39,8 @@ class PostElement extends LitElement {
       <button type="button" class="btn btn-primary" @click="${this.toggleDialog.bind(this)}"><i class="fa fa-pen"></i></button>
       <post-dialog-element ?opened="${this.dialogVisible}"
       @dialog.accept="${this.closeDialog.bind(this)}"
-      @dialog.cancel="${this.closeDialog.bind(this)}"></post-dialog-element>
+      @dialog.cancel="${this.closeDialog.bind(this)}">
+      </post-dialog-element>
       </div>
       `
       :html`

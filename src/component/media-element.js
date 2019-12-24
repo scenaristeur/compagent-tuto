@@ -61,7 +61,7 @@ class MediaElement extends LitElement {
 
 
       `
-      :html `Choose a file
+      :html `
       `}
 
       <div class="col-auto"><canvas style="max-width: 100%; height: auto;" id="canvas"/></div>

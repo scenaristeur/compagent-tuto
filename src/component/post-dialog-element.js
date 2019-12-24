@@ -103,10 +103,7 @@ class PostDialogElement extends LitElement {
 
     </div>
 
-    <div class="buttons">
-  <!--  <button type="button" class="accept btn btn-primary" @click="${() => this.dispatchEvent(new CustomEvent('dialog.accept'))}">Ok</button>-->
-    <button type="button" class="cancel btn btn-primary" @click="${() => this.dispatchEvent(new CustomEvent('dialog.cancel'))}"><i class="fas fa-window-close"></i> </button>
-    </div>
+
     </div>
     </div>`
   }

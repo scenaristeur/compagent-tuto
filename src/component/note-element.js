@@ -21,7 +21,7 @@ class NoteElement extends LitElement {
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <div class="form-group">
 <!--    <label class="text-primary" for="notearea"></label>-->
-    <textarea class="form-control" id="notearea" rows="5" style="width:100%" placeholder="Write a note on your Pod & share it on Agora"></textarea>
+    <textarea class="form-control" id="notearea"  style="width:100%;height:38vh" placeholder="Write a note on your Pod & share it on Agora"></textarea>
     </div>
     `;
   }

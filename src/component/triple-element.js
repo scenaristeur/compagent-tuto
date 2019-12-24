@@ -23,7 +23,7 @@ class TripleElement extends LitElement {
 
 
     const triplesList = (triples) => html`
-    <ul class="list-group list-group-flush" style="height: 50vh; overflow: auto">
+    <ul class="list-group list-group-flush" style="height: 40vh; overflow: auto">
     ${triples.map((t) => html`
       <li class="list-group-item">
 
@@ -31,7 +31,7 @@ class TripleElement extends LitElement {
 
       <div class="input-group mb-3">
       <div class="input-group-prepend">
-      <button class="btn btn-outline-secondary" type="button">${t.subject}  </button>
+      <button class="btn btn-outline-secondary" type="button">${t.subject}</button>
       <button class="btn btn-outline-secondary" type="button">${t.predicate}</button>
       <button class="btn btn-outline-secondary" type="button">${t.object}</button>
       </div>
@@ -47,7 +47,6 @@ class TripleElement extends LitElement {
       return html`
       <link href="css/fontawesome/css/all.css" rel="stylesheet">
       <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-      in developpement
       <div class="row">
       <div class="input-group mb-3">
       <input type="text"
