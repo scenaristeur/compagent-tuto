@@ -3,6 +3,7 @@ import { HelloAgent } from '../agents/hello-agent.js';
 
 import './note-dev.js'
 import './login-element.js'
+import './media-dev.js'
 
 
 class DevElement extends LitElement {
@@ -30,9 +31,10 @@ class DevElement extends LitElement {
     </div>
     <div class="row">
     <note-dev name="NoteDev"></note-dev>
+    <media-dev name="MediaDev"></media-dev>
     </div>
     </div>
-    
+
     <!--
     <p>${this.name}</p>
     <button @click="${this.sendMessage}">Send message</button>-->

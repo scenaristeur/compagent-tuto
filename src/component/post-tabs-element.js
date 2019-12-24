@@ -52,7 +52,7 @@ class PostTabsElement extends LitElement {
       border: none;
       outline: none;
       cursor: pointer;
-      padding: 7px 8px;
+      padding: 5px 8px;
       transition: 0.3s;
       font-size: 17px;
     }
@@ -75,6 +75,7 @@ class PostTabsElement extends LitElement {
       border-top: none;
     }
     </style>
+    <div class="container">
     <div class="row">
     <label class="sr-only" for="title">Title</label>
     <div class="input-group mb-2">
@@ -153,7 +154,7 @@ class PostTabsElement extends LitElement {
     <div class="form-check">
     <input class="form-check-input" type="checkbox" value="" id="agora_pub" name="agora_pub" checked>
     <label class="text-primary" for="agora_pub">
-    Publish on Agora
+    Push to Agora
     </label>
     </div>
 
@@ -165,7 +166,7 @@ class PostTabsElement extends LitElement {
 
     </div>
 
-
+    </div>
     <!--
     <div class="row">
     <div class="col">

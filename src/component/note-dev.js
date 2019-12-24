@@ -49,7 +49,7 @@ class NoteDev extends LitElement {
     <div class="form-check">
     <input class="form-check-input" type="checkbox" value="" id="agora_pub" name="agora_pub" checked>
     <label class="text-primary" for="agora_pub">
-    Publish on Agora
+    Push to Agora
     </label>
     </div>
     </div>
@@ -120,8 +120,7 @@ class NoteDev extends LitElement {
     app.info += "\nCreation "+mynote
     //  console.log(this.storage)
     //   var storage = this.storage
-    var date = new Date(Date.now())
-    var id = date.getTime()
+
     //  var date = new Date(id)
     //console.log(id)
 

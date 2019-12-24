@@ -151,10 +151,10 @@ class AppElement extends LitElement {
     <div class="my-3 p-3 bg-back rounded shadow-sm">
     <user-notes-element name="UserNotes"></user-notes-element>
     </div>
-
+<!--
     <div class="my-3 p-3 bg-back rounded shadow-sm">
     <explorer-element name="Explorer"></explorer-element>
-    </div>
+    </div>-->
 
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">

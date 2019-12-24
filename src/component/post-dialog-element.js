@@ -95,9 +95,9 @@ class PostDialogElement extends LitElement {
 
     <div class="${classMap({dialog: true, opened: this.opened, closed: !this.opened, modal: true})}">
     <div class="modal-content">
-    <h3 class="m-0 font-weight-bold text-primary title">New Note
+    <h6 class="m-0 font-weight-bold text-primary title">New Note
     <i @click="${() => this.dispatchEvent(new CustomEvent('dialog.cancel'))}" class="close fas fa-window-close"></i>
-    </h3>
+    </h6>
     <div>
     <post-tabs-element name="PostTabs"></post-tabs-element>
 
