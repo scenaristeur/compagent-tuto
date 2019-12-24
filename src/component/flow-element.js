@@ -50,7 +50,7 @@ class FlowElement extends LitElement {
       <small>${n.keywords}</small>
 
       </div>
-      <div class="col-md-1">
+      <div class="col-lg-1">
       <i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i>
       <a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
           <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
@@ -86,8 +86,6 @@ class FlowElement extends LitElement {
       </style>
       ${noteList(this.notes)}
       <small class="d-block text-right mt-3">
-
-
       <a href="${this.flow}"  title="${this.flow}" target="_blank">All Agora's notes<a>
       <a href="https://scenaristeur.github.io/spoggy-simple/?source=${this.flow}"  title="${this.flow}" target="_blank"><i class="fas fa-dice-d20"></i><a>
       </small>
