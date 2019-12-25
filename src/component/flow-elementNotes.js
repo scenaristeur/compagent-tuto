@@ -53,7 +53,7 @@ class FlowElement extends LitElement {
       <div class="col-lg-1">
       <i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i>
       <a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
-          <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+      <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
       <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.uri}"  title="${n.uri}" target="_blank">
       <i class="fas fa-dice-d20"></i><a>
 
@@ -115,6 +115,11 @@ class FlowElement extends LitElement {
         notesList => {
           app.notesList = notesList;
           console.log(notesList)
+          if (app.socket == undefined){
+            app.subscribe()
+          }else{
+            console.log("socket exist deja")
+          }
           var notesUri = notesList.findSubjects()
           app.notesUri = Array.from(new Set(notesUri))
           app.notes = []
@@ -135,23 +140,21 @@ class FlowElement extends LitElement {
             note.title = title
             note.keywords = keywords
             note.uri = nuri.asNodeRef()
-          //  console.log("NURI",note.uri)
+            //  console.log("NURI",note.uri)
             //text = nuri.getAllStrings()*/
             //  console.log(note)
             app.notes = [... app.notes, note]
           })
           app.notes.reverse()
-          if (app.socket == undefined){
-            app.subscribe()
-          }else{
-            console.log("socket exist deja")
-          }
+
 
         })
+
       }
 
       subscribe(){
         var app = this
+        app.socket = {status:"creating"}
         //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
         var websocket = this.notesList.getWebSocketRef();
         //  console.log("WEBSOCK",websocket)

@@ -41,7 +41,8 @@ class PostTabsElement extends LitElement {
     "public/spoggy/Image/",
     "public/spoggy/Video/",
     "public/spoggy/Audio/",
-    "public/spoggy/Document/"]
+    "public/spoggy/Document/",
+    "public/spoggy/Tag/"]
 
     //  this.agoraNotesListUrl = "https://agora.solid.community/public/notes.ttl"
   }
@@ -246,12 +247,18 @@ class PostTabsElement extends LitElement {
     var date = new Date(Date.now())
     var id = date.getTime()
     var title = this.shadowRoot.getElementById('title').value.trim();
+    var tags = this.shadowRoot.getElementById('tags').value.split(',');
+    this.shadowRoot.getElementById('title').value = ""
+    this.shadowRoot.getElementById('tags').value = ""
     this.storage = await data.user.storage
+
+
+
 
     var userActivity = this.storage+"public/spoggy/activity.ttl#"+id
     await  data[userActivity].rdfs$label.add(title)
     await  data[userActivity].schema$dateCreated.add(date.toISOString())
-
+    await data[app.storage+"public/spoggy/tags.ttl"].rdfs$label.add("Tags")
 
     //  var path = this.storage+"public/Notes/"+id+".ttl"
     //  console.log(data)
@@ -277,7 +284,7 @@ class PostTabsElement extends LitElement {
         //!!! as$Note ne fonctionne pas
         await  data[userActivity].as$attachment.add(namedNode(userNote))
         await data[userActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Create'))
-
+        await data[userActivity].as$generator.add(window.location.origin)
         console.log(userActivity+ " -- >created")
 
         var agora_pub = app.shadowRoot.getElementById('agora_pub').checked
@@ -288,13 +295,19 @@ class PostTabsElement extends LitElement {
           await data[agoraActivity].rdfs$label.add(title)
           await data[agoraActivity].as$name.add(title)
           //!!! as$Note ne fonctionne pas
-          await  data[agoraActivity].as$tag.add(namedNode(userNote))
-          await data[agoraActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Create'))
+          await  data[agoraActivity].as$object.add(namedNode(userNote))
+          await  data[agoraActivity].as$target.add(namedNode(userActivity))
+          await data[agoraActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Add'))
           await data[agoraActivity].schema$creator.add(namedNode(app.webId))
+          await data[agoraActivity].as$actor.add(namedNode(app.webId))
           console.log(agoraActivity+ " -- >created")
         }
 
-
+        tags.forEach(async function(t){
+          var taguri = app.storage+"public/spoggy/tags.ttl#"+t.trim();
+          await  data[userActivity].as$tag.add(namedNode(taguri))
+      //    console.log(taguri+ " -- >created")
+        })
 
 
         break;

@@ -159,6 +159,11 @@ Changement pour activitystream au lieu de notes
         fetchDocument(app.notesListUrl).then(
           notesList => {
             app.notesList = notesList;
+            if (app.socket == undefined){
+              app.subscribe()
+            }else{
+              console.log("socket exist deja")
+            }
             //  console.log("app.notesList",app.notesList)
             app.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
             //    console.log("notesUri",app.notesUri)
@@ -185,12 +190,9 @@ Changement pour activitystream au lieu de notes
               app.notes = [... app.notes, note]
             })
             app.notes.reverse()
-            if (app.socket == undefined){
-              app.subscribe()
-            }else{
-              console.log("socket exist deja")
-            }
+
           })
+
         }
 
 
@@ -199,6 +201,7 @@ Changement pour activitystream au lieu de notes
           //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
           var websocket = this.notesList.getWebSocketRef();
           //  console.log("WEBSOCK",websocket)
+          app.socket = {status:"creating"}
           app.socket = new WebSocket(websocket);
           //  console.log ("socket",app.socket)
           app.socket.onopen = function() {
