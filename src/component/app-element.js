@@ -24,7 +24,7 @@ class AppElement extends LitElement {
   constructor() {
     super();
     this.count = 0
-    this.flow = "https://agora.solid.community/public/notes.ttl"
+    this.flow = "https://agora.solid.community/public/spoggy/activity.ttl"
   }
 
   render(){

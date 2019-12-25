@@ -22,7 +22,7 @@ class PostTabsElement extends LitElement {
       requetes: {type: Object},
       responses: {type: Array},
       agoraNotesListUrl: { type: String},
-      //    webId: {type: String},
+      webId: {type: String},
       info: {type: String},
       folders: {type: Array}
     };
@@ -31,7 +31,7 @@ class PostTabsElement extends LitElement {
   constructor() {
     super();
     this.fileClient = SolidFileClient;
-    //    this.webId = null
+    this.webId = null
     this.subelements = ["Note", "Media", "Triple"] //, "Media", "Triple"]
     this.requetes = {}
     this.responses = []
@@ -213,6 +213,9 @@ class PostTabsElement extends LitElement {
           case "reponseContent":
           app.reponseContent(from, message);
           break;
+          case "sessionChanged":
+          app.sessionChanged(message.webId);
+          break;
           default:
           console.log("Unknown action ",message)
         }
@@ -237,6 +240,8 @@ class PostTabsElement extends LitElement {
 
   async preparePost(){
     var app = this
+    app.webId = this.ph.getPod("webId")
+    console.log(this.webId)
     console.log(this.responses)
     var date = new Date(Date.now())
     var id = date.getTime()
@@ -266,16 +271,32 @@ class PostTabsElement extends LitElement {
         await data[userNote].schema$text.add(content);
         await data[userNote].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Note'))
 
-      await data[userActivity].schema$dateCreated.add(date.toISOString())
+        await data[userActivity].schema$dateCreated.add(date.toISOString())
         await data[userActivity].rdfs$label.add(title)
         await data[userActivity].as$name.add(title)
         //!!! as$Note ne fonctionne pas
         await  data[userActivity].as$attachment.add(namedNode(userNote))
         await data[userActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Create'))
 
-        app.info += "\n"+userActivity+ " -- >created"
+        console.log(userActivity+ " -- >created")
 
-    
+        var agora_pub = app.shadowRoot.getElementById('agora_pub').checked
+        if (agora_pub == true){
+          console.log("Creation ", userActivity)
+          var agoraActivity = "https://agora.solid.community/public/spoggy/activity.ttl#"+id
+          await data[agoraActivity].schema$dateCreated.add(date.toISOString())
+          await data[agoraActivity].rdfs$label.add(title)
+          await data[agoraActivity].as$name.add(title)
+          //!!! as$Note ne fonctionne pas
+          await  data[agoraActivity].as$tag.add(namedNode(userNote))
+          await data[agoraActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Create'))
+          await data[agoraActivity].schema$creator.add(namedNode(app.webId))
+          console.log(agoraActivity+ " -- >created")
+        }
+
+
+
+
         break;
         case "Image":
         case "Video":
@@ -292,16 +313,12 @@ class PostTabsElement extends LitElement {
         console.log(r.message.type , "non traite")
       }
     })
-
-
     this.responses = []
-    this.updatePod(data)
+    //  this.updatePod(data)
 
   }
 
-  updatePod(data){
-    console.log(data)
-  }
+
 
 
 

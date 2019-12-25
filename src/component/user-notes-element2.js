@@ -134,18 +134,14 @@ class UserNotesElement extends LitElement {
             app.publicTypeIndex = publicTypeIndex;
             app.notesListEntry = app.publicTypeIndex.findSubject(solid.forClass, schema.TextDigitalDocument);
             console.log("app.notesListEntry",app.notesListEntry)
-        /*
-
-Changement pour activitystream au lieu de notes
-          if (app.notesListEntry === null){
+            if (app.notesListEntry === null){
               console.log("null")
               app.notesListUrl = app.ph.initialiseNotesList(app.person, app.publicTypeIndex)
             }else{
               console.log(" pas null")
               app.notesListUrl = app.notesListEntry.getRef(solid.instance)
 
-            }*/
-          app.notesListUrl =  app.ph.getPod("storage")+"public/spoggy/activity.ttl"
+            }
             console.log("notesListUrl",app.notesListUrl)
             app.getNotes()
           },
