@@ -91,10 +91,27 @@
     {
       "label": "Media",
       "color": {
-        "border": "#2b7ce9",
-        "background": "#d2e5ff"
+        "background": "#ff8000",
+        "border": "#2b7ce9"
       },
-      "id": "3bc8a81d-a6fa-42ae-90d7-8525a47484b1"
+      "id": "3bc8a81d-a6fa-42ae-90d7-8525a47484b1",
+      "fixed": {},
+      "font": {
+        "bold": {},
+        "boldital": {},
+        "ital": {},
+        "mono": {}
+      },
+      "icon": {},
+      "margin": {},
+      "scaling": {
+        "label": {}
+      },
+      "shadow": {},
+      "shapeProperties": {},
+      "x": 56.85139781700648,
+      "y": -226.15451502891617,
+      "shape": "ellipse"
     },
     {
       "label": "TripleTurtle",
@@ -124,18 +141,52 @@
     {
       "label": "TripleJson",
       "color": {
-        "border": "#2b7ce9",
-        "background": "#d2e5ff"
+        "background": "#ff8000",
+        "border": "#2b7ce9"
       },
-      "id": "0eb4ea1a-366c-4faf-8168-9bc9acc580d7"
+      "id": "0eb4ea1a-366c-4faf-8168-9bc9acc580d7",
+      "fixed": {},
+      "font": {
+        "bold": {},
+        "boldital": {},
+        "ital": {},
+        "mono": {}
+      },
+      "icon": {},
+      "margin": {},
+      "scaling": {
+        "label": {}
+      },
+      "shadow": {},
+      "shapeProperties": {},
+      "x": 57.54333254091202,
+      "y": -156.34857774506375,
+      "shape": "ellipse"
     },
     {
       "label": "SpoggyGraph",
       "color": {
-        "border": "#2b7ce9",
-        "background": "#d2e5ff"
+        "background": "#ff8000",
+        "border": "#2b7ce9"
       },
-      "id": "c8208ae6-5b70-4d00-907c-2ee06581e0c6"
+      "id": "c8208ae6-5b70-4d00-907c-2ee06581e0c6",
+      "fixed": {},
+      "font": {
+        "bold": {},
+        "boldital": {},
+        "ital": {},
+        "mono": {}
+      },
+      "icon": {},
+      "margin": {},
+      "scaling": {
+        "label": {}
+      },
+      "shadow": {},
+      "shapeProperties": {},
+      "x": 82.0952987897231,
+      "y": -103.58650954031788,
+      "shape": "ellipse"
     },
     {
       "label": "https://www.w3.org/ns/activitystreams#Note",
@@ -268,10 +319,27 @@
     {
       "label": "UserPod",
       "color": {
-        "border": "#2b7ce9",
-        "background": "#ff8000"
+        "background": "#ff6868",
+        "border": "#2b7ce9"
       },
-      "id": "770dca0c-cef7-4de3-98d2-0b7f2a67b539"
+      "id": "770dca0c-cef7-4de3-98d2-0b7f2a67b539",
+      "fixed": {},
+      "font": {
+        "bold": {},
+        "boldital": {},
+        "ital": {},
+        "mono": {}
+      },
+      "icon": {},
+      "margin": {},
+      "scaling": {
+        "label": {}
+      },
+      "shadow": {},
+      "shapeProperties": {},
+      "x": -419.69152262074834,
+      "y": 31.244171236083695,
+      "shape": "ellipse"
     },
     {
       "label": "https://podname.provider/public/spoggy/Spog/",
@@ -452,6 +520,69 @@
     }
   ],
   "edges": [
+    {
+      "from": "Spoggy",
+      "to": "Solo",
+      "arrows": "to",
+      "label": "niveau 1",
+      "id": "d2aa8ff0-432a-44d1-9cf0-6a5c7d557cf9"
+    },
+    {
+      "from": "Spoggy",
+      "to": "Collaboratif",
+      "arrows": "to",
+      "label": "niveau 2",
+      "id": "3c17c721-6bd6-4277-99f7-51f7d1176c95"
+    },
+    {
+      "from": "Spoggy",
+      "to": "Explore",
+      "arrows": "to",
+      "label": "niveau 3",
+      "id": "0f191eaf-457d-4cb4-b681-ecf410c5d646"
+    },
+    {
+      "from": "Spoggy",
+      "to": "Solid",
+      "arrows": "to",
+      "label": "niveau 4",
+      "id": "a56a2490-80e6-4251-893f-d6e2ac7cda4b"
+    },
+    {
+      "from": "Spoggy",
+      "to": "Holacratie",
+      "arrows": "to",
+      "label": "niveau 5",
+      "id": "c5b1dd1a-a653-4610-9ffc-f72837f4e6c2"
+    },
+    {
+      "from": "Solo",
+      "to": "Collaboratif",
+      "arrows": "to",
+      "label": "suivant",
+      "id": "84083d59-8348-4b66-8402-795a0902de1d"
+    },
+    {
+      "from": "Collaboratif",
+      "to": "Explore",
+      "arrows": "to",
+      "label": "suivant",
+      "id": "4e267f79-79cc-45ee-94f6-9483cb1ddee4"
+    },
+    {
+      "from": "Explore",
+      "to": "Solid",
+      "arrows": "to",
+      "label": "suivant",
+      "id": "075e83c7-8253-477f-9803-462fe81f63c5"
+    },
+    {
+      "from": "Solid",
+      "to": "Holacratie",
+      "arrows": "to",
+      "label": "suivant",
+      "id": "143ae0c6-2566-4443-8b26-c6ba7a65d885"
+    },
     {
       "from": "Spoggy",
       "to": "Solo",

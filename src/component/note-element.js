@@ -5,14 +5,12 @@ class NoteElement extends LitElement {
 
   static get properties() {
     return {
-      name: {type: String},
-      count: {type: Number}
+      name: {type: String}
     };
   }
 
   constructor() {
     super();
-    this.count = 0
   }
 
   render(){
@@ -20,7 +18,7 @@ class NoteElement extends LitElement {
     <link href="css/fontawesome/css/all.css" rel="stylesheet">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <div class="form-group">
-<!--    <label class="text-primary" for="notearea"></label>-->
+    <!--    <label class="text-primary" for="notearea"></label>-->
     <textarea class="form-control" id="notearea"  style="width:100%;height:38vh" placeholder="Write a note on your Pod & share it on Agora"></textarea>
     </div>
     `;
@@ -46,14 +44,14 @@ class NoteElement extends LitElement {
     console.log(from,message)
     var textarea = this.shadowRoot.getElementById('notearea')/*.shadowRoot.querySelector(".form-control")*/
     var note = textarea.value.trim()
-    textarea.value = ""
     console.log(note)
     this.agent.send(from, {
       action: "reponseContent",
       content: note,
       id: message.id,
-      type: "TextDigitalDocument"
+      type: "Note"
     })
+    textarea.value = ""
   }
 
 }

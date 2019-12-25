@@ -86,8 +86,6 @@ class TripleElement extends LitElement {
       };
     }
 
-
-
     askContent(from, message){
       console.log(from,message)
       this.agent.send(from, {
@@ -219,12 +217,6 @@ class TripleElement extends LitElement {
         return false;
       }
     }
-
-    sendMessage(){
-      this.count++
-      this.agent.send("Messages", {action:"info", info:"Now counter is "+this.count}  )
-    }
-
   }
 
   customElements.define('triple-element', TripleElement);

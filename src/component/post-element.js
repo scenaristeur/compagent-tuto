@@ -13,25 +13,18 @@ class PostElement extends LitElement {
     }
   }
 
-
-
   constructor () {
     super()
     this.dialogVisible = false
     this.webId = null
   }
 
-
-
   render () {
     console.log('Dialog visible:', this.dialogVisible)
     return html`
-
     <link href="css/fontawesome/css/all.css" rel="stylesheet">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="css/offcanvas.css" rel="stylesheet">
-
-
 
     ${this.webId != null ?
       html`

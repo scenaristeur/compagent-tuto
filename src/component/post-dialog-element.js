@@ -100,10 +100,7 @@ class PostDialogElement extends LitElement {
     </h6>
     <div>
     <post-tabs-element name="PostTabs"></post-tabs-element>
-
     </div>
-
-
     </div>
     </div>`
   }

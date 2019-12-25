@@ -8,13 +8,16 @@ class MediaElement extends LitElement {
       name: {type: String},
       count: {type: Number},
       extension: {type: String},
-      filename: {type: String}
+      filename: {type: String},
+      info: {type: String},
+      folders: {type: Array}
     };
   }
 
   constructor() {
     super();
-    this.count = 0
+    this.info = ""
+    this.folders = ["public/spoggy/","public/spoggy/Activity/","public/spoggy/Image/","public/spoggy/Video/","public/spoggy/Audio/","public/spoggy/Document/"]
     this.filename = ""
   }
 
@@ -65,27 +68,6 @@ class MediaElement extends LitElement {
       `}
 
       <div class="col-auto"><canvas style="max-width: 100%; height: auto;" id="canvas"/></div>
-      <!--
-      <input id="filename" class="form-control" type="text" value="${this.filename}" @change="${this.filenameChange}" placeholder="Filename"> ${this.extension}
-      -->
-      <!--https://www.html5rocks.com/en/tutorials/getusermedia/intro/-->
-      <!--            <div class="custom-file">
-      <input type="file" class="custom-file-input" @change="${this.createTemp}" id="imageFile" accept="image/*;capture=camera" lang="${this.lang}">
-      <label class="custom-file-label" for="imageFile"><i class="fas fa-camera-retro"></i> Image</label>
-      </div>
-      <div class="custom-file">
-      <input type="file" class="custom-file-input" @change="${this.createTemp}" id="videoFile" accept="video/*;capture=camcorder" lang="${this.lang}">
-      <label class="custom-file-label" for="videoFile"><i class="fas fa-video"></i> Video</label>
-      </div>
-      <div class="custom-file">
-      <input type="file" class="custom-file-input" @change="${this.createTemp}" id="audioFile" accept="audio/*;capture=microphone" lang="${this.lang}">
-      <label class="custom-file-label" for="audioFile"><i class="fas fa-microphone"></i> Audio</label>
-      </div>
-      -->
-
-
-
-
 
       `;
     }
@@ -148,42 +130,51 @@ class MediaElement extends LitElement {
     askContent(from, message){
       var app = this
       console.log(from,message)
+
+      this.classe = "Document"
+      if (this.file != undefined){
+        var type = this.file.type
+        switch (type) {
+          case (type.match(/^image/) || {}).input:
+          this.classe = "Image"
+          break;
+          case (type.match(/^video/) || {}).input:
+          this.classe = "Video"
+          break;
+          case (type.match(/^audio/) || {}).input:
+          this.classe = "Audio"
+          break;
+          default:
+          this.classe = "Document"
+          break;
+        }
+      }
+
+
       var rep = {
         action: "reponseContent",
         content: this.file,
         id: message.id,
-
-        type: "MediaObject"}
-        if (this.filename.length > 0){
-          rep.newFilename = this.filename+this.extension
-        }
-
-
-        this.agent.send(from, rep)
-        this.filename = ""
-        /*
-        this.file = {}
-        this.filename = ""
-
-
-        var canvas = this.shadowRoot.getElementById("canvas")
-        const context = canvas.getContext('2d');
-
-        context.clearRect(0, 0, canvas.width, canvas.height);*/
-
+        type: this.classe
       }
-
-      filenameChange(){
-        var filename = this.shadowRoot.getElementById("filename").value
-        if (filename.length == 0){
-          alert("Filename must not be blank")
-          this.shadowRoot.getElementById("filename").value = this.filename
-        }else{
-          this.filename = filename
-        }
+      if (this.filename.length > 0){
+        rep.newFilename = this.filename+this.extension
       }
-
-
+      this.agent.send(from, rep)
+      this.filename = ""
     }
 
-    customElements.define('media-element', MediaElement);
+    filenameChange(){
+      var filename = this.shadowRoot.getElementById("filename").value
+      if (filename.length == 0){
+        alert("Filename must not be blank")
+        this.shadowRoot.getElementById("filename").value = this.filename
+      }else{
+        this.filename = filename
+      }
+    }
+
+
+  }
+
+  customElements.define('media-element', MediaElement);
