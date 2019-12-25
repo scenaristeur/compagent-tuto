@@ -23,25 +23,15 @@ class TripleElement extends LitElement {
 
 
     const triplesList = (triples) => html`
-    <ul class="list-group list-group-flush" style="height: 40vh; overflow: auto">
+    <ul class="list-group list-group-flush" style="height: 30vh; overflow: auto">
     ${triples.map((t) => html`
       <li class="list-group-item">
-
-
-
-      <div class="input-group mb-3">
-      <div class="input-group-prepend">
       <button class="btn btn-outline-secondary" type="button">${t.subject}</button>
       <button class="btn btn-outline-secondary" type="button">${t.predicate}</button>
       <button class="btn btn-outline-secondary" type="button">${t.object}</button>
-      </div>
-      <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
-      </div>
-
       </li>
       `)}
       </ul>
-
       `;
 
       return html`

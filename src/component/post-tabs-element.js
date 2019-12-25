@@ -98,17 +98,6 @@ class PostTabsElement extends LitElement {
 
     <input id="title" class="form-control" type="text" value="${this.title}" placeholder="Title">
 
-    <div class="input-group-append">
-    <div class="tab">
-    <button class="tablinks active" tabName='Note' @click="${this.openTab}"><i class="far fa-sticky-note"></i></button>
-    <button class="tablinks" tabName='Media' @click="${this.openTab}"><i class="fas fa-photo-video"></i></button>
-    <button class="tablinks" tabName='Triple' @click="${this.openTab}"><i class="fas fa-receipt"></i></button>
-    <!--<button class="tablinks" tabName='Graph' @click="${this.openTab}"><i class="fas fa-dice-d20"></i></button>-->
-
-
-    </div>
-    </div>
-
     </div>
     </div>
 
@@ -134,6 +123,14 @@ class PostTabsElement extends LitElement {
     <p class="text-primary">todo.</p>
     <graph-element name="Graph"></graph-element>
     </div>
+
+    <div class="tab">
+    <button class="tablinks active" tabName='Note' @click="${this.openTab}"><i class="far fa-sticky-note"></i></button>
+    <button class="tablinks" tabName='Media' @click="${this.openTab}"><i class="fas fa-photo-video"></i></button>
+    <button class="tablinks" tabName='Triple' @click="${this.openTab}"><i class="fas fa-receipt"></i></button>
+    <!--<button class="tablinks" tabName='Graph' @click="${this.openTab}"><i class="fas fa-dice-d20"></i></button>-->
+    </div>
+
     </div>
 
     <div class="row">

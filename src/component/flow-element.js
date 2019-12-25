@@ -12,6 +12,7 @@ class FlowElement extends LitElement {
       notes: {type: Array},
       lang: {type: String},
       notes: {type: Array},
+      lastUpdate: {type: Number}
     };
   }
 
@@ -20,6 +21,7 @@ class FlowElement extends LitElement {
     this.flow = "floww"
     this.lang=navigator.language
     this.notes = []
+    this.lastUpdate = 0
   }
 
   render(){
@@ -53,7 +55,7 @@ class FlowElement extends LitElement {
       <div class="col-lg-1">
       <i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i>
       <a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
-          <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+      <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
       <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.uri}"  title="${n.uri}" target="_blank">
       <i class="fas fa-dice-d20"></i><a>
 
@@ -111,6 +113,8 @@ class FlowElement extends LitElement {
 
     getAgoraData(){
       var app = this
+      this.lastUpdate = Date.now()
+    //  console.log("lastUpdate flow", this.lastUpdate)
       fetchDocument(app.flow).then(
         notesList => {
           app.notesList = notesList;
@@ -135,7 +139,7 @@ class FlowElement extends LitElement {
             note.title = title
             note.keywords = keywords
             note.uri = nuri.asNodeRef()
-          //  console.log("NURI",note.uri)
+            //  console.log("NURI",note.uri)
             //text = nuri.getAllStrings()*/
             //  console.log(note)
             app.notes = [... app.notes, note]
@@ -166,9 +170,7 @@ class FlowElement extends LitElement {
         };
         app.socket.onmessage = function(msg) {
           if (msg.data && msg.data.slice(0, 3) === 'pub') {
-            const d = new Date();
-            var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
-            app.getAgoraData()
+          Date.now() - app.lastUpdate > 6000 ?   app.getAgoraData() : "";
           }
           //else{console.log("message inconnu",msg)}
         };

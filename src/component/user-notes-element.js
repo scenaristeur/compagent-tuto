@@ -11,7 +11,8 @@ class UserNotesElement extends LitElement {
       name: {type: String},
       person: {type: Object},
       notes: {type: Array},
-      lang: {type: String}
+      lang: {type: String},
+      lastUpdate: {type: Number}
     };
   }
 
@@ -20,6 +21,7 @@ class UserNotesElement extends LitElement {
     this.notes = [],
     this.person = null,
     this.lang=navigator.language
+    this.lastUpdate = 0
   }
 
   render(){
@@ -134,104 +136,102 @@ class UserNotesElement extends LitElement {
             app.publicTypeIndex = publicTypeIndex;
             app.notesListEntry = app.publicTypeIndex.findSubject(solid.forClass, schema.TextDigitalDocument);
             console.log("app.notesListEntry",app.notesListEntry)
-        /*
+            /*
 
-Changement pour activitystream au lieu de notes
-          if (app.notesListEntry === null){
-              console.log("null")
-              app.notesListUrl = app.ph.initialiseNotesList(app.person, app.publicTypeIndex)
-            }else{
-              console.log(" pas null")
-              app.notesListUrl = app.notesListEntry.getRef(solid.instance)
+            Changement pour activitystream au lieu de notes
+            if (app.notesListEntry === null){
+            console.log("null")
+            app.notesListUrl = app.ph.initialiseNotesList(app.person, app.publicTypeIndex)
+          }else{
+          console.log(" pas null")
+          app.notesListUrl = app.notesListEntry.getRef(solid.instance)
 
-            }*/
-          app.notesListUrl =  app.ph.getPod("storage")+"public/spoggy/activity.ttl"
-            console.log("notesListUrl",app.notesListUrl)
-            app.getNotes()
-          },
-          err => {console.log(err)}
-        );
-      }
+        }*/
+        app.notesListUrl =  app.ph.getPod("storage")+"public/spoggy/activity.ttl"
+        console.log("notesListUrl",app.notesListUrl)
+        app.getNotes()
+      },
+      err => {console.log(err)}
+    );
+  }
 
-      getNotes(){
-        var app = this;
-        console.log("getNotes at ",app.notesListUrl)
-        fetchDocument(app.notesListUrl).then(
-          notesList => {
-            app.notesList = notesList;
-            if (app.socket == undefined){
-              app.subscribe()
-            }else{
-              console.log("socket exist deja")
-            }
-            //  console.log("app.notesList",app.notesList)
-            app.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
-            //    console.log("notesUri",app.notesUri)
-            var notesUri = notesList.findSubjects()
-            app.notesUri = Array.from(new Set(notesUri))
-            app.notes = []
-            app.notesUri.forEach(function (nuri){
-              var subject = nuri.asNodeRef()
-              //  console.log("subject",subject)
-              //  console.log("doc",nuri.getDocument())
-              var text = nuri.getString(schema.text) || ""
-              var date = nuri.getDateTime(schema.dateCreated) || ""
-              var title = nuri.getString(rdfs.label) || ""
-              var keywords = nuri.getString(schema.keywords) || ""
-              //  console.log(text, date)
-              var note = {}
-              note.title = title
-              note.text = text;
-              note.date = date;
-              note.subject = subject;
-              note.keywords = keywords
-              //  console.log(note)
-              //text = nuri.getAllStrings()*/
-              app.notes = [... app.notes, note]
-            })
-            app.notes.reverse()
-
-          })
-
+  getNotes(){
+    var app = this;
+    this.lastUpdate = Date.now()
+    fetchDocument(app.notesListUrl).then(
+      notesList => {
+        app.notesList = notesList;
+        if (app.socket == undefined){
+          app.subscribe()
+        }else{
+          console.log("socket exist deja")
         }
+        //  console.log("app.notesList",app.notesList)
+        app.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
+        //    console.log("notesUri",app.notesUri)
+        var notesUri = notesList.findSubjects()
+        app.notesUri = Array.from(new Set(notesUri))
+        app.notes = []
+        app.notesUri.forEach(function (nuri){
+          var subject = nuri.asNodeRef()
+          //  console.log("subject",subject)
+          //  console.log("doc",nuri.getDocument())
+          var text = nuri.getString(schema.text) || ""
+          var date = nuri.getDateTime(schema.dateCreated) || ""
+          var title = nuri.getString(rdfs.label) || ""
+          var keywords = nuri.getString(schema.keywords) || ""
+          //  console.log(text, date)
+          var note = {}
+          note.title = title
+          note.text = text;
+          note.date = date;
+          note.subject = subject;
+          note.keywords = keywords
+          //  console.log(note)
+          //text = nuri.getAllStrings()*/
+          app.notes = [... app.notes, note]
+        })
+        app.notes.reverse()
+
+      })
+
+    }
 
 
-        subscribe(){
-          var app = this
-          //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
-          var websocket = this.notesList.getWebSocketRef();
-          //  console.log("WEBSOCK",websocket)
-          app.socket = {status:"creating"}
-          app.socket = new WebSocket(websocket);
-          //  console.log ("socket",app.socket)
-          app.socket.onopen = function() {
-            const d = new Date();
-            var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
-            this.send('sub '+app.notesListUrl);
-            app.agent.send('Messages', now+"[souscription] "+app.notesListUrl)
-            //  console.log("OPENED SOCKET",app.socket)
-          };
-          app.socket.onmessage = function(msg) {
-            if (msg.data && msg.data.slice(0, 3) === 'pub') {
-              const d = new Date();
-              var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
-              app.getNotes()
-            }
-            //  else{console.log("message inconnu",msg)}
-          };
+    subscribe(){
+      var app = this
+      //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
+      var websocket = this.notesList.getWebSocketRef();
+      //  console.log("WEBSOCK",websocket)
+      app.socket = {status:"creating"}
+      app.socket = new WebSocket(websocket);
+      //  console.log ("socket",app.socket)
+      app.socket.onopen = function() {
+        const d = new Date();
+        var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
+        this.send('sub '+app.notesListUrl);
+        app.agent.send('Messages', now+"[souscription] "+app.notesListUrl)
+        //  console.log("OPENED SOCKET",app.socket)
+      };
+      app.socket.onmessage = function(msg) {
+        if (msg.data && msg.data.slice(0, 3) === 'pub') {
+              Date.now() - app.lastUpdate > 6000 ?   app.getNotes(): "";
         }
+        //  else{console.log("message inconnu",msg)}
+      };
+    }
 
 
 
 
-        copy(e){
-          var dummy = document.createElement("textarea");
-          document.body.appendChild(dummy);
-          dummy.value = e.target.getAttribute("uri");
-          dummy.select();
-          document.execCommand("copy");
-          document.body.removeChild(dummy);
-        }
-      }
+    copy(e){
+      var dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = e.target.getAttribute("uri");
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+    }
+  }
 
-      customElements.define('user-notes-element', UserNotesElement);
+  customElements.define('user-notes-element', UserNotesElement);
