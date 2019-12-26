@@ -158,7 +158,7 @@ class MediaElement extends LitElement {
         type: this.classe
       }
       if (this.filename.length > 0){
-        rep.newFilename = this.filename+this.extension
+        rep.newFilename = this.filename.replace(/ /g,"_")+this.extension
       }
       this.agent.send(from, rep)
       this.filename = ""

@@ -26,7 +26,7 @@ PodHelper.prototype.setWebId = function (_webId){
         pod.name = pod.person.getString(foaf.name)
         pod.storage = pod.person.getRef(space.storage)
         pod.publicTypeIndexUrl = pod.person.getRef(solid.publicTypeIndex)
-        console.log("INIT publicTypeIndexUrl",pod.publicTypeIndexUrl)
+      //  console.log("INIT publicTypeIndexUrl",pod.publicTypeIndexUrl)
         fetchDocument(pod.publicTypeIndexUrl).then(
           publicTypeIndex => {
             pod.publicTypeIndex = publicTypeIndex;
@@ -43,9 +43,9 @@ PodHelper.prototype.setWebId = function (_webId){
             fetchDocument(pod.notesListUrl).then(
               notesList => {
                 pod.notesList = notesList;
-                console.log("pod.notesList",pod.notesList)
+              //  console.log("pod.notesList",pod.notesList)
                 pod.notesUri = notesList.findSubjects(rdf.type, schema.TextDigitalDocument)
-                console.log("notesUri",pod.notesUri)
+            //    console.log("notesUri",pod.notesUri)
               })
               /*
               console.log("pod.picsListEntry",pod.picsListEntry)

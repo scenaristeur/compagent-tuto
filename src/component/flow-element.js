@@ -118,7 +118,7 @@ class FlowElement extends LitElement {
       fetchDocument(app.flow).then(
         notesList => {
           app.notesList = notesList;
-          console.log(notesList)
+      //    console.log(notesList)
           var notesUri = notesList.findSubjects()
           app.notesUri = Array.from(new Set(notesUri))
           app.notes = []
@@ -127,7 +127,7 @@ class FlowElement extends LitElement {
             var text = nuri.getString(schema.text) || ""
             var date = nuri.getDateTime(schema.dateCreated)|| ""
             var creator = nuri.getRef(schema.creator) || ""
-            var also = nuri.getRef(rdfs.seeAlso) || nuri.getRef(schema.about) || nuri.getRef("https://www.w3.org/ns/activitystreams#attachement") ||""
+            var also = nuri.getRef(rdfs.seeAlso) || nuri.getRef(schema.about) || nuri.getRef("https://www.w3.org/ns/activitystreams#target") ||""
             var title = nuri.getString(rdfs.label) || ""
             var keywords = nuri.getString(schema.keywords) || ""
             //  console.log(text, date)
@@ -170,7 +170,7 @@ class FlowElement extends LitElement {
         };
         app.socket.onmessage = function(msg) {
           if (msg.data && msg.data.slice(0, 3) === 'pub') {
-          Date.now() - app.lastUpdate > 6000 ?   app.getAgoraData() : "";
+          Date.now() - app.lastUpdate > 2000 ?   app.getAgoraData() : "";
           }
           //else{console.log("message inconnu",msg)}
         };

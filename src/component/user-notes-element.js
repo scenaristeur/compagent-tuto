@@ -100,7 +100,7 @@ class UserNotesElement extends LitElement {
       personChanged(person){
         this.person = person
         if (person != null){
-          console.log(person)
+        //  console.log(person)
           this.initNotePod()
         }else{
           this.notes = []
@@ -130,12 +130,12 @@ class UserNotesElement extends LitElement {
         this.publicTypeIndexUrl = this.person.getRef(solid.publicTypeIndex)
         console.log("publicTypeIndexUrl",this.publicTypeIndexUrl)*/
         this.publicTypeIndexUrl = this.person.getRef(solid.publicTypeIndex)
-        console.log("publicTypeIndexUrl",this.publicTypeIndexUrl)
+      //  console.log("publicTypeIndexUrl",this.publicTypeIndexUrl)
         fetchDocument(app.publicTypeIndexUrl).then(
           publicTypeIndex => {
             app.publicTypeIndex = publicTypeIndex;
             app.notesListEntry = app.publicTypeIndex.findSubject(solid.forClass, schema.TextDigitalDocument);
-            console.log("app.notesListEntry",app.notesListEntry)
+          //  console.log("app.notesListEntry",app.notesListEntry)
             /*
 
             Changement pour activitystream au lieu de notes
@@ -215,7 +215,7 @@ class UserNotesElement extends LitElement {
       };
       app.socket.onmessage = function(msg) {
         if (msg.data && msg.data.slice(0, 3) === 'pub') {
-              Date.now() - app.lastUpdate > 6000 ?   app.getNotes(): "";
+              Date.now() - app.lastUpdate > 2000 ?   app.getNotes(): "";
         }
         //  else{console.log("message inconnu",msg)}
       };
