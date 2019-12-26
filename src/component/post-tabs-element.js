@@ -268,7 +268,6 @@ class PostTabsElement extends LitElement {
     await  data[userActivity].rdfs$label.add(title)
     await  data[userActivity].schema$dateCreated.add(date.toISOString())
 
-
     await data[userActivity].schema$dateCreated.add(date.toISOString())
     await data[userActivity].rdfs$label.add(title)
     await data[userActivity].as$name.add(title)
@@ -313,6 +312,7 @@ class PostTabsElement extends LitElement {
         await data[userNote].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Note'))
         //!!! as$Note ne fonctionne pas
         await  data[userActivity].as$attachment.add(namedNode(userNote))
+        await data[userActivity].schema$text.add(content);
 
         var agora_pub = app.shadowRoot.getElementById('agora_pub').checked
         if (agora_pub == true){

@@ -3,6 +3,8 @@ import { HelloAgent } from '../agents/hello-agent.js';
 import { fetchDocument } from 'tripledoc';
 import { schema, rdfs, rdf } from 'rdf-namespaces';
 
+import data from "@solid/query-ldflex";
+
 class FlowElement extends LitElement {
 
   static get properties() {
@@ -114,11 +116,11 @@ class FlowElement extends LitElement {
     getAgoraData(){
       var app = this
       this.lastUpdate = Date.now()
-    //  console.log("lastUpdate flow", this.lastUpdate)
+      //  console.log("lastUpdate flow", this.lastUpdate)
       fetchDocument(app.flow).then(
         notesList => {
           app.notesList = notesList;
-      //    console.log(notesList)
+          //    console.log(notesList)
           var notesUri = notesList.findSubjects()
           app.notesUri = Array.from(new Set(notesUri))
           app.notes = []
@@ -142,9 +144,13 @@ class FlowElement extends LitElement {
             //  console.log("NURI",note.uri)
             //text = nuri.getAllStrings()*/
             //  console.log(note)
+
+
+
             app.notes = [... app.notes, note]
           })
           app.notes.reverse()
+        //  app.getDetails()
           if (app.socket == undefined){
             app.subscribe()
           }else{
@@ -154,37 +160,92 @@ class FlowElement extends LitElement {
         })
       }
 
-      subscribe(){
+
+      async getDetails1(){
         var app = this
-        //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
-        var websocket = this.notesList.getWebSocketRef();
-        //  console.log("WEBSOCK",websocket)
-        app.socket = new WebSocket(websocket);
-        //  console.log ("socket",app.socket)
-        app.socket.onopen = function() {
-          const d = new Date();
-          var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
-          this.send('sub '+app.flow);
-          app.agent.send('Messages', now+"[souscription] "+app.flow)
-          //  console.log("OPENED SOCKET",app.socket)
-        };
-        app.socket.onmessage = function(msg) {
-          if (msg.data && msg.data.slice(0, 3) === 'pub') {
-          Date.now() - app.lastUpdate > 2000 ?   app.getAgoraData() : "";
+        console.log(this.notes)
+        this.notes.forEach(async function(n){
+
+          n.creatorName = "todo"
+          console.log(n)
+          console.log(n.also)
+
+          for await (const subject of  data[n.also].subjects){
+            //  console.log(`  - ${subject}`);
+            for await (const pred of subject.properties) {
+              var p = await pred;
+              var val = await subject[pred]
+              //  console.log(p, `  - ${val}`)
+              if (val != undefined){
+                n[pred] = val['<target>'].subject.id
+              }
+            }
           }
-          //else{console.log("message inconnu",msg)}
-        };
-      }
 
-      copy(e){
-        var dummy = document.createElement("textarea");
-        document.body.appendChild(dummy);
-        dummy.value = e.target.getAttribute("uri");
-        dummy.select();
-        document.execCommand("copy");
-        document.body.removeChild(dummy);
-      }
+          console.log(n)
 
+          /*var also = n.also.asNodeRef()
+          var date = also.getDateTime(schema.dateCreated) || ""
+          var title = also.getString(rdfs.label) || ""
+          console.log(date, title)*/
+
+          /*fetchDocument(n.also).then(
+          detail => {
+          console.log(detail)
+          var act = detail.findSubject(n.also)
+          var date = act.getDateTime(schema.dateCreated) || ""
+          var title = act.getString(rdfs.label) || ""
+          var att = act.getAllRefs('https://www.w3.org/ns/activitystreams#attachment')
+          var obj = act.getAllRefs('https://www.w3.org/ns/activitystreams#object')
+          console.log(date,title, att, obj)
+
+          //    console.log(details.getStatements())
+          //    console.log(details.getTriples())
+
+        })*/
+
+        /*for await (const subject of  data[nuri].subjects){
+        console.log(`  - ${subject}`);
+        for await (const pred of subject.properties) {
+        var p = await pred;
+        console.log(p)
+      }
+    }*/
+  })
+}
+
+
+subscribe(){
+  var app = this
+  //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
+  var websocket = this.notesList.getWebSocketRef();
+  //  console.log("WEBSOCK",websocket)
+  app.socket = new WebSocket(websocket);
+  //  console.log ("socket",app.socket)
+  app.socket.onopen = function() {
+    const d = new Date();
+    var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
+    this.send('sub '+app.flow);
+    app.agent.send('Messages', now+"[souscription] "+app.flow)
+    //  console.log("OPENED SOCKET",app.socket)
+  };
+  app.socket.onmessage = function(msg) {
+    if (msg.data && msg.data.slice(0, 3) === 'pub') {
+      Date.now() - app.lastUpdate > 2000 ?   app.getAgoraData() : "";
     }
+    //else{console.log("message inconnu",msg)}
+  };
+}
 
-    customElements.define('flow-element', FlowElement);
+copy(e){
+  var dummy = document.createElement("textarea");
+  document.body.appendChild(dummy);
+  dummy.value = e.target.getAttribute("uri");
+  dummy.select();
+  document.execCommand("copy");
+  document.body.removeChild(dummy);
+}
+
+}
+
+customElements.define('flow-element', FlowElement);
