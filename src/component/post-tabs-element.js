@@ -247,9 +247,80 @@ class PostTabsElement extends LitElement {
     }
   }
 
-
-
   async preparePost(){
+    var app = this
+    app.webId = this.ph.getPod("webId")
+    //  console.log(this.webId)
+    console.log(this.responses)
+    var date = new Date(Date.now())
+    var id = date.getTime()
+    var title = this.shadowRoot.getElementById('title').value.trim();
+    var tags = this.shadowRoot.getElementById('tags').value.split(',');
+    var agora_pub = app.shadowRoot.getElementById('agora_pub').checked
+    this.shadowRoot.getElementById('title').value = ""
+    this.shadowRoot.getElementById('tags').value = ""
+    this.storage = await data.user.storage
+    var userActivity = this.storage+"public/spoggy/activity.ttl#"+id
+    console.log("Creation ", userActivity)
+    await data[userActivity].as$name.add(title)
+    await data[userActivity].rdfs$label.add(title)
+    await data[userActivity].schema$dateCreated.add(date.toISOString())
+    await data[userActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Create'))
+
+    if (agora_pub == true){
+      var agoraActivity = "https://agora.solid.community/public/spoggy/activity.ttl#"+id
+      await data[agoraActivity].as$name.add(title)
+      await data[agoraActivity].rdfs$label.add(title)
+      await data[agoraActivity].schema$dateCreated.add(date.toISOString())
+      await data[agoraActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Create'))
+      await data[agoraActivity].as$actor.add(namedNode(app.webId))
+    }
+
+
+
+    this.responses.forEach(async function(r){
+      switch (r.message.type) {
+        case "Note":
+        var userNote = app.storage+"public/Notes/"+id+".ttl"
+        var content = r.message.content
+        await data[userNote].schema$text.add(content);
+        await data[userNote].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Note'))
+        await data[userActivity].schema$text.add(content);
+        await data[userActivity].as$object.add(namedNode(userNote))
+
+        if (agora_pub == true){
+          await data[agoraActivity].schema$text.add(content);
+          await data[agoraActivity].as$object.add(namedNode(userNote))
+        }
+
+
+        break;
+        case "Image":
+        case "Video":
+        case "Audio":
+        case "Document":
+        if(r.message.content != undefined){
+          var file = r.message.content
+          var contentType = file.contentType
+          var newFilename = r.message.newFilename
+          var classe = r.message.type
+          var userMedia = app.storage+"public/spoggy/"+classe+"/"+newFilename
+          console.log("creation ",userMedia)
+          await app.sendFile(userMedia, file, contentType)
+          await  data[userActivity].as$object.add(namedNode(userMedia))
+          await  data[agoraActivity].as$object.add(namedNode(userMedia))
+        }
+        break;
+        default:
+        console.log(r.message.type , "non traite")
+      }
+    })
+    this.responses = []
+
+
+  }
+
+  async preparePost1(){
     var app = this
     app.webId = this.ph.getPod("webId")
     //  console.log(this.webId)
@@ -268,8 +339,6 @@ class PostTabsElement extends LitElement {
     await  data[userActivity].rdfs$label.add(title)
     await  data[userActivity].schema$dateCreated.add(date.toISOString())
 
-    await data[userActivity].schema$dateCreated.add(date.toISOString())
-    await data[userActivity].rdfs$label.add(title)
     await data[userActivity].as$name.add(title)
     await data[userActivity].as$generator.add(window.location.origin)
     await data[userActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Create'))
@@ -283,7 +352,7 @@ class PostTabsElement extends LitElement {
       await data[agoraActivity].schema$dateCreated.add(date.toISOString())
       await data[agoraActivity].rdfs$label.add(title)
       await data[agoraActivity].as$name.add(title)
-      await  data[agoraActivity].as$target.add(namedNode(userActivity))
+      await data[agoraActivity].as$target.add(namedNode(userActivity))
       await data[agoraActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Add'))
       await data[agoraActivity].schema$creator.add(namedNode(app.webId))
       await data[agoraActivity].as$actor.add(namedNode(app.webId))
@@ -305,7 +374,7 @@ class PostTabsElement extends LitElement {
     this.responses.forEach(async function(r){
       switch (r.message.type) {
         case "Note":
-        var userNote = app.storage+"public/Notes/"+id+".ttl"
+        var userNote = app.storage+"public/spoggy/Notes/"+id+".ttl"
         var content = r.message.content
         await data[userNote].rdfs$label.add(title)
         await data[userNote].schema$text.add(content);
@@ -318,6 +387,7 @@ class PostTabsElement extends LitElement {
         if (agora_pub == true){
           //!!! as$Note ne fonctionne pas
           await  data[agoraActivity].as$object.add(namedNode(userNote))
+          await data[agoraActivity].schema$text.add(content);
         }
 
 
@@ -346,6 +416,14 @@ class PostTabsElement extends LitElement {
         console.log(r.message.type , "non traite")
       }
     })
+
+    await data[app.storage+"public/spoggy/tags.ttl"].rdfs$label.add("Tags")
+    tags.forEach(async function(t){
+      var taguri = app.storage+"public/spoggy/tags.ttl#"+t.trim();
+      await  data[userActivity].as$tag.add(namedNode(taguri))
+      //    console.log(taguri+ " -- >created")
+    })
+
     this.responses = []
     //  this.updatePod(data)
 
