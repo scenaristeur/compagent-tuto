@@ -53,6 +53,10 @@ class UserNotesElement extends LitElement {
       </div>
       </div>
       <small>${n.keywords}</small>
+      ${n.inReplyTo != null ?
+        html`<small>In replyTo <a href="${n.inReplyTo}" target="_blank">${n.inReplyToShort}</a></small>`
+        :html``
+      }
 
       <div>
       ${n.objects.map((o) => html`
@@ -214,6 +218,9 @@ class UserNotesElement extends LitElement {
             note.text = text;
             note.date = date;
             note.subject = subject;
+            note.inReplyTo = nuri.getRef("https://www.w3.org/ns/activitystreams#inReplyTo") || null
+            note.inReplyToShort = note.inReplyTo != null ? note.inReplyTo.substring(note.inReplyTo.lastIndexOf("/")) : null;
+
             note.keywords = keywords
             var objects = nuri.getAllRefs("https://www.w3.org/ns/activitystreams#object")
             app.populateNote(note,objects)

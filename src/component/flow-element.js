@@ -52,7 +52,10 @@ class FlowElement extends LitElement {
       </div>
       </div>
       <small>${n.keywords}</small>
-
+      ${n.inReplyTo != null ?
+        html`<small>In replyTo <a href="${n.inReplyTo}" target="_blank">${n.inReplyToShort}</a></small>`
+        :html``
+      }
       </div>
 
       <div>
@@ -62,12 +65,12 @@ class FlowElement extends LitElement {
         </div>
 
         <div class="col-lg-1">
-        <i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i>
+        <a href="#"><i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i></a>
         <a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
         <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
         <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.uri}"  title="${n.uri}" target="_blank">
         <i class="fas fa-dice-d20"></i><a>
-
+        <a href="#" uri="${n.also}"><i uri="${n.also}" class="fas fa-comment-dots" @click="${this.reply}"></i></a>
         </div>
 
         </div>
@@ -106,6 +109,22 @@ class FlowElement extends LitElement {
         </small>
         `;
       }
+
+
+
+      reply(e){
+        console.log(e.target.getAttribute('uri'))
+        var object = e.target.getAttribute('uri')
+        var mess = {action:"toggleWrite"}
+        this.agent.send("Post", mess)
+        var messRep = {action:"setReplyTo", replyTo: object }
+        this.agent.send("PostTabs", messRep)
+      }
+
+
+
+
+
 
       firstUpdated(){
         var app = this;
@@ -155,7 +174,7 @@ class FlowElement extends LitElement {
               //console.log(nuri)
               var text = nuri.getString(schema.text) || ""
               var date = nuri.getDateTime(schema.dateCreated)|| ""
-              var creator = nuri.getRef(schema.creator) || ""
+              var creator = nuri.getRef("https://www.w3.org/ns/activitystreams#actor") || ""
               var also = nuri.getRef(rdfs.seeAlso) || nuri.getRef(schema.about) || nuri.getRef("https://www.w3.org/ns/activitystreams#target") ||""
               var title = nuri.getString(rdfs.label) || ""
               var keywords = nuri.getString(schema.keywords) || ""
@@ -168,6 +187,8 @@ class FlowElement extends LitElement {
               note.title = title
               note.keywords = keywords
               note.uri = nuri.asNodeRef()
+              note.inReplyTo = nuri.getRef("https://www.w3.org/ns/activitystreams#inReplyTo") || null
+              note.inReplyToShort = note.inReplyTo != null ? note.inReplyTo.substring(note.inReplyTo.lastIndexOf("/")) : null;
               var objects = nuri.getAllRefs("https://www.w3.org/ns/activitystreams#object")
               note.objects = []
               objects.forEach(async function (o){
@@ -189,7 +210,7 @@ class FlowElement extends LitElement {
               //text = nuri.getAllStrings()*/
               //  console.log(note)
 
-              
+
 
               app.notes = [... app.notes, note]
             })
@@ -275,7 +296,7 @@ class FlowElement extends LitElement {
     };
     app.socket.onmessage = function(msg) {
       if (msg.data && msg.data.slice(0, 3) === 'pub') {
-        Date.now() - app.lastUpdate > 2000 ?   app.getAgoraData() : "";
+        Date.now() - app.lastUpdate > 1000 ?   app.getAgoraData() : "";
       }
       //else{console.log("message inconnu",msg)}
     };

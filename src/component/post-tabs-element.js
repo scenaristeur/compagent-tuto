@@ -24,7 +24,8 @@ class PostTabsElement extends LitElement {
       agoraNotesListUrl: { type: String},
       webId: {type: String},
       info: {type: String},
-      folders: {type: Array}
+      folders: {type: Array},
+      replyTo: {type: String}
     };
   }
 
@@ -42,7 +43,8 @@ class PostTabsElement extends LitElement {
     "public/spoggy/Video/",
     "public/spoggy/Audio/",
     "public/spoggy/Document/",
-    "public/spoggy/Tag/"]
+    "public/spoggy/Tag/"],
+    this.replyTo = null
 
     //  this.agoraNotesListUrl = "https://agora.solid.community/public/notes.ttl"
   }
@@ -93,6 +95,13 @@ class PostTabsElement extends LitElement {
     </style>
     <div class="container">
     <div class="row">
+    ${this.replyTo != null ?
+      html `
+      In reply to : <input id="reply" class="form-control" type="text" value="${this.replyTo}" placeholder="ReplyTo">
+      `
+      :html``
+    }
+
     <label class="sr-only" for="title">Title</label>
     <div class="input-group mb-2">
 
@@ -188,6 +197,7 @@ class PostTabsElement extends LitElement {
     this.agent.send("Post", {action: "toggleWrite"})
   }
 
+
   openTab(e) {
     var node = e.target
     if (node.nodeName == "I"){
@@ -222,12 +232,20 @@ class PostTabsElement extends LitElement {
           case "sessionChanged":
           app.sessionChanged(message.webId);
           break;
+          case "setReplyTo":
+          app.setReplyTo(message);
+          break;
           default:
           console.log("Unknown action ",message)
         }
       }
     };
     this.checkFolders()
+  }
+
+
+  setReplyTo(message){
+    message.replyTo != undefined? this.replyTo = message.replyTo : this.replyTo = null
   }
 
   sessionChanged(webId){
@@ -257,6 +275,10 @@ class PostTabsElement extends LitElement {
     var title = this.shadowRoot.getElementById('title').value.trim();
     var tags = this.shadowRoot.getElementById('tags').value.split(',');
     var agora_pub = app.shadowRoot.getElementById('agora_pub').checked
+    var inReplyTo = null;
+    if (this.shadowRoot.getElementById('reply') != null){
+      inReplyTo = this.shadowRoot.getElementById('reply').value.trim();
+    }
     this.shadowRoot.getElementById('title').value = ""
     this.shadowRoot.getElementById('tags').value = ""
     this.storage = await data.user.storage
@@ -266,6 +288,7 @@ class PostTabsElement extends LitElement {
     await data[userActivity].rdfs$label.add(title)
     await data[userActivity].schema$dateCreated.add(date.toISOString())
     await data[userActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Create'))
+    inReplyTo!= null && inReplyTo.length > 0 ? await data[userActivity].as$inReplyTo.add(namedNode(inReplyTo)) : "";
 
     if (agora_pub == true){
       var agoraActivity = "https://agora.solid.community/public/spoggy/activity.ttl#"+id
@@ -274,6 +297,8 @@ class PostTabsElement extends LitElement {
       await data[agoraActivity].schema$dateCreated.add(date.toISOString())
       await data[agoraActivity].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Create'))
       await data[agoraActivity].as$actor.add(namedNode(app.webId))
+      await data[agoraActivity].as$target.add(namedNode(userActivity))
+      inReplyTo!= null &&  inReplyTo.length > 0 ? await data[agoraActivity].as$inReplyTo.add(namedNode(inReplyTo)) : "";
     }
 
 

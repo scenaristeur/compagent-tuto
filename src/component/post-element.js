@@ -58,6 +58,8 @@ class PostElement extends LitElement {
   toggleDialog (e) {
     this.dialogVisible = !this.dialogVisible
     //  console.log(this.dialogVisible)
+    var messRep = {action:"setReplyTo" }
+    this.agent.send("PostTabs", messRep)
   }
 
   closeDialog (e) {
@@ -88,7 +90,7 @@ class PostElement extends LitElement {
   }
 
   toggleWrite(message){
-    //  console.log(message)
+      console.log(message)
     this.toggleDialog(message)
   }
 
