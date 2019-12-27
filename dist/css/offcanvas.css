@@ -1,3 +1,4 @@
+
 html,
 body {
   overflow-x: hidden; /* Prevent scroll on narrow devices */
@@ -6,6 +7,8 @@ body {
 body {
   padding-top: 56px;
 }
+
+
 
 @media (max-width: 991.98px) {
   .offcanvas-collapse {
@@ -71,7 +74,25 @@ body {
 
 .bg-purple { background-color: #6f42c1; }
 .bg-back { background-color: #c7f3fc}
+.icon-pan { background-color: #f3fcc7}
 
 .lh-100 { line-height: 1; }
 .lh-125 { line-height: 1.25; }
 .lh-150 { line-height: 1.5; }
+
+
+/*https://getbootstrap.com/docs/4.3/layout/overview/*/
+/*https://www.journaldunet.fr/web-tech/developpement/1202763-bootstrap-comment-utiliser-les-media-queries/*/
+/*
+@media(max-width:767px){}
+@media(min-width:768px){}
+@media(min-width:992px){}
+@media(min-width:1200px){}*/
+
+i {
+  padding :5px;
+      }
+
+.thbn {
+  border:5px solid #c7f3fc
+}

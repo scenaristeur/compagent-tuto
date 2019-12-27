@@ -65,7 +65,7 @@ class UserNotesElement extends LitElement {
         </div>
 
         </div>
-        <div class="col-md-1">
+        <div class="col-md-1 icon-pan">
         <i title="copy" primary @click="${this.copy}" uri=${n.subject} class="fas fa-copy"></i>
         <a href="${n.subject}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
         <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.subject}"  title="${n.subject}" target="_blank"><i class="fas fa-dice-d20"></i><a>
@@ -84,19 +84,8 @@ class UserNotesElement extends LitElement {
         return html`
         <link href="css/fontawesome/css/all.css" rel="stylesheet">
         <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-        <style>
-        i {
-          padding-top: 10px;
-          padding-bottom: 10px
-        }
-        .fa-dice-d20 {
-          padding-left :10px;
-          padding-right :10px;
-        }
-        img {
-          border:5px solid lightgray
-        }
-        </style>
+                <link href="css/offcanvas.css" rel="stylesheet">
+
         ${this.person == null ?
           html `You must login <br>to see your notes`
           :html `
@@ -118,7 +107,7 @@ class UserNotesElement extends LitElement {
             case ".jpg":
             case ".gif":
             return html`
-            <a href="${o.uri}" target="_blank"><img src="${o.uri}" width="100px", height="100px"></a>
+            <a href="${o.uri}" target="_blank"><img class="thbn"  src="${o.uri}" width="100px", height="100px"></a>
             `
             break;
             default:
@@ -127,7 +116,6 @@ class UserNotesElement extends LitElement {
           `
           }
         }
-
 
         personChanged(person){
           this.person = person
@@ -185,6 +173,7 @@ class UserNotesElement extends LitElement {
         },
         err => {console.log(err)}
       );
+
     }
 
     async getNotes(){

@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 import { fetchDocument } from 'tripledoc';
-import { schema, rdfs, rdf } from 'rdf-namespaces';
+import { schema, rdfs, rdf, vcard, as } from 'rdf-namespaces';
 
 import data from "@solid/query-ldflex";
 
@@ -41,16 +41,17 @@ class FlowElement extends LitElement {
       <div class="col">
       <div class="row">
       <div class="col-md-1">
-      <a  href="${n.creator}" ?hidden=${n.creator == null} target="_blank" ><i title="${n.creator}" primary small  class="bd-placeholder-img mr-2 rounded fas fa-user"></i></a>
+      <a  href="${n.actor}" ?hidden=${n.actor == null} target="_blank" ><i title="${n.actor}" primary small  class="bd-placeholder-img mr-2 rounded fas fa-user"></i></a>
       </div>
       <div class="col media-body pb-3 mb-0 small lh-125">
       <strong class="d-block text-gray-dark white-space: pre-wrap">
-      ${n.title}
-      <small>${n.date.toLocaleString(this.lang)}</small> <!-- toLocaleTimeString(this.lang)-->
+      <a href="${n.uri}" target="_blank">${n.title}</a>
+      <!-- toLocaleTimeString(this.lang)-->
       </strong>
       <div style="white-space: pre-wrap">${n.text}</div>
       </div>
       </div>
+      <small>${n.date}</small>
       <small>${n.keywords}</small>
       ${n.inReplyTo != null ?
         html`<small>In replyTo <a href="${n.inReplyTo}" target="_blank">${n.inReplyToShort}</a></small>`
@@ -64,13 +65,14 @@ class FlowElement extends LitElement {
         `)}
         </div>
 
-        <div class="col-lg-1">
-        <a href="#"><i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i></a>
-        <a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
-        <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
-        <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.uri}"  title="${n.uri}" target="_blank">
-        <i class="fas fa-dice-d20"></i><a>
+        <div class="col-md-1 icon-pan">
         <a href="#" uri="${n.also}"><i uri="${n.also}" class="fas fa-comment-dots" @click="${this.reply}"></i></a>
+
+        <!--<a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>-->
+        <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+        <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.also}"  title="${n.also}" target="_blank">
+        <i class="fas fa-dice-d20"></i><a>
+        <a href="#"><i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i></a>
         </div>
 
         </div>
@@ -85,23 +87,8 @@ class FlowElement extends LitElement {
         return html`
         <link href="css/fontawesome/css/all.css" rel="stylesheet">
         <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-        <style>
-        @media (min-width: 768px) {
-          i {
-            padding-top :10px;
-            padding-bottom :10px;
-          }
-          .fa-dice-d20 {
-            padding-left :10px;
-            padding-right :10px;
-          }
+        <link href="css/offcanvas.css" rel="stylesheet">
 
-        }
-        img {
-          border:5px solid lightgray
-        }
-
-        </style>
         ${noteList(this.notes)}
         <small class="d-block text-right mt-3">
         <a href="${this.flow}"  title="${this.flow}" target="_blank">All Agora's notes<a>
@@ -141,6 +128,10 @@ class FlowElement extends LitElement {
           }
         };
         this.getAgoraData()
+
+
+
+
       }
 
       templateShow(o){
@@ -149,7 +140,7 @@ class FlowElement extends LitElement {
           case ".jpg":
           case ".gif":
           return html`
-          <a href="${o.uri}" target="_blank"><img src="${o.uri}" width="100px", height="100px"></a>
+          <a href="${o.uri}" target="_blank"><img class="thbn" src="${o.uri}" width="100px", height="100px"></a>
           `
           break;
           default:
@@ -158,6 +149,14 @@ class FlowElement extends LitElement {
           `
         }
       }
+
+
+
+
+
+
+
+
 
       getAgoraData(){
         var app = this
@@ -173,16 +172,17 @@ class FlowElement extends LitElement {
             app.notesUri.forEach(function (nuri){
               //console.log(nuri)
               var text = nuri.getString(schema.text) || ""
-              var date = nuri.getDateTime(schema.dateCreated)|| ""
-              var creator = nuri.getRef("https://www.w3.org/ns/activitystreams#actor") || ""
+              var dateLit = nuri.getString(schema.dateCreated)|| ""
+              var actor = nuri.getRef("https://www.w3.org/ns/activitystreams#actor") || ""
               var also = nuri.getRef(rdfs.seeAlso) || nuri.getRef(schema.about) || nuri.getRef("https://www.w3.org/ns/activitystreams#target") ||""
               var title = nuri.getString(rdfs.label) || ""
               var keywords = nuri.getString(schema.keywords) || ""
               //  console.log(text, date)
               var note = {}
               note.text = text;
-              note.date = date;
-              note.creator = creator;
+              note.date = new Date(dateLit).toLocaleString(app.lang)
+              note.actor = actor;
+            //  note.actorName = actor.getString(vcard.fn)
               note.also = also;
               note.title = title
               note.keywords = keywords
@@ -208,7 +208,7 @@ class FlowElement extends LitElement {
 
               //  console.log("NURI",note.uri)
               //text = nuri.getAllStrings()*/
-              //  console.log(note)
+            //  console.log(note)
 
 
 
