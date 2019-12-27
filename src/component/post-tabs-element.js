@@ -103,7 +103,7 @@ class PostTabsElement extends LitElement {
       <div class="input-group-append">
       <div class="input-group-text">Reply to</div>
       </div>
-      <input id="reply" class="form-control" type="text" value="${this.replyTo}" placeholder="ReplyTo">
+      <input id="reply" class="form-control" type="text" value="${this.replyTo}" style="text-align:right;"  placeholder="ReplyTo">
       </div>
       `
       :html``

@@ -29,7 +29,7 @@ class UserNotesElement extends LitElement {
 
 
     const noteList = (notes) => html`
-    <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">My Notes(${notes.length})</h6>
+    <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">My Spogs (${notes.length})</h6>
 
     <ul class="list-group list-group-flush" style="height: 50vh; overflow: auto">
     ${notes.map((n) => html`
@@ -87,11 +87,11 @@ class UserNotesElement extends LitElement {
                 <link href="css/offcanvas.css" rel="stylesheet">
 
         ${this.person == null ?
-          html `You must login <br>to see your notes`
+          html `You must login <br>to see your spogs`
           :html `
           ${noteList(this.notes)}
           <small class="d-block text-right mt-3">
-          <a href="${this.notesListUrl}" title="${this.notesListUrl}" target="_blank">All my notes<a>
+          <a href="${this.notesListUrl}" title="${this.notesListUrl}" target="_blank">All my spogs<a>
           <a href="https://scenaristeur.github.io/spoggy-simple/?source=${this.notesListUrl}"  title="${this.notesListUrl}" target="_blank"><i class="fas fa-dice-d20"></i><a>
           </small>
 

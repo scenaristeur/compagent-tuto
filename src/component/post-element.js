@@ -42,7 +42,7 @@ class PostElement extends LitElement {
       <div class="lh-100">
       <h6 class="mb-0 text-white lh-100">
       <div class="row">
-      You must login to post
+      You must login to post a spog! 
       </div>
       </h6>
       <!--    <small>Since 2011</small>-->

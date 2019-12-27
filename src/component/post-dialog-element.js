@@ -23,6 +23,11 @@ class PostDialogElement extends LitElement {
     <link href="css/fontawesome/css/all.css" rel="stylesheet">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <style>
+
+
+
+
+
     /* The Modal (background) */
     .modal {
       display: none; /* Hidden by default */
@@ -90,12 +95,25 @@ class PostDialogElement extends LitElement {
       justify-content: space-around;
       align-content: space-around;
     }
+
+    @media(max-width:767px){
+      .dialog {
+        padding: 0em;
+      }
+      .modal-content {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        width: 100%;
+      }
+    }
+
+
     </style>
 
 
     <div class="${classMap({dialog: true, opened: this.opened, closed: !this.opened, modal: true})}">
     <div class="modal-content">
-    <h6 class="m-0 font-weight-bold text-primary title">New Note
+    <h6 class="m-0 font-weight-bold text-primary title">New Spog
     <i @click="${() => this.dispatchEvent(new CustomEvent('dialog.cancel'))}" class="close fas fa-window-close"></i>
     </h6>
     <div>

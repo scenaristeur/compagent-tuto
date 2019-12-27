@@ -28,16 +28,11 @@ class FlowElement extends LitElement {
 
   render(){
     const noteList = (notes) => html`
-    <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">Notes on Agora (${notes.length})</h6>
-    <!--<h3 class="m-0 font-weight-bold text-primary">Notes on Agora (${notes.length})</h3>-->
-
+    <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">Spogs on Agora (${notes.length})</h6>
     <ul class="list-group list-group-flush" style="height: 45vh; overflow: auto">
     ${notes.map((n) => html`
-
-
       <li class="list-group-item">
       <div class="row media text-muted pt-3"> <!--   border-bottom border-gray-->
-
       <div class="col">
       <div class="row">
       <div class="col-md-1">
@@ -46,7 +41,6 @@ class FlowElement extends LitElement {
       <div class="col media-body pb-3 mb-0 small lh-125">
       <strong class="d-block text-gray-dark white-space: pre-wrap">
       <a href="${n.uri}" target="_blank">${n.title}</a>
-      <!-- toLocaleTimeString(this.lang)-->
       </strong>
       <div style="white-space: pre-wrap">${n.text}</div>
       </div>
@@ -67,18 +61,13 @@ class FlowElement extends LitElement {
 
         <div class="col-md-1 icon-pan">
         <a href="#" uri="${n.also}"><i uri="${n.also}" class="fas fa-comment-dots" @click="${this.reply}"></i></a>
-
         <!--<a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>-->
         <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
         <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.also}"  title="${n.also}" target="_blank">
         <i class="fas fa-dice-d20"></i><a>
         <a href="#"><i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i></a>
         </div>
-
         </div>
-
-
-
         </li>
         `)}
         </ul>
@@ -91,7 +80,7 @@ class FlowElement extends LitElement {
 
         ${noteList(this.notes)}
         <small class="d-block text-right mt-3">
-        <a href="${this.flow}"  title="${this.flow}" target="_blank">All Agora's notes<a>
+        <a href="${this.flow}"  title="${this.flow}" target="_blank">All Agora's spogs<a>
         <a href="https://scenaristeur.github.io/spoggy-simple/?source=${this.flow}"  title="${this.flow}" target="_blank"><i class="fas fa-dice-d20"></i><a>
         </small>
         `;
@@ -180,7 +169,7 @@ class FlowElement extends LitElement {
               //  console.log(text, date)
               var note = {}
               note.text = text;
-              note.date = new Date(dateLit).toLocaleString(app.lang)
+              note.date = new Date(dateLit).toLocaleString(app.lang) //      <!-- toLocaleTimeString(this.lang)-->
               note.actor = actor;
             //  note.actorName = actor.getString(vcard.fn)
               note.also = also;

@@ -23,12 +23,15 @@ class TripleElement extends LitElement {
 
 
     const triplesList = (triples) => html`
-    <ul class="list-group list-group-flush" style="height: 30vh; overflow: auto">
+    <ul class="list-group list-group-flush" style="height: 30vh; width:100%; overflow: auto">
     ${triples.map((t) => html`
       <li class="list-group-item">
+      <div class="row">
       <button class="btn btn-outline-secondary btn-sm" type="button">${t.subject}</button>
       <button class="btn btn-outline-secondary btn-sm" type="button">${t.predicate}</button>
       <button class="btn btn-outline-secondary btn-sm" type="button">${t.object}</button>
+      [edit] [delete]
+      </div>
       </li>
       `)}
       </ul>
@@ -55,7 +58,26 @@ class TripleElement extends LitElement {
       </div>
 
       <div class="row">
-      ${triplesList(this.triples)}
+
+${this.triples.length > 0 ?
+html `  ${triplesList(this.triples)}`
+:html `You can add triples to your Spog.<br>
+To do so, just type 3 words in the above input and :
+<ul>
+<li>ends with a comma if you want to keep subject & predicate, </li>
+<li>ends with a semicolon if you want to keep just the subject,</li>
+<li>ends with a dot if you don't want to keep anything,</li>
+<li>ends with a dash if you want that the object become the subject of the next triple.</li>
+</ul>
+ex: Dav a man,
+<br>
+
+`
+
+
+}
+
+
       </div>
       `;
     }
