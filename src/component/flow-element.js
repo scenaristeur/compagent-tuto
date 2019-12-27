@@ -14,7 +14,9 @@ class FlowElement extends LitElement {
       notes: {type: Array},
       lang: {type: String},
       notes: {type: Array},
-      lastUpdate: {type: Number}
+      lastUpdate: {type: Number},
+      actors: {type: Object},
+      tags: {type: Array}
     };
   }
 
@@ -24,6 +26,7 @@ class FlowElement extends LitElement {
     this.lang=navigator.language
     this.notes = []
     this.lastUpdate = 0
+    this.actors = {}
   }
 
   render(){
@@ -86,8 +89,6 @@ class FlowElement extends LitElement {
         `;
       }
 
-
-
       reply(e){
         console.log(e.target.getAttribute('uri'))
         var object = e.target.getAttribute('uri')
@@ -96,11 +97,6 @@ class FlowElement extends LitElement {
         var messRep = {action:"setReplyTo", replyTo: object }
         this.agent.send("PostTabs", messRep)
       }
-
-
-
-
-
 
       firstUpdated(){
         var app = this;
@@ -117,9 +113,6 @@ class FlowElement extends LitElement {
           }
         };
         this.getAgoraData()
-
-
-
 
       }
 
@@ -138,14 +131,6 @@ class FlowElement extends LitElement {
           `
         }
       }
-
-
-
-
-
-
-
-
 
       getAgoraData(){
         var app = this
@@ -171,7 +156,8 @@ class FlowElement extends LitElement {
               note.text = text;
               note.date = new Date(dateLit).toLocaleString(app.lang) //      <!-- toLocaleTimeString(this.lang)-->
               note.actor = actor;
-            //  note.actorName = actor.getString(vcard.fn)
+
+              //  note.actorName = actor.getString(vcard.fn)
               note.also = also;
               note.title = title
               note.keywords = keywords
@@ -181,7 +167,6 @@ class FlowElement extends LitElement {
               var objects = nuri.getAllRefs("https://www.w3.org/ns/activitystreams#object")
               note.objects = []
               objects.forEach(async function (o){
-
                 var object = {}
                 object.uri = o
                 object.extension = o.substring(o.lastIndexOf("."));
@@ -190,115 +175,111 @@ class FlowElement extends LitElement {
                 note.objects = [... note.objects, object]
 
               })
-
-              //  note.attachements = nuri.getAllRefs("https://www.w3.org/ns/activitystreams#attachment")
-
-              //  console.log(note)
-
-              //  console.log("NURI",note.uri)
-              //text = nuri.getAllStrings()*/
-            //  console.log(note)
-
-
-
-              app.notes = [... app.notes, note]
-            })
-            app.notes.reverse()
-            //  app.getDetails()
-            if (app.socket == undefined){
-              app.subscribe()
-            }else{
-              console.log("socket exist deja")
+                    app.notes = [... app.notes, note]
+            if (actor.length > 0){
+              app.actors.hasOwnProperty(actor) ? app.actors[actor].activities++ :  app.actors[actor] =  {webId:actor, activities : 0};
             }
 
           })
-        }
+          app.notes.reverse()
+          //  app.getDetails()
+          if (app.socket == undefined){
+            app.subscribe()
+          }else{
+            console.log("socket exist deja")
+          }
+        //  console.log(app.actors)
+          this.agent.send("Suggestion", {action: "updateActors", actors: app.actors})
+        })
 
 
-        async getDetails1(){
-          var app = this
-          console.log(this.notes)
-          this.notes.forEach(async function(n){
+      }
 
-            n.creatorName = "todo"
-            console.log(n)
-            console.log(n.also)
 
-            for await (const subject of  data[n.also].subjects){
-              //  console.log(`  - ${subject}`);
-              for await (const pred of subject.properties) {
-                var p = await pred;
-                var val = await subject[pred]
-                //  console.log(p, `  - ${val}`)
-                if (val != undefined){
-                  n[pred] = val['<target>'].subject.id
-                }
+      async getDetails1(){
+        var app = this
+        console.log(this.notes)
+        this.notes.forEach(async function(n){
+
+          n.creatorName = "todo"
+          console.log(n)
+          console.log(n.also)
+
+          for await (const subject of  data[n.also].subjects){
+            //  console.log(`  - ${subject}`);
+            for await (const pred of subject.properties) {
+              var p = await pred;
+              var val = await subject[pred]
+              //  console.log(p, `  - ${val}`)
+              if (val != undefined){
+                n[pred] = val['<target>'].subject.id
               }
             }
+          }
 
-            console.log(n)
+          console.log(n)
 
-            /*var also = n.also.asNodeRef()
-            var date = also.getDateTime(schema.dateCreated) || ""
-            var title = also.getString(rdfs.label) || ""
-            console.log(date, title)*/
+          /*var also = n.also.asNodeRef()
+          var date = also.getDateTime(schema.dateCreated) || ""
+          var title = also.getString(rdfs.label) || ""
+          console.log(date, title)*/
 
-            /*fetchDocument(n.also).then(
-            detail => {
-            console.log(detail)
-            var act = detail.findSubject(n.also)
-            var date = act.getDateTime(schema.dateCreated) || ""
-            var title = act.getString(rdfs.label) || ""
-            var att = act.getAllRefs('https://www.w3.org/ns/activitystreams#attachment')
-            var obj = act.getAllRefs('https://www.w3.org/ns/activitystreams#object')
-            console.log(date,title, att, obj)
+          /*fetchDocument(n.also).then(
+          detail => {
+          console.log(detail)
+          var act = detail.findSubject(n.also)
+          var date = act.getDateTime(schema.dateCreated) || ""
+          var title = act.getString(rdfs.label) || ""
+          var att = act.getAllRefs('https://www.w3.org/ns/activitystreams#attachment')
+          var obj = act.getAllRefs('https://www.w3.org/ns/activitystreams#object')
+          console.log(date,title, att, obj)
 
-            //    console.log(details.getStatements())
-            //    console.log(details.getTriples())
+          //    console.log(details.getStatements())
+          //    console.log(details.getTriples())
 
-          })*/
+        })*/
 
-          /*for await (const subject of  data[nuri].subjects){
-          console.log(`  - ${subject}`);
-          for await (const pred of subject.properties) {
-          var p = await pred;
-          console.log(p)
-        }
-      }*/
-    })
-  }
-
-
-  subscribe(){
-    var app = this
-    //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
-    var websocket = this.notesList.getWebSocketRef();
-    //  console.log("WEBSOCK",websocket)
-    app.socket = new WebSocket(websocket);
-    //  console.log ("socket",app.socket)
-    app.socket.onopen = function() {
-      const d = new Date();
-      var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
-      this.send('sub '+app.flow);
-      app.agent.send('Messages', now+"[souscription] "+app.flow)
-      //  console.log("OPENED SOCKET",app.socket)
-    };
-    app.socket.onmessage = function(msg) {
-      if (msg.data && msg.data.slice(0, 3) === 'pub') {
-        Date.now() - app.lastUpdate > 1000 ?   app.getAgoraData() : "";
+        /*for await (const subject of  data[nuri].subjects){
+        console.log(`  - ${subject}`);
+        for await (const pred of subject.properties) {
+        var p = await pred;
+        console.log(p)
       }
-      //else{console.log("message inconnu",msg)}
-    };
-  }
+    }*/
+  })
+}
 
-  copy(e){
-    var dummy = document.createElement("textarea");
-    document.body.appendChild(dummy);
-    dummy.value = e.target.getAttribute("uri");
-    dummy.select();
-    document.execCommand("copy");
-    document.body.removeChild(dummy);
-  }
+
+subscribe(){
+  var app = this
+  //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
+  var websocket = this.notesList.getWebSocketRef();
+  //  console.log("WEBSOCK",websocket)
+  app.socket = new WebSocket(websocket);
+  //  console.log ("socket",app.socket)
+  app.socket.onopen = function() {
+    const d = new Date();
+    var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
+    this.send('sub '+app.flow);
+    app.agent.send('Messages', now+"[souscription] "+app.flow)
+    //  console.log("OPENED SOCKET",app.socket)
+  };
+  app.socket.onmessage = function(msg) {
+    if (msg.data && msg.data.slice(0, 3) === 'pub') {
+      Date.now() - app.lastUpdate > 1000 ?   app.getAgoraData() : "";
+    }
+    //else{console.log("message inconnu",msg)}
+  };
+}
+
+copy(e){
+  var dummy = document.createElement("textarea");
+  document.body.appendChild(dummy);
+  dummy.value = e.target.getAttribute("uri");
+  dummy.select();
+  document.execCommand("copy");
+  document.body.removeChild(dummy);
+}
 
 }
 
