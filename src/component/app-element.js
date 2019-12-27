@@ -56,6 +56,7 @@ class AppElement extends LitElement {
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
     <a class="navbar-brand mr-auto mr-lg-0" href="#">Agora</a>
     <login-element class="nav-link" name="Login"></login-element>
+        <post-element name="Post"></post-element>
     <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas" @click="${this.toggleOffCanvas.bind(this)}">
     <span class="navbar-toggler-icon"></span>
     </button>
@@ -93,8 +94,11 @@ class AppElement extends LitElement {
     </nav>
 
 
-    <div class="nav-scroller bg-white shadow-sm">
-  <!--  <nav class="nav nav-underline">
+    <!--
+second rang
+      <div class="nav-scroller bg-white shadow-sm">
+
+  <nav class="nav nav-underline">
     <a class="nav-link active" href="#">Dashboard</a>
     <a class="nav-link" href="#">
     Friends
@@ -107,13 +111,13 @@ class AppElement extends LitElement {
     <a class="nav-link" href="#">Link</a>
     <a class="nav-link" href="#">Link</a>
     <a class="nav-link" href="#">Link</a>
-    </nav>    -->
-    </div>
+    </nav>
+    </div> -->
 
 
     <main role="main" class="container">
 
-    <post-element name="Post"></post-element>
+
 
     <div class="my-2 p-2 bg-back rounded shadow-sm">
     <flow-element name="Flow" flow="${this.flow}"></flow-element>

@@ -26,9 +26,9 @@ class TripleElement extends LitElement {
     <ul class="list-group list-group-flush" style="height: 30vh; overflow: auto">
     ${triples.map((t) => html`
       <li class="list-group-item">
-      <button class="btn btn-outline-secondary" type="button">${t.subject}</button>
-      <button class="btn btn-outline-secondary" type="button">${t.predicate}</button>
-      <button class="btn btn-outline-secondary" type="button">${t.object}</button>
+      <button class="btn btn-outline-secondary btn-sm" type="button">${t.subject}</button>
+      <button class="btn btn-outline-secondary btn-sm" type="button">${t.predicate}</button>
+      <button class="btn btn-outline-secondary btn-sm" type="button">${t.object}</button>
       </li>
       `)}
       </ul>

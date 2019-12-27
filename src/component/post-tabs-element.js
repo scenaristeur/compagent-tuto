@@ -91,13 +91,20 @@ class PostTabsElement extends LitElement {
       padding: 6px 12px;
       border: 1px solid #ccc;
       border-top: none;
+      width: 100%;
     }
     </style>
     <div class="container">
     <div class="row">
     ${this.replyTo != null ?
       html `
-      In reply to : <input id="reply" class="form-control" type="text" value="${this.replyTo}" placeholder="ReplyTo">
+      <label class="sr-only" for="title">Reply to</label>
+      <div class="input-group mb-2">
+      <div class="input-group-append">
+      <div class="input-group-text">Reply to</div>
+      </div>
+      <input id="reply" class="form-control" type="text" value="${this.replyTo}" placeholder="ReplyTo">
+      </div>
       `
       :html``
     }
@@ -114,7 +121,7 @@ class PostTabsElement extends LitElement {
 
 
 
-    <div ><!--style="height:50vh"-->
+    <div class="row"><!--style="height:50vh"-->
     <div id="Note" class="tabcontent" style="display:block;height: 40vh">
     <note-element name="Note"></note-element>
     </div>
@@ -152,14 +159,11 @@ class PostTabsElement extends LitElement {
     </div>
     </div>
 
+
+
     <div class="buttons">
-    <!--<button type="button" class="accept btn btn-primary" @click="${() => this.dispatchEvent(new CustomEvent('dialog.accept'))}">Ok</button>-->
     <div class="row">
-    <div class="col-5">
-    <button type="button" class="btn btn-primary" primary @click=${this.addNote}><i class="far fa-paper-plane"></i></button>
-    <button type="button" class="cancel btn btn-primary" @click="${this.toggleWrite}"><i class="fas fa-window-close"></i> </button>
-    </div>
-    <div class="col">
+    <div class="col-8">
     <div class="form-check">
     <input class="form-check-input" type="checkbox" value="" id="agora_pub" name="agora_pub" checked>
     <label class="text-primary" for="agora_pub">
@@ -167,8 +171,32 @@ class PostTabsElement extends LitElement {
     </label>
     </div>
     </div>
+    <div class="col">
+    <button type="button" class="btn btn-primary" primary @click=${this.addNote}><i class="far fa-paper-plane"></i></button>
+    </div>
+    <!--
+    <button type="button" class="cancel btn btn-primary" @click="${this.toggleWrite}"><i class="fas fa-window-close"></i> </button>-->
     </div>
     </div>
+
+
+
+
+
+
+    <!--
+    <div class="buttons">
+
+    <div class="row">
+    <div class="col-5">
+    <button type="button" class="btn btn-primary" primary @click=${this.addNote}><i class="far fa-paper-plane"></i></button>
+    <button type="button" class="cancel btn btn-primary" @click="${this.toggleWrite}"><i class="fas fa-window-close"></i> </button>
+    </div>
+    <div class="col">
+
+    </div>
+    </div>
+    </div>-->
     </div>
     `;
   }
@@ -307,18 +335,20 @@ class PostTabsElement extends LitElement {
     this.responses.forEach(async function(r){
       switch (r.message.type) {
         case "Note":
-        var userNote = app.storage+"public/Notes/"+id+".ttl"
-        var content = r.message.content
-        await data[userNote].schema$text.add(content);
-        await data[userNote].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Note'))
-        await data[userActivity].schema$text.add(content);
-        await data[userActivity].as$object.add(namedNode(userNote))
+        if (r.message.content.length > 0){
 
-        if (agora_pub == true){
-          await data[agoraActivity].schema$text.add(content);
-          await data[agoraActivity].as$object.add(namedNode(userNote))
+          var userNote = app.storage+"public/Notes/"+id+".ttl"
+          var content = r.message.content
+          await data[userNote].schema$text.add(content);
+          await data[userNote].rdf$type.add(namedNode('https://www.w3.org/ns/activitystreams#Note'))
+          await data[userActivity].schema$text.add(content);
+          await data[userActivity].as$object.add(namedNode(userNote))
+
+          if (agora_pub == true){
+            await data[agoraActivity].schema$text.add(content);
+            await data[agoraActivity].as$object.add(namedNode(userNote))
+          }
         }
-
 
         break;
         case "Image":
@@ -337,6 +367,17 @@ class PostTabsElement extends LitElement {
           await  data[agoraActivity].as$object.add(namedNode(userMedia))
         }
         break;
+
+
+        case "Triple":
+        if(r.message.content.length >0){
+          content = r.message.content
+
+        }
+
+        break;
+
+
         default:
         console.log(r.message.type , "non traite")
       }
@@ -520,7 +561,7 @@ class PostTabsElement extends LitElement {
             }
           })
         }
-        
+
       }
 
       customElements.define('post-tabs-element', PostTabsElement);

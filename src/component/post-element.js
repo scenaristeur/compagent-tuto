@@ -29,7 +29,7 @@ class PostElement extends LitElement {
     ${this.webId != null ?
       html`
       <div>
-      <button type="button" class="btn btn-primary" @click="${this.toggleDialog.bind(this)}"><i class="fa fa-pen"></i></button>
+      <button type="button" class="btn btn-primary btn-sm" @click="${this.toggleDialog.bind(this)}"><i class="fa fa-pen"></i></button>
       <post-dialog-element ?opened="${this.dialogVisible}"
       @dialog.accept="${this.closeDialog.bind(this)}"
       @dialog.cancel="${this.closeDialog.bind(this)}">

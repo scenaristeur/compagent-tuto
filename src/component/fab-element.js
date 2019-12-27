@@ -57,7 +57,7 @@ class FabElement extends LitElement {
       border-radius: 50%;
       width: 50px;
       height: 50px;
-      right: 80px; bottom: 22px;
+      right: 10px; bottom: 12px;
       /*
       width: 50px; height: 50px;
       right: 100%; margin-right: 0px;*/
