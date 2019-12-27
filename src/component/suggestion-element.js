@@ -49,7 +49,7 @@ class SuggestionElement extends LitElement {
     }
 
     async  updateActors(message){
-    //  console.log(message)
+      console.log(message)
       this.actors = []
       //  this.actors = message.actors
       for (let [key, value] of Object.entries(message.actors)) {
@@ -85,7 +85,8 @@ class SuggestionElement extends LitElement {
       <strong class="text-gray-dark">${a.name}</strong>
       <a href="#">Follow</a>
       </div>
-      <span class="d-block">${a.webId} </span>
+      <br>
+      <span class="d-block">${a.webId}</span>
       </div>
       </div>
       `

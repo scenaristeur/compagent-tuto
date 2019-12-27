@@ -38,8 +38,8 @@ class FlowElement extends LitElement {
       <div class="row media text-muted pt-3"> <!--   border-bottom border-gray-->
       <div class="col">
       <div class="row">
-      <div class="col-md-1">
-      <a  href="${n.actor}" ?hidden=${n.actor == null} target="_blank" ><i title="${n.actor}" primary small  class="bd-placeholder-img mr-2 rounded fas fa-user"></i></a>
+      <div class="col-md-2">
+      <a  href="${n.actor}" ?hidden=${n.actor == null} target="_blank" ><small>${n.actorname}</small><i title="${n.actor}" primary small  class="bd-placeholder-img mr-2 rounded fas fa-user"></i></a>
       </div>
       <div class="col media-body pb-3 mb-0 small lh-125">
       <strong class="d-block text-gray-dark white-space: pre-wrap">
@@ -113,7 +113,6 @@ class FlowElement extends LitElement {
           }
         };
         this.getAgoraData()
-
       }
 
       templateShow(o){
@@ -135,29 +134,27 @@ class FlowElement extends LitElement {
       getAgoraData(){
         var app = this
         this.lastUpdate = Date.now()
-        //  console.log("lastUpdate flow", this.lastUpdate)
         fetchDocument(app.flow).then(
-          notesList => {
+          function(notesList ) {
             app.notesList = notesList;
-            //    console.log(notesList)
             var notesUri = notesList.findSubjects()
             app.notesUri = Array.from(new Set(notesUri))
             app.notes = []
-            app.notesUri.forEach(function (nuri){
-              //console.log(nuri)
+            app.notesUri.forEach(async function (nuri){
               var text = nuri.getString(schema.text) || ""
               var dateLit = nuri.getString(schema.dateCreated)|| ""
-              var actor = nuri.getRef("https://www.w3.org/ns/activitystreams#actor") || ""
+              var actor = nuri.getRef("https://www.w3.org/ns/activitystreams#actor") ||  ""
               var also = nuri.getRef(rdfs.seeAlso) || nuri.getRef(schema.about) || nuri.getRef("https://www.w3.org/ns/activitystreams#target") ||""
               var title = nuri.getString(rdfs.label) || ""
               var keywords = nuri.getString(schema.keywords) || ""
-              //  console.log(text, date)
               var note = {}
               note.text = text;
               note.date = new Date(dateLit).toLocaleString(app.lang) //      <!-- toLocaleTimeString(this.lang)-->
               note.actor = actor;
-
-              //  note.actorName = actor.getString(vcard.fn)
+              if (actor.length > 0){
+                app.actors.hasOwnProperty(actor) ? app.actors[actor].activities++ :  app.actors[actor] =  {webId:actor, activities : 0};
+              }
+              note.actorname = await   data[actor].vcard$fn
               note.also = also;
               note.title = title
               note.keywords = keywords
@@ -171,115 +168,108 @@ class FlowElement extends LitElement {
                 object.uri = o
                 object.extension = o.substring(o.lastIndexOf("."));
                 object.short = o.substring(o.lastIndexOf("/"));
-                //  console.log(object)
                 note.objects = [... note.objects, object]
-
               })
-                    app.notes = [... app.notes, note]
-            if (actor.length > 0){
-              app.actors.hasOwnProperty(actor) ? app.actors[actor].activities++ :  app.actors[actor] =  {webId:actor, activities : 0};
-            }
+              app.notes.reverse()
+              app.notes = [... app.notes, note]
+              app.notes.reverse()
+            })
 
+            app.agent.send("Suggestion", {action: "updateActors", actors: app.actors})
           })
-          app.notes.reverse()
-          //  app.getDetails()
+
           if (app.socket == undefined){
             app.subscribe()
           }else{
             console.log("socket exist deja")
           }
-        //  console.log(app.actors)
-          this.agent.send("Suggestion", {action: "updateActors", actors: app.actors})
-        })
+        }
 
 
-      }
+        async getDetails1(){
+          var app = this
+          console.log(this.notes)
+          this.notes.forEach(async function(n){
 
+            n.creatorName = "todo"
+            console.log(n)
+            console.log(n.also)
 
-      async getDetails1(){
-        var app = this
-        console.log(this.notes)
-        this.notes.forEach(async function(n){
-
-          n.creatorName = "todo"
-          console.log(n)
-          console.log(n.also)
-
-          for await (const subject of  data[n.also].subjects){
-            //  console.log(`  - ${subject}`);
-            for await (const pred of subject.properties) {
-              var p = await pred;
-              var val = await subject[pred]
-              //  console.log(p, `  - ${val}`)
-              if (val != undefined){
-                n[pred] = val['<target>'].subject.id
+            for await (const subject of  data[n.also].subjects){
+              //  console.log(`  - ${subject}`);
+              for await (const pred of subject.properties) {
+                var p = await pred;
+                var val = await subject[pred]
+                //  console.log(p, `  - ${val}`)
+                if (val != undefined){
+                  n[pred] = val['<target>'].subject.id
+                }
               }
             }
-          }
 
-          console.log(n)
+            console.log(n)
 
-          /*var also = n.also.asNodeRef()
-          var date = also.getDateTime(schema.dateCreated) || ""
-          var title = also.getString(rdfs.label) || ""
-          console.log(date, title)*/
+            /*var also = n.also.asNodeRef()
+            var date = also.getDateTime(schema.dateCreated) || ""
+            var title = also.getString(rdfs.label) || ""
+            console.log(date, title)*/
 
-          /*fetchDocument(n.also).then(
-          detail => {
-          console.log(detail)
-          var act = detail.findSubject(n.also)
-          var date = act.getDateTime(schema.dateCreated) || ""
-          var title = act.getString(rdfs.label) || ""
-          var att = act.getAllRefs('https://www.w3.org/ns/activitystreams#attachment')
-          var obj = act.getAllRefs('https://www.w3.org/ns/activitystreams#object')
-          console.log(date,title, att, obj)
+            /*fetchDocument(n.also).then(
+            detail => {
+            console.log(detail)
+            var act = detail.findSubject(n.also)
+            var date = act.getDateTime(schema.dateCreated) || ""
+            var title = act.getString(rdfs.label) || ""
+            var att = act.getAllRefs('https://www.w3.org/ns/activitystreams#attachment')
+            var obj = act.getAllRefs('https://www.w3.org/ns/activitystreams#object')
+            console.log(date,title, att, obj)
 
-          //    console.log(details.getStatements())
-          //    console.log(details.getTriples())
+            //    console.log(details.getStatements())
+            //    console.log(details.getTriples())
 
-        })*/
+          })*/
 
-        /*for await (const subject of  data[nuri].subjects){
-        console.log(`  - ${subject}`);
-        for await (const pred of subject.properties) {
-        var p = await pred;
-        console.log(p)
+          /*for await (const subject of  data[nuri].subjects){
+          console.log(`  - ${subject}`);
+          for await (const pred of subject.properties) {
+          var p = await pred;
+          console.log(p)
+        }
+      }*/
+    })
+  }
+
+
+  subscribe(){
+    var app = this
+    //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
+    var websocket = this.notesList.getWebSocketRef();
+    //  console.log("WEBSOCK",websocket)
+    app.socket = new WebSocket(websocket);
+    //  console.log ("socket",app.socket)
+    app.socket.onopen = function() {
+      const d = new Date();
+      var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
+      this.send('sub '+app.flow);
+      app.agent.send('Messages', now+"[souscription] "+app.flow)
+      //  console.log("OPENED SOCKET",app.socket)
+    };
+    app.socket.onmessage = function(msg) {
+      if (msg.data && msg.data.slice(0, 3) === 'pub') {
+        Date.now() - app.lastUpdate > 1000 ?   app.getAgoraData() : "";
       }
-    }*/
-  })
-}
+      //else{console.log("message inconnu",msg)}
+    };
+  }
 
-
-subscribe(){
-  var app = this
-  //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
-  var websocket = this.notesList.getWebSocketRef();
-  //  console.log("WEBSOCK",websocket)
-  app.socket = new WebSocket(websocket);
-  //  console.log ("socket",app.socket)
-  app.socket.onopen = function() {
-    const d = new Date();
-    var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
-    this.send('sub '+app.flow);
-    app.agent.send('Messages', now+"[souscription] "+app.flow)
-    //  console.log("OPENED SOCKET",app.socket)
-  };
-  app.socket.onmessage = function(msg) {
-    if (msg.data && msg.data.slice(0, 3) === 'pub') {
-      Date.now() - app.lastUpdate > 1000 ?   app.getAgoraData() : "";
-    }
-    //else{console.log("message inconnu",msg)}
-  };
-}
-
-copy(e){
-  var dummy = document.createElement("textarea");
-  document.body.appendChild(dummy);
-  dummy.value = e.target.getAttribute("uri");
-  dummy.select();
-  document.execCommand("copy");
-  document.body.removeChild(dummy);
-}
+  copy(e){
+    var dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = e.target.getAttribute("uri");
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+  }
 
 }
 
