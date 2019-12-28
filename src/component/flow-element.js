@@ -61,7 +61,7 @@ class FlowElement extends LitElement {
       <div class="card-body">
 
       <p class="card-text">
-    <!--  ${n.count}-->
+      <!--  ${n.count}-->
       <a  href="${n.actor}" ?hidden=${n.actor == null} target="_blank" >
       <i title="${n.actor}" primary small  class="bd-placeholder-img mr-2 rounded fas fa-user"></i>
       <small><b>${n.actorname}</b></small>
@@ -93,12 +93,26 @@ class FlowElement extends LitElement {
         </blockquote>
 
         <div class="row icon-pan">
-        <a href="#" uri="${n.also}"><i uri="${n.also}" class="fas fa-comment-dots" @click="${this.reply}"></i></a>
+
+        <div class="col">
+        <i uri="${n.also}" class="fas fa-comment-dots" @click="${this.reply}"></i>
         <!--<a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>-->
         <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
         <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.also}"  title="${n.also}" target="_blank">
         <i class="fas fa-dice-d20"></i><a>
         <a href="#"><i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i></a>
+        </div>
+
+        <div class="col-md-5">
+        <button class="btn btn-outline-primary btn-sm" value=1 uri="${n.uri}"  @click="${this.like}">
+        <i value=1 uri="${n.uri}" class="far fa-thumbs-up fa-sm" @click="${this.like}"></i>
+        </button>
+        <button class="btn btn-outline-primary btn-sm">  ${n.rating} </button>
+        <button class="btn btn-outline-primary btn-sm" value=-1 uri="${n.uri}"  @click="${this.like}">
+        <i value=-1 uri="${n.uri}" class="far fa-thumbs-down fa-sm" @click="${this.like}"></i>
+        </button>
+
+
         </div>
         </div>
         </div>
@@ -125,6 +139,18 @@ class FlowElement extends LitElement {
         `;
       }
 
+      async like(e){
+        console.log(e.target)
+        var uri = e.target.getAttribute("uri")
+        var value = e.target.getAttribute("value")
+        var score = await data[uri]['http://purl.org/stuff/rev#rating'] || 0
+
+        console.log(score)
+        score == undefined  || isNaN(score) ? score = 0 : "";
+        var new_score = parseInt(score)+parseInt(value)
+        console.log(new_score)
+        await data[uri]['http://purl.org/stuff/rev#rating'].set(new_score.toString())
+      }
 
       reply(e){
         console.log(e.target.getAttribute('uri'))
@@ -134,12 +160,7 @@ class FlowElement extends LitElement {
         var messRep = {action:"setReplyTo", replyTo: object }
         this.agent.send("PostTabs", messRep)
       }
-/*
-      async actorname(a){
-        var name =  await   data[a].vcard$fn
-        console.log(name)
-        return name
-      }*/
+
       firstUpdated(){
         var app = this;
         this.agent = new HelloAgent(this.name);
@@ -163,7 +184,8 @@ class FlowElement extends LitElement {
           case ".jpg":
           case ".gif":
           return html`
-          <a href="${o.uri}" target="_blank"><img class="card-img-top" src="${o.uri}"></a>
+          <img class="card-img-top" src="${o.uri}">
+<!--          <a href="${o.uri}" target="_blank"></a> -->
           `
           break;
           default:
@@ -187,7 +209,8 @@ class FlowElement extends LitElement {
             app.notesList = notesList;
             var notesUri = notesList.findSubjects()
             app.notesUri = Array.from(new Set(notesUri))
-            app.notes = []
+            var notes = []
+            var actors = {}
             //  var count = 0
             app.notesUri.forEach(async function (nuri){
               var text = nuri.getString(schema.text) || ""
@@ -195,6 +218,7 @@ class FlowElement extends LitElement {
               var actor = nuri.getRef("https://www.w3.org/ns/activitystreams#actor") ||  ""
               var also = nuri.getRef(rdfs.seeAlso) || nuri.getRef(schema.about) || nuri.getRef("https://www.w3.org/ns/activitystreams#target") ||""
               var title = nuri.getString(rdfs.label) || ""
+
               var keywords = nuri.getString(schema.keywords) || ""
               var note = {}
               note.count =Math.floor(new Date(dateLit).getTime()/ 1000)
@@ -203,9 +227,9 @@ class FlowElement extends LitElement {
               note.date = new Date(dateLit).toLocaleString(app.lang) //      <!-- toLocaleTimeString(this.lang)-->
               note.actor = actor;
               if (actor.length > 0){
-                app.actors.hasOwnProperty(actor) ? app.actors[actor].activities++ :  app.actors[actor] =  {webId:actor, activities : 0};
+                actors.hasOwnProperty(actor) ? actors[actor].activities++ :  actors[actor] =  {webId:actor, activities : 0};
               }
-
+              note.rating = nuri.getString('http://purl.org/stuff/rev#rating') || 0
               note.also = also;
               note.title = title
               note.keywords = keywords
@@ -223,27 +247,43 @@ class FlowElement extends LitElement {
               })
               note.actorname = await   data[actor].vcard$fn
 
-              app.notes = [... app.notes, note]
+              notes = [... notes, note]
+
+              notes.sort(function(a, b) { //tri par date
+                return b.count - a.count;
+              });
+
+              notes.sort(function(a, b) {   //tri par popularite
+                return b.rating - a.rating;
+              });
+
+              /*  await notes.forEach(async function(n){
+              var an = await   data[n.actor].vcard$fn
+              n.actorname = `${an}`
+              console.log(n.actorname)
+            })*/
+
+            app.notes = notes
+            //  console.log(app.notes)
+
+          })
 
 
-            })
-            app.notes.sort(function(a, b) { // sort by number of activities
-              return b.count - a.count;
-            });
 
-            /*  await app.notes.forEach(async function(n){
-            n.actorname = await   data[n.actor].vcard$fn
-            console.log(n.actorname)
-          })*/
-
-          app.agent.send("Suggestion", {action: "updateActors", actors: app.actors})
+          if (app.socket == undefined){
+            app.subscribe()
+          }else{
+            console.log("socket exist deja")
+          }
+  console.log("actors",actors)
+  if (actors != app.actors){
+    app.actors = actors
+    app.agent.send("Suggestion", {action: "updateActors", actors: app.actors})
+  }
         })
 
-        if (app.socket == undefined){
-          app.subscribe()
-        }else{
-          console.log("socket exist deja")
-        }
+
+
       }
 
 
