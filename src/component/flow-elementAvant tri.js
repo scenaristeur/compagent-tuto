@@ -35,22 +35,16 @@ class FlowElement extends LitElement {
     <div class="card-columns">
     <div>
     <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">Spogs on Agora (${notes.length})
-    <select id="mySelect" @change=${this.sort}>
-    <option id="date" value="date">Date</option>
-    <option id="rating" value="rating">Rating</option>
-    </select>
     <small class="d-block text-right mt-3">
     <a href="${this.flow}"  title="${this.flow}" target="_blank">All Agora's spogs<a>
     <a href="https://scenaristeur.github.io/spoggy-simple/?source=${this.flow}"  title="${this.flow}" target="_blank"><i class="fas fa-dice-d20"></i><a>
     </small>
     </h6>
     </div>
-
     ${notes.map((n) => html`
       ${noteCard(n)}
       `
     )}
-
     </div>
     `;
 
@@ -158,36 +152,6 @@ class FlowElement extends LitElement {
         await data[uri]['http://purl.org/stuff/rev#rating'].set(new_score.toString())
       }
 
-
-      sort(e){
-        var element = e.target
-        var val = element.options[element.selectedIndex].value
-        console.log(val)
-        switch(val) {
-          case "date":
-
-          this.notes.sort(function(a, b) { //tri par date
-            return b.count - a.count;
-          });
-
-          this.requestUpdate()
-          break;
-          case "rating":
-
-          this.notes.sort(function(a, b) {   //tri par popularite
-            return b.rating - a.rating;
-          });
-
-          this.requestUpdate()
-          break;
-          default:
-          console.log("Unknown select ",val)
-        }
-
-
-      }
-
-
       reply(e){
         console.log(e.target.getAttribute('uri'))
         var object = e.target.getAttribute('uri')
@@ -289,9 +253,9 @@ class FlowElement extends LitElement {
                 return b.count - a.count;
               });
 
-            /*  notes.sort(function(a, b) {   //tri par popularite
+              notes.sort(function(a, b) {   //tri par popularite
                 return b.rating - a.rating;
-              });*/
+              });
 
               /*  await notes.forEach(async function(n){
               var an = await   data[n.actor].vcard$fn
@@ -304,6 +268,8 @@ class FlowElement extends LitElement {
 
           })
 
+
+
           if (app.socket == undefined){
             app.subscribe()
           }else{
@@ -315,6 +281,7 @@ class FlowElement extends LitElement {
             app.agent.send("Suggestion", {action: "updateActors", actors: app.actors})
           }
         })
+
 
 
       }
