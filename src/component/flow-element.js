@@ -101,7 +101,9 @@ class FlowElement extends LitElement {
         <div class="row icon-pan">
 
         <div class="col">
-        <i uri="${n.also}" class="fas fa-comment-dots" @click="${this.reply}"></i>
+        <button class="btn btn-outline-primary btn-sm" uri="${n.also}" @click="${this.reply}">
+        <i  class="fas fa-comment-dots fa-sm" uri="${n.also}"></i>
+        </button>
         <!--<a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>-->
         <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
         <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.also}"  title="${n.also}" target="_blank">
@@ -125,6 +127,9 @@ class FlowElement extends LitElement {
         `;
 
         return html `
+        <link href="css/fontawesome/css/all.css" rel="stylesheet">
+        <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+        <link href="css/offcanvas.css" rel="stylesheet">
         <style>
         .card-columns {
           @include media-breakpoint-only(lg) {
@@ -134,13 +139,11 @@ class FlowElement extends LitElement {
             column-count: 5;
           }
         }
-        i {
-          padding:20px 10px;
+        .fa-sm {
+          padding:0px;
         }
         </style>
-        <link href="css/fontawesome/css/all.css" rel="stylesheet">
-        <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-        <link href="css/offcanvas.css" rel="stylesheet">
+
         ${noteList(this.notes)}
         `;
       }
@@ -289,88 +292,88 @@ class FlowElement extends LitElement {
                 return b.count - a.count;
               });
 
-            /*  notes.sort(function(a, b) {   //tri par popularite
-                return b.rating - a.rating;
-              });*/
+              /*  notes.sort(function(a, b) {   //tri par popularite
+              return b.rating - a.rating;
+            });*/
 
-              /*  await notes.forEach(async function(n){
-              var an = await   data[n.actor].vcard$fn
-              n.actorname = `${an}`
-              console.log(n.actorname)
-            })*/
+            /*  await notes.forEach(async function(n){
+            var an = await   data[n.actor].vcard$fn
+            n.actorname = `${an}`
+            console.log(n.actorname)
+          })*/
 
-            app.notes = notes
-            //  console.log(app.notes)
+          app.notes = notes
+          //  console.log(app.notes)
 
-          })
-
-          if (app.socket == undefined){
-            app.subscribe()
-          }else{
-            console.log("socket exist deja")
-          }
-          console.log("actors",actors)
-          if (actors != app.actors){
-            app.actors = actors
-            app.agent.send("Suggestion", {action: "updateActors", actors: app.actors})
-          }
         })
 
+        if (app.socket == undefined){
+          app.subscribe()
+        }else{
+          console.log("socket exist deja")
+        }
+        console.log("actors",actors)
+        if (actors != app.actors){
+          app.actors = actors
+          app.agent.send("Suggestion", {action: "updateActors", actors: app.actors})
+        }
+      })
 
-      }
+
+    }
 
 
-      async getDetails1(){
-        var app = this
-        console.log(this.notes)
-        this.notes.forEach(async function(n){
+    async getDetails1(){
+      var app = this
+      console.log(this.notes)
+      this.notes.forEach(async function(n){
 
-          n.creatorName = "todo"
-          console.log(n)
-          console.log(n.also)
+        n.creatorName = "todo"
+        console.log(n)
+        console.log(n.also)
 
-          for await (const subject of  data[n.also].subjects){
-            //  console.log(`  - ${subject}`);
-            for await (const pred of subject.properties) {
-              var p = await pred;
-              var val = await subject[pred]
-              //  console.log(p, `  - ${val}`)
-              if (val != undefined){
-                n[pred] = val['<target>'].subject.id
-              }
+        for await (const subject of  data[n.also].subjects){
+          //  console.log(`  - ${subject}`);
+          for await (const pred of subject.properties) {
+            var p = await pred;
+            var val = await subject[pred]
+            //  console.log(p, `  - ${val}`)
+            if (val != undefined){
+              n[pred] = val['<target>'].subject.id
             }
           }
+        }
 
-          console.log(n)
+        console.log(n)
 
-          /*var also = n.also.asNodeRef()
-          var date = also.getDateTime(schema.dateCreated) || ""
-          var title = also.getString(rdfs.label) || ""
-          console.log(date, title)*/
+        /*var also = n.also.asNodeRef()
+        var date = also.getDateTime(schema.dateCreated) || ""
+        var title = also.getString(rdfs.label) || ""
+        console.log(date, title)*/
 
-          /*fetchDocument(n.also).then(
-          detail => {
-          console.log(detail)
-          var act = detail.findSubject(n.also)
-          var date = act.getDateTime(schema.dateCreated) || ""
-          var title = act.getString(rdfs.label) || ""
-          var att = act.getAllRefs('https://www.w3.org/ns/activitystreams#attachment')
-          var obj = act.getAllRefs('https://www.w3.org/ns/activitystreams#object')
-          console.log(date,title, att, obj)
+        /*fetchDocument(n.also).then(
+        detail => {
+        console.log(detail)
+        var act = detail.findSubject(n.also)
+        var date = act.getDateTime(schema.dateCreated) || ""
+        var title = act.getString(rdfs.label) || ""
+        var att = act.getAllRefs('https://www.w3.org/ns/activitystreams#attachment')
+        var obj = act.getAllRefs('https://www.w3.org/ns/activitystreams#object')
+        console.log(date,title, att, obj)
 
-          //    console.log(details.getStatements())
-          //    console.log(details.getTriples())
+        //    console.log(details.getStatements())
+        //    console.log(details.getTriples())
 
-        })*/
+      })*/
 
-        /*for await (const subject of  data[nuri].subjects){
-        console.log(`  - ${subject}`);
-        for await (const pred of subject.properties) {
-        var p = await pred;
-        console.log(p)
-      }
-    }*/
-  })
+      /*for await (const subject of  data[nuri].subjects){
+      console.log(`  - ${subject}`);
+      for await (const pred of subject.properties) {
+      var p = await pred;
+      console.log(p)
+    }
+  }*/
+})
 }
 
 
