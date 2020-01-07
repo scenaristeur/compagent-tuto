@@ -61,7 +61,9 @@ class TripleElement extends LitElement {
 
 ${this.triples.length > 0 ?
 html `  ${triplesList(this.triples)}`
-:html `You can add triples to your Spog.<br>
+:html `
+<small>
+You can add triples to your Spog.<br>
 To do so, just type 3 words in the above input and :
 <ul>
 <li>ends with a comma if you want to keep subject & predicate, </li>
@@ -70,8 +72,7 @@ To do so, just type 3 words in the above input and :
 <li>ends with a dash if you want that the object become the subject of the next triple.</li>
 </ul>
 ex: Dav a man,
-<br>
-
+</small>
 `
 
 

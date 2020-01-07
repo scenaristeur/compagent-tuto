@@ -1,3 +1,5 @@
+// redimensionner l'image avant envoi http://tech.novapost.fr/redimensionner-une-image-cote-client-avant-lupload.html
+
 import { LitElement, html } from 'lit-element';
 import { HelloAgent } from '../agents/hello-agent.js';
 

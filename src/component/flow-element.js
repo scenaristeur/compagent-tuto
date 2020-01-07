@@ -32,8 +32,7 @@ class FlowElement extends LitElement {
 
   render(){
     const noteList = (notes) => html`
-    <div class="card-columns">
-    <div>
+
     <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">Spogs on Agora (${notes.length})
     <select id="mySelect" @change=${this.sort}>
     <option id="date" value="date">Date</option>
@@ -44,13 +43,18 @@ class FlowElement extends LitElement {
     <a href="https://scenaristeur.github.io/spoggy-simple/?source=${this.flow}"  title="${this.flow}" target="_blank"><i class="fas fa-dice-d20"></i><a>
     </small>
     </h6>
-    </div>
+
+
+    <div  style="height: 50vh; overflow: auto">
+    <div class="card-columns">
+
 
     ${notes.map((n) => html`
       ${noteCard(n)}
       `
     )}
 
+    </div>
     </div>
     `;
 
@@ -101,17 +105,25 @@ class FlowElement extends LitElement {
         <div class="row icon-pan">
 
         <div class="col">
-        <button class="btn btn-outline-primary btn-sm" uri="${n.also}" @click="${this.reply}">
-        <i  class="fas fa-comment-dots fa-sm" uri="${n.also}"></i>
+        <button class="btn btn-outline-primary btn-sm" uri="${n.uri}" @click="${this.reply}">
+        <i  class="fas fa-comment-dots fa-sm" title="Reply" uri="${n.uri}"></i>
         </button>
         <!--<a href="${n.uri}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>-->
-        <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+        <button class="btn btn-outline-primary btn-sm">
+        <a href="${n.also}" target="_blank"><i class="fas fa-external-link-alt fa-sm"></i></a>
+        </button>
+
+        <button class="btn btn-outline-primary btn-sm">
         <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.also}"  title="${n.also}" target="_blank">
-        <i class="fas fa-dice-d20"></i><a>
-        <a href="#"><i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy"></i></a>
+        <i title="see spoggy graph" class="fas fa-dice-d20 fa-sm"></i><a>
+        </button>
+
+        <button class="btn btn-outline-primary btn-sm">
+        <i title="copy" primary @click="${this.copy}" uri=${n.uri} class="fas fa-copy  fa-sm"></i>
+        </button>
         </div>
 
-        <div class="col-md-5">
+        <div class="col">
         <button class="btn btn-outline-primary btn-sm" value=1 uri="${n.uri}"  @click="${this.like}">
         <i value=1 uri="${n.uri}" class="far fa-thumbs-up fa-sm" @click="${this.like}"></i>
         </button>
@@ -223,7 +235,7 @@ class FlowElement extends LitElement {
           case ".jpg":
           case ".gif":
           return html`
-          <img class="card-img-top" src="${o.uri}">
+          <img class="card-img-top" src="${o.uri}" style="max-width:300px">
           <!--          <a href="${o.uri}" target="_blank"></a> -->
           `
           break;

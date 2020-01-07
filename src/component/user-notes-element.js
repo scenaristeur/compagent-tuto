@@ -29,7 +29,12 @@ class UserNotesElement extends LitElement {
 
 
     const noteList = (notes) => html`
-    <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">My Spogs (${notes.length})</h6>
+    <h6 class="border-bottom border-gray pb-2 mb-0 text-primary">My Spogs (${notes.length})
+    <small class="d-block text-right mt-3">
+    <a href="${this.notesListUrl}" title="${this.notesListUrl}" target="_blank">All my spogs<a>
+    <a href="https://scenaristeur.github.io/spoggy-simple/?source=${this.notesListUrl}"  title="${this.notesListUrl}" target="_blank"><i class="fas fa-dice-d20"></i><a>
+    </small>
+    </h6>
 
     <ul class="list-group list-group-flush" style="height: 50vh; overflow: auto">
     ${notes.map((n) => html`
@@ -66,10 +71,16 @@ class UserNotesElement extends LitElement {
 
         </div>
         <div class="col-md-1 icon-pan">
-        <i title="copy" primary @click="${this.copy}" uri=${n.subject} class="fas fa-copy"></i>
-        <a href="${n.subject}" target="_blank">  <i title="open" primary small  class="fas fa-eye"></i></a>
-        <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.subject}"  title="${n.subject}" target="_blank"><i class="fas fa-dice-d20"></i><a>
-
+        <button class="btn btn-outline-primary btn-sm">
+        <i title="copy" primary @click="${this.copy}" uri=${n.subject} class="fas fa-copy fa-sm"></i>
+        </button>
+        <button class="btn btn-outline-primary btn-sm">
+        <a href="${n.subject}" target="_blank">  <i title="open" primary small  class="fas fa-eye fa-sm"></i></a>
+        </button>
+        <button class="btn btn-outline-primary btn-sm">
+        <a href="https://scenaristeur.github.io/spoggy-simple/?source=${n.subject}"  title="${n.subject}" target="_blank">
+        <i class="fas fa-dice-d20 fa-sm"></i><a>
+        </button>
         </div>
 
         </div>
@@ -84,16 +95,17 @@ class UserNotesElement extends LitElement {
         return html`
         <link href="css/fontawesome/css/all.css" rel="stylesheet">
         <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-                <link href="css/offcanvas.css" rel="stylesheet">
-
+        <link href="css/offcanvas.css" rel="stylesheet">
+        <style>
+        .fa-sm {
+          padding:0px;
+        }
+        </style>
         ${this.person == null ?
           html `You must login <br>to see your spogs`
           :html `
           ${noteList(this.notes)}
-          <small class="d-block text-right mt-3">
-          <a href="${this.notesListUrl}" title="${this.notesListUrl}" target="_blank">All my spogs<a>
-          <a href="https://scenaristeur.github.io/spoggy-simple/?source=${this.notesListUrl}"  title="${this.notesListUrl}" target="_blank"><i class="fas fa-dice-d20"></i><a>
-          </small>
+
 
           `}
           `;
@@ -113,7 +125,7 @@ class UserNotesElement extends LitElement {
             default:
             return html`
             <a href="${o.uri}" target="_blank">${o.short}</a>
-          `
+            `
           }
         }
 
@@ -232,57 +244,57 @@ class UserNotesElement extends LitElement {
           object.uri = o
           object.extension = o.substring(o.lastIndexOf("."));
           object.short = o.substring(o.lastIndexOf("/"));
-/*
+          /*
           if (object.extension == ".ttl"){
-            fetchDocument(o).then(
-              notefile => {
-                console.log(notefile.findSubject())
-                object.text = notefile.findSubject().getString(schema.text) || ""
+          fetchDocument(o).then(
+          notefile => {
+          console.log(notefile.findSubject())
+          object.text = notefile.findSubject().getString(schema.text) || ""
 
-              })
-            }*/
+        })
+      }*/
 
-          //  console.log(object)
-            note.objects = [... note.objects, object]
+      //  console.log(object)
+      note.objects = [... note.objects, object]
 
-          })
-          //  return await data[o].schema$text
+    })
+    //  return await data[o].schema$text
 
-        }
-        subscribe(){
-          var app = this
-          //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
-          var websocket = this.notesList.getWebSocketRef();
-          //  console.log("WEBSOCK",websocket)
-          app.socket = {status:"creating"}
-          app.socket = new WebSocket(websocket);
-          //  console.log ("socket",app.socket)
-          app.socket.onopen = function() {
-            const d = new Date();
-            var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
-            this.send('sub '+app.notesListUrl);
-            app.agent.send('Messages', now+"[souscription] "+app.notesListUrl)
-            //  console.log("OPENED SOCKET",app.socket)
-          };
-          app.socket.onmessage = function(msg) {
-            if (msg.data && msg.data.slice(0, 3) === 'pub') {
-              Date.now() - app.lastUpdate > 2000 ?   app.getNotes(): "";
-            }
-            //  else{console.log("message inconnu",msg)}
-          };
-        }
-
-
-
-
-        copy(e){
-          var dummy = document.createElement("textarea");
-          document.body.appendChild(dummy);
-          dummy.value = e.target.getAttribute("uri");
-          dummy.select();
-          document.execCommand("copy");
-          document.body.removeChild(dummy);
-        }
+  }
+  subscribe(){
+    var app = this
+    //https://github.com/scenaristeur/spoggy-chat-solid/blob/master/index.html
+    var websocket = this.notesList.getWebSocketRef();
+    //  console.log("WEBSOCK",websocket)
+    app.socket = {status:"creating"}
+    app.socket = new WebSocket(websocket);
+    //  console.log ("socket",app.socket)
+    app.socket.onopen = function() {
+      const d = new Date();
+      var now = d.toLocaleTimeString(app.lang) + `.${d.getMilliseconds()}`
+      this.send('sub '+app.notesListUrl);
+      app.agent.send('Messages', now+"[souscription] "+app.notesListUrl)
+      //  console.log("OPENED SOCKET",app.socket)
+    };
+    app.socket.onmessage = function(msg) {
+      if (msg.data && msg.data.slice(0, 3) === 'pub') {
+        Date.now() - app.lastUpdate > 2000 ?   app.getNotes(): "";
       }
+      //  else{console.log("message inconnu",msg)}
+    };
+  }
 
-      customElements.define('user-notes-element', UserNotesElement);
+
+
+
+  copy(e){
+    var dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = e.target.getAttribute("uri");
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+  }
+}
+
+customElements.define('user-notes-element', UserNotesElement);
