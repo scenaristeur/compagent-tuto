@@ -4,8 +4,8 @@ navigator.serviceWorker.register('sw.js');
 Notification.requestPermission(function(result) {
   if (result === 'granted') {
     navigator.serviceWorker.ready.then(function(registration) {
-      console.log("notif")
-      registration.showNotification('Notification with ServiceWorker');
+    //  console.log("notif")
+      registration.showNotification('Notificatiooooooon test');
     });
   }
 });
