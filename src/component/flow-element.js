@@ -46,7 +46,7 @@ class FlowElement extends LitElement {
 
 
     <div  style="height: 50vh; overflow: auto">
-    <div class="card-columns">
+    <div class="card-columns" style="background:#c7f3fc">
 
 
     ${notes.map((n) => html`
