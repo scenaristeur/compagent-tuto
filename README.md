@@ -1,4 +1,7 @@
 
+# todo
+use https://github.com/blueimp/JavaScript-Load-Image to reduce image size before upload
+
 Lit-element Webcomponent that communicate with evejs  https://scenaristeur.github.io/compagent-tuto/
 
 # Why using Lit-element with evejs ?
