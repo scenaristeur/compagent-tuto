@@ -421,7 +421,7 @@ class LoginElement extends LitElement {
     let session = await auth.currentSession();
     let popupUri = './dist-popup/popup.html';
     if (!session)
-    session = await auth.popupLogin({ popupUri });
+    session = await auth.popupLogin({ popupUri });
   }
 
   doSomething(message){
