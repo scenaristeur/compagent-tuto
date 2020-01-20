@@ -626,3 +626,6 @@ NB the subscribe function connects a Web socket to the agoraNotesListUrl that al
 # release v0.1 post notes / video / audio / images and see personnal notes & agora's notes
 
 ![Release0.1](doc/images/release0.1.png)
+
+# couleurs
+https://encycolorpedia.fr/c7f3fc
