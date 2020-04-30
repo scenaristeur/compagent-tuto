@@ -22,7 +22,7 @@
     "bootstrap": "^4.4.1",
     "evejs": "github:scenaristeur/evejs",
     "fontawesome": "^5.6.3",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "lit-element": "^2.2.1",
     "rdf-namespaces": "^1.6.0",
     "solid-auth-client": "^2.4.1",
